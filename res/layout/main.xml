@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout3" android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="vertical">
+        <LinearLayout android:layout_width="fill_parent" android:id="@+id/linearLayout4" android:layout_height="wrap_content" android:orientation="vertical">
+            <TextView android:text="@string/hello" android:layout_height="wrap_content" android:id="@+id/TextView" android:layout_width="fill_parent"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_width="fill_parent" android:id="@+id/linearLayout5" android:layout_height="wrap_content">
+            <Button android:layout_height="wrap_content" android:id="@+id/Button01" android:layout_width="wrap_content" android:text="设置闹钟"></Button>
+            <Button android:layout_height="wrap_content" android:id="@+id/Button02" android:layout_width="wrap_content" android:text="取消闹钟"></Button>
+        </LinearLayout>
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/testBtnLayout">
+          <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Test" android:onClick="testBtnOnClick"></Button>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_width="fill_parent" android:id="@+id/linearLayout6" android:layout_height="wrap_content">
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Shut down" android:id="@+id/btnShutdown"></Button>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Play" android:id="@+id/btnStart"></Button>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pause" android:id="@+id/btnPause"></Button>
+    </LinearLayout>
+    <LinearLayout android:layout_width="fill_parent" android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:orientation="vertical">
+        <TextView android:textStyle="bold" android:layout_width="fill_parent" android:text="Streaming From: myDropbox" android:id="@+id/text_streamed" android:layout_height="wrap_content"></TextView>
+        <Button android:id="@+id/button_stream" style="?android:attr/buttonStyleSmall" android:layout_marginTop="10px" android:layout_width="wrap_content" android:text="Start Streaming" android:layout_height="wrap_content"></Button>
+        <ProgressBar android:layout_width="200dip" style="?android:attr/progressBarStyleHorizontal" android:layout_height="wrap_content" android:id="@+id/progress_bar"></ProgressBar>
+        <ImageButton android:layout_marginTop="5dip" android:layout_width="wrap_content" style="?android:attr/buttonStyleSmall" android:src="@drawable/button_pause" android:id="@+id/button_play" android:layout_height="wrap_content"></ImageButton>
+    </LinearLayout>
+    <LinearLayout 
+    	android:layout_width="fill_parent" 
+		android:id="@+id/linearLayout2" 
+		android:layout_height="wrap_content" 
+		android:orientation="vertical">
+		
+		<LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="10dip"
+	        android:layout_marginRight="10dip"
+	        android:layout_marginBottom="20dip">
+	    
+	        <LinearLayout
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:orientation="vertical">
+	    
+	            <TextView android:id="@+id/location"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                style="?android:attr/textAppearanceMedium"
+	                android:text="Here" 
+	                />
+	                <!-- android:text="Here" -->
+	
+	            <TextView android:id="@+id/update_time"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                style="?android:attr/textAppearanceSmall"
+	                android:text="updated"
+	                />
+	                <!-- android:text="updated" -->
+	        </LinearLayout>
+	        
+	        <ImageView android:id="@+id/close_button"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@android:drawable/btn_dialog"/>
+	    
+	    </LinearLayout>
+	    
+	    <LinearLayout android:id="@+id/current_condition" 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_marginLeft="10dip"
+	        android:layout_marginRight="10dip">
+	        
+	        <LinearLayout
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:orientation="vertical">
+	            
+	            <TextView android:id="@+id/condition"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                style="?android:attr/textAppearanceMedium"
+	                android:text="Weather condition"/>
+	                <!-- android:text="Weather condition" -->
+	                
+	            <TextView android:id="@+id/wind"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                style="?android:attr/textAppearanceMedium"
+	                android:text="Wind"/>
+	                <!-- android:text="Wind" -->
+	                
+	            <TextView android:id="@+id/humidity"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                style="?android:attr/textAppearanceMedium"
+	                android:text="humidity"/>
+	                <!-- android:text="Humidity" -->
+	
+	        </LinearLayout>
+	        
+	        <FrameLayout android:id="@+id/temp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0"
+	            android:paddingLeft="15dip">
+	        
+	            <LinearLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center_horizontal|center_vertical"
+	                android:orientation="vertical">
+	            
+	                <TextView android:id="@+id/current_temp"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="center_horizontal"
+	                    style="?android:attr/textAppearanceMedium"
+	                    android:textSize="25dip"
+	                    android:text="current_temp"/>
+	                    <!-- android:text="X&#x00B0;" -->
+	                    
+	                <TextView android:id="@+id/current_temp_alt"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="center_horizontal"
+	                    android:textColor="?android:attr/textColorPrimary"
+	                    android:text="current_temp_alt"/>
+	                    <!-- android:text="X&#x00B0;" -->
+	                
+	                <LinearLayout
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="horizontal"
+	                    android:layout_gravity="center_horizontal">
+	                
+	                    <TextView android:id="@+id/high_temp"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:text="high_temp"/>
+	                        
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:text="/Testing"/>
+	                        
+	                    <TextView android:id="@+id/low_temp"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"/>
+	                        
+	                </LinearLayout>
+	            
+	            </LinearLayout>
+	        
+	        </FrameLayout>
+	        
+	    </LinearLayout>
+	    
+	    <TableLayout android:id="@+id/forecasts"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10sp"
+	        android:layout_marginLeft="10sp"
+	        android:layout_marginRight="10sp">
+	    
+	        <TableRow android:id="@+id/forecast_1"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+	            
+	            <TextView android:id="@+id/forecast_day_1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	
+	            <TextView android:id="@+id/forecast_condition_1"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:paddingLeft="15sp"
+	                android:paddingRight="15sp"/>
+	
+	            <TextView android:id="@+id/forecast_high_temp_1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="right"/>
+	
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="/"/>
+	
+	            <TextView android:id="@+id/forecast_low_temp_1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	                
+	        </TableRow>
+	        
+	        <TableRow android:id="@+id/forecast_2"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+	            
+	            <TextView android:id="@+id/forecast_day_2"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	
+	            <TextView android:id="@+id/forecast_condition_2"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:paddingLeft="15sp"
+	                android:paddingRight="15sp"/>
+	
+	            <TextView android:id="@+id/forecast_high_temp_2"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="right"/>
+	
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="/"/>
+	
+	            <TextView android:id="@+id/forecast_low_temp_2"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	                
+	        </TableRow>
+	        
+	        <TableRow android:id="@+id/forecast_3"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+	            
+	            <TextView android:id="@+id/forecast_day_3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	
+	            <TextView android:id="@+id/forecast_condition_3"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:paddingLeft="15sp"
+	                android:paddingRight="15sp"/>
+	
+	            <TextView android:id="@+id/forecast_high_temp_3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="right"/>
+	
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="/"/>
+	
+	            <TextView android:id="@+id/forecast_low_temp_3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"/>
+	            
+	        </TableRow>
+	    
+	    </TableLayout>
+	    <ImageButton android:layout_width="fill_parent" android:src="@android:drawable/ic_menu_rotate" android:scaleType="center" android:id="@+id/refresh_button" android:layout_height="wrap_content" android:layout_weight="1"></ImageButton>
+	</LinearLayout>
+	
+	<android.gesture.GestureOverlayView
+		android:id="@+id/gestures"
+		android:layout_width="fill_parent" 
+	    android:layout_height="0dip"
+	     />
+</LinearLayout>
