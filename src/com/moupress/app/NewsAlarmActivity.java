@@ -1,37 +1,36 @@
 package com.moupress.app;
 
-import java.util.Calendar;
-
-import com.moupress.app.alarm.AlarmManagerMgr;
-import com.moupress.app.alarm.AlarmReceiver;
-
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TimePicker;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 
 public class NewsAlarmActivity extends Activity {
-    /** Called when the activity is first created. */
+    
 	private PubSub pubsub;
-	
 
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        
+        if (Const.ISDEBUG) {
+        	setContentView(R.layout.main);
+        }  else {
+        	setContentView(R.layout.news_alarm_ui);
+        }
+        
         
         pubsub = new PubSub(getBaseContext(), this);
     }
     
-    public void testBtnOnClick(View v)
-    {
-    	System.out.println("Test Button Clicked!");
-    	//Intent intent = new Intent(this,AlarmReceiver.class);
-    }
-   
+    
 }

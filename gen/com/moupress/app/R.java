@@ -8,70 +8,228 @@
 package com.moupress.app;
 
 public final class R {
+    public static final class anim {
+        public static final int slidein=0x7f040000;
+        public static final int slideout=0x7f040001;
+    }
     public static final class attr {
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int content=0x7f010000;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int speed=0x7f010001;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int targetHeight=0x7f010002;
+    }
+    public static final class color {
+        public static final int black=0x7f060002;
+        public static final int blue=0x7f060000;
+        public static final int orange_red=0x7f060004;
+        public static final int royal_blue=0x7f060003;
+        public static final int snow=0x7f060005;
+        public static final int white=0x7f060001;
     }
     public static final class drawable {
-        public static final int button_pause=0x7f020000;
-        public static final int button_play=0x7f020001;
-        public static final int icon=0x7f020002;
+        public static final int alarm_btn_selector=0x7f020000;
+        public static final int alarm_clock_btn=0x7f020001;
+        public static final int alarm_clock_btn_pressed=0x7f020002;
+        public static final int alarm_home=0x7f020003;
+        public static final int alarm_home_pressed=0x7f020004;
+        public static final int alarm_sound=0x7f020005;
+        public static final int alarm_sound_pressed=0x7f020006;
+        public static final int button_pause=0x7f020007;
+        public static final int button_play=0x7f020008;
+        public static final int clock=0x7f020009;
+        public static final int disc=0x7f02000a;
+        public static final int home_btn_selector=0x7f02000b;
+        public static final int icon=0x7f02000c;
+        public static final int menu_bar=0x7f02000d;
+        public static final int radio=0x7f02000e;
+        public static final int snooze_btn_selector=0x7f02000f;
+        public static final int snooze_setting=0x7f020010;
+        public static final int snooze_setting_pressed=0x7f020011;
+        public static final int sound_btn_selector=0x7f020012;
+        public static final int viewslider_bg=0x7f020013;
+        public static final int world=0x7f020014;
     }
     public static final class id {
-        public static final int Button01=0x7f060004;
-        public static final int Button02=0x7f060005;
-        public static final int TextView=0x7f060002;
-        public static final int btnPause=0x7f06000a;
-        public static final int btnShutdown=0x7f060008;
-        public static final int btnStart=0x7f060009;
-        public static final int button_play=0x7f06000f;
-        public static final int button_stream=0x7f06000d;
-        public static final int close_button=0x7f060013;
-        public static final int condition=0x7f060015;
-        public static final int current_condition=0x7f060014;
-        public static final int current_temp=0x7f060019;
-        public static final int current_temp_alt=0x7f06001a;
-        public static final int forecast_1=0x7f06001e;
-        public static final int forecast_2=0x7f060023;
-        public static final int forecast_3=0x7f060028;
-        public static final int forecast_condition_1=0x7f060020;
-        public static final int forecast_condition_2=0x7f060025;
-        public static final int forecast_condition_3=0x7f06002a;
-        public static final int forecast_day_1=0x7f06001f;
-        public static final int forecast_day_2=0x7f060024;
-        public static final int forecast_day_3=0x7f060029;
-        public static final int forecast_high_temp_1=0x7f060021;
-        public static final int forecast_high_temp_2=0x7f060026;
-        public static final int forecast_high_temp_3=0x7f06002b;
-        public static final int forecast_low_temp_1=0x7f060022;
-        public static final int forecast_low_temp_2=0x7f060027;
-        public static final int forecast_low_temp_3=0x7f06002c;
-        public static final int forecasts=0x7f06001d;
-        public static final int gestures=0x7f06002e;
-        public static final int high_temp=0x7f06001b;
-        public static final int humidity=0x7f060017;
-        public static final int linearLayout1=0x7f06000b;
-        public static final int linearLayout2=0x7f060010;
-        public static final int linearLayout3=0x7f060000;
-        public static final int linearLayout4=0x7f060001;
-        public static final int linearLayout5=0x7f060003;
-        public static final int linearLayout6=0x7f060007;
-        public static final int location=0x7f060011;
-        public static final int low_temp=0x7f06001c;
-        public static final int progress_bar=0x7f06000e;
-        public static final int refresh_button=0x7f06002d;
-        public static final int temp=0x7f060018;
-        public static final int testBtnLayout=0x7f060006;
-        public static final int text_streamed=0x7f06000c;
-        public static final int update_time=0x7f060012;
-        public static final int wind=0x7f060016;
+        public static final int Button01=0x7f090006;
+        public static final int Button02=0x7f090007;
+        public static final int TextView=0x7f090004;
+        public static final int alarmbtn=0x7f09003c;
+        public static final int alarmitemicon=0x7f090000;
+        public static final int alarmitemtxt=0x7f090001;
+        public static final int alarmlistview=0x7f090037;
+        public static final int btnPause=0x7f09000c;
+        public static final int btnShutdown=0x7f09000a;
+        public static final int btnStart=0x7f09000b;
+        public static final int btnselector=0x7f09003e;
+        public static final int button_play=0x7f090011;
+        public static final int button_stream=0x7f09000f;
+        public static final int close_button=0x7f090015;
+        public static final int condition=0x7f090017;
+        public static final int current_condition=0x7f090016;
+        public static final int current_temp=0x7f09001b;
+        public static final int current_temp_alt=0x7f09001c;
+        public static final int date=0x7f090033;
+        public static final int digitalclock=0x7f090031;
+        public static final int forecast_1=0x7f090020;
+        public static final int forecast_2=0x7f090025;
+        public static final int forecast_3=0x7f09002a;
+        public static final int forecast_condition_1=0x7f090022;
+        public static final int forecast_condition_2=0x7f090027;
+        public static final int forecast_condition_3=0x7f09002c;
+        public static final int forecast_day_1=0x7f090021;
+        public static final int forecast_day_2=0x7f090026;
+        public static final int forecast_day_3=0x7f09002b;
+        public static final int forecast_high_temp_1=0x7f090023;
+        public static final int forecast_high_temp_2=0x7f090028;
+        public static final int forecast_high_temp_3=0x7f09002d;
+        public static final int forecast_low_temp_1=0x7f090024;
+        public static final int forecast_low_temp_2=0x7f090029;
+        public static final int forecast_low_temp_3=0x7f09002e;
+        public static final int forecasts=0x7f09001f;
+        public static final int gestures=0x7f090030;
+        public static final int high_temp=0x7f09001d;
+        public static final int homebtn=0x7f09003a;
+        public static final int hslistview=0x7f090035;
+        public static final int humidity=0x7f090019;
+        public static final int linearLayout1=0x7f09000d;
+        public static final int linearLayout2=0x7f090012;
+        public static final int linearLayout3=0x7f090002;
+        public static final int linearLayout4=0x7f090003;
+        public static final int linearLayout5=0x7f090005;
+        public static final int linearLayout6=0x7f090009;
+        public static final int location=0x7f090013;
+        public static final int low_temp=0x7f09001e;
+        public static final int optionflipper=0x7f090034;
+        public static final int progress_bar=0x7f090010;
+        public static final int refresh_button=0x7f09002f;
+        public static final int removeItemPanel=0x7f090039;
+        public static final int snoozebtn=0x7f09003b;
+        public static final int snoozelistview=0x7f090036;
+        public static final int soundbtn=0x7f09003d;
+        public static final int soundlistview=0x7f090038;
+        public static final int temp=0x7f09001a;
+        public static final int testBtnLayout=0x7f090008;
+        public static final int text_streamed=0x7f09000e;
+        public static final int update_time=0x7f090014;
+        public static final int weekday=0x7f090032;
+        public static final int wind=0x7f090018;
     }
     public static final class layout {
-        public static final int main=0x7f030000;
+        public static final int home_screen_item=0x7f030000;
+        public static final int main=0x7f030001;
+        public static final int news_alarm_ui=0x7f030002;
     }
     public static final class raw {
-        public static final int spells=0x7f040000;
+        public static final int spells=0x7f050000;
     }
     public static final class string {
-        public static final int app_name=0x7f050001;
-        public static final int hello=0x7f050000;
+        public static final int app_name=0x7f070001;
+        public static final int hello=0x7f070000;
     }
+    public static final class style {
+        public static final int alarminfotxt=0x7f080004;
+        public static final int digiclock=0x7f080001;
+        public static final int digiclock_small=0x7f080002;
+        public static final int optionbtn=0x7f080005;
+        public static final int optionlayout=0x7f080000;
+        public static final int optiontxtview=0x7f080003;
+        public static final int viewsliperchild=0x7f080006;
+        public static final int viewsliperchild_sub=0x7f080007;
+    }
+    public static final class styleable {
+        /** Attributes that can be used with a NewsAlarmDigiClock.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #NewsAlarmDigiClock_content com.moupress.app:content}</code></td><td></td></tr>
+           </table>
+           @see #NewsAlarmDigiClock_content
+         */
+        public static final int[] NewsAlarmDigiClock = {
+            0x7f010000
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.moupress.app.R.attr#content}
+          attribute's value can be found in the {@link #NewsAlarmDigiClock} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:content
+        */
+        public static final int NewsAlarmDigiClock_content = 0;
+        /** Attributes that can be used with a SlidingPanel.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SlidingPanel_speed com.moupress.app:speed}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingPanel_targetHeight com.moupress.app:targetHeight}</code></td><td></td></tr>
+           </table>
+           @see #SlidingPanel_speed
+           @see #SlidingPanel_targetHeight
+         */
+        public static final int[] SlidingPanel = {
+            0x7f010001, 0x7f010002
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.moupress.app.R.attr#speed}
+          attribute's value can be found in the {@link #SlidingPanel} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:speed
+        */
+        public static final int SlidingPanel_speed = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.moupress.app.R.attr#targetHeight}
+          attribute's value can be found in the {@link #SlidingPanel} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:targetHeight
+        */
+        public static final int SlidingPanel_targetHeight = 1;
+    };
 }

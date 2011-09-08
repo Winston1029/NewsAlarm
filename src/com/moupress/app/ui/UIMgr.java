@@ -1,30 +1,39 @@
 package com.moupress.app.ui;
 
-import java.io.IOException;
-
-import com.moupress.app.R;
-import com.moupress.app.media.StreamingMgr;
-
 import android.app.Activity;
+import android.content.Context;
 import android.gesture.GestureOverlayView;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
+
+import com.moupress.app.Const;
+import com.moupress.app.R;
 
 public class UIMgr {
 
 	Activity activity;
+	
 	public UIMgr(Activity activity) {
 		this.activity = activity;
+		if (Const.ISDEBUG) {
+			initStreamingControls();
+			initSoonzeControls();
+			initAlarmControls();
+			initAlarmTTSControls();
+			initWeatherControls();
+		} else {
+			initNewUI();
+		}
 		
-		initStreamingControls();
-		initSoonzeControls();
-		initAlarmControls();
-		initAlarmTTSControls();
-		initWeatherControls();
 	}
 	
 	public Button btn_stream;
@@ -79,5 +88,101 @@ public class UIMgr {
     	txv_updatetime = (TextView) activity.findViewById(R.id.update_time);
     	txv_humidity = (TextView) activity.findViewById(R.id.humidity);
 		txv_wind = (TextView) activity.findViewById(R.id.wind);
+    }
+    
+    public ViewFlipper alarmInfoViewSlipper;
+    public ListView hsListView;
+    public ListView snoozeListView;
+    public ListView alarmListView;
+    public ListView soundListView;
+    public LayoutInflater viewInflator;
+	private String[] hsDisplayTxt =  {"Rain  10C","10:00pm","Gesture"};
+	private int[] hsDisplayIcon =  {R.drawable.world,R.drawable.clock,R.drawable.disc};
+	private String[] snoozeDisplayTxt =  {"Gesture","Flip","Swing"};
+	private int[] snoozeDisplayIcon =  {R.drawable.disc,R.drawable.disc,R.drawable.disc};
+	private String[] alarmDisplayTxt =  {"8:00 am","9:00 am","10:00 am"};
+	private int[] alarmDisplayIcon =  {R.drawable.clock,R.drawable.clock,R.drawable.clock};
+	private String[] soundDisplayTxt =  {"BBC News","Wall Street Journal","Personal Notes"};
+	private int[] soundDisplayIcon =  {R.drawable.radio,R.drawable.radio,R.drawable.radio};
+    private void initNewUI() {
+    	alarmInfoViewSlipper = (ViewFlipper)activity.findViewById(R.id.optionflipper);
+        hsListView = (ListView) activity.findViewById(R.id.hslistview);
+        hsListView.setAdapter(new HsLVAdapter(hsDisplayTxt,hsDisplayIcon));
+        snoozeListView = (ListView)activity.findViewById(R.id.snoozelistview);
+        snoozeListView.setAdapter(new HsLVAdapter(snoozeDisplayTxt,snoozeDisplayIcon));
+        alarmListView = (ListView)activity.findViewById(R.id.alarmlistview);
+        alarmListView.setAdapter(new HsLVAdapter(alarmDisplayTxt,alarmDisplayIcon));
+        soundListView = (ListView)activity.findViewById(R.id.soundlistview);
+        soundListView.setAdapter(new HsLVAdapter(soundDisplayTxt,soundDisplayIcon) );
+    }
+    
+    public void homeBtnClick(View v)
+    {
+    	System.out.println("Home Button On Click!");
+    	alarmInfoViewSlipper.setDisplayedChild(0);
+    }
+    
+    public void snoozeBtnClick(View v)
+    {
+    	System.out.println("Snooze Button On Click!");
+    	alarmInfoViewSlipper.showNext();
+    	alarmInfoViewSlipper.setDisplayedChild(1);
+    }
+    
+    public void alarmBtnClick(View v)
+    {
+    	System.out.println("Alarm Button On Click!");
+    	alarmInfoViewSlipper.showNext();
+    	alarmInfoViewSlipper.setDisplayedChild(2);
+    }
+    
+    public void soundBtnClick(View v)
+    {
+    	System.out.println("Sound Button On Click!");
+    	alarmInfoViewSlipper.showNext();
+    	alarmInfoViewSlipper.setDisplayedChild(3);
+    }
+    
+    private class HsLVAdapter extends BaseAdapter{
+    	private String[] txtisplays ;
+    	private int[] icons ;
+    	
+    	public  HsLVAdapter(String[] displayStrings,int[] displayInts)
+    	{
+    		viewInflator = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    		txtisplays = displayStrings;
+    		icons = displayInts;
+    	}
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return txtisplays.length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return txtisplays[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if(convertView==null)
+			{
+				convertView = viewInflator.inflate(R.layout.home_screen_item, null);
+				
+			}
+			ImageView imgView = (ImageView) convertView.findViewById(R.id.alarmitemicon);
+			imgView.setImageResource(icons[position]);
+			TextView textView = (TextView) convertView.findViewById(R.id.alarmitemtxt);
+			textView.setText(txtisplays[position]);
+			return convertView;
+		}
     }
 }

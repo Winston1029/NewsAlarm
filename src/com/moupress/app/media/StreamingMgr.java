@@ -2,9 +2,6 @@ package com.moupress.app.media;
 
 import java.io.IOException;
 
-import com.moupress.app.R;
-import com.moupress.app.media.StreamingNotifier;
-
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -12,6 +9,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.moupress.app.Const;
+import com.moupress.app.R;
 
 
 public class StreamingMgr {
@@ -31,10 +31,8 @@ public class StreamingMgr {
 	
 	public boolean bIsPlaying;
 	
-	public StreamingMgr(Context  context,TextView textStreamed, final ImageButton	playButton, Button	streamButton,ProgressBar	progressBar) 
+	public StreamingMgr(Context  context,final TextView textStreamed, final ImageButton	playButton, Button	streamButton,final ProgressBar	progressBar) 
  	{
-		notifier = new MyStreamingNotifier();
-		audioStreamer = new StreamingMediaPlayer(context, notifier);
 		this.textStreamed = textStreamed;
 		this.playButton = playButton;
 		this.streamingButton = streamButton;
@@ -43,7 +41,8 @@ public class StreamingMgr {
 		streamingButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				try {
-					startStreaming("http://dl.dropbox.com/u/5758134/sara.mp3",5208, 216);
+					//startStreaming("http://dl.dropbox.com/u/5758134/sara.mp3",5208, 216);
+					startStreaming("http://www.bbc.co.uk/iplayer/console/bbc_world_service",5208, 216);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -63,7 +62,70 @@ public class StreamingMgr {
 				bIsPlaying = !bIsPlaying;
         }});
 		
-		notifier = new MyStreamingNotifier();
+		notifier = new StreamingNotifier() {
+
+			@Override
+			public void updatedStream() {
+				Runnable updater = new Runnable() {
+			        public void run() {
+			        	textStreamed.setText((audioStreamer.totalKbRead + " Kb read"));
+			    		int iLoadedPer = (int)audioStreamer.getStreamingPer();
+			    		progressBar.setSecondaryProgress(iLoadedPer);
+			        }
+			    };
+			    handler.post(updater);			
+			}
+
+			@Override
+			public void finishedStream() {
+				Runnable updater = new Runnable() { 
+					public void run() {
+			        	textStreamed.setText(("Audio full loaded: " + audioStreamer.totalKbRead + " Kb read"));
+			        }
+			    };
+			    handler.post(updater);			
+			}
+
+			@Override
+			public void playStream() {
+				Runnable updater = new Runnable() {
+			        public void run() {
+						if (audioStreamer.getMediaPlayer() != null) {
+							startPlayProgressUpdater();        	
+							playButton.setEnabled(true);
+						}
+			        }
+				};
+				handler.post(updater);
+		    	
+			}
+			
+		};
+		audioStreamer = new StreamingMediaPlayer(context, notifier);
+	}
+	
+	public StreamingMgr(Context context) {
+		notifier = new StreamingNotifier() {
+
+			@Override
+			public void updatedStream() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void finishedStream() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void playStream() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 		audioStreamer = new StreamingMediaPlayer(context, notifier);
 	}
 
@@ -81,59 +143,19 @@ public class StreamingMgr {
 	}
     
     public void startPlayProgressUpdater() {
-    	float progress = (((float)audioStreamer.getCurrentPosition()/1000)/audioStreamer.mediaLengthInSeconds);
-    	progressBar.setProgress((int)(progress*100));
-    	
-		if (audioStreamer.isPlaying()) {
-			Runnable notification = new Runnable() {
-		        public void run() {
-		        	startPlayProgressUpdater();
-				}
-		    };
-		    handler.postDelayed(notification,1000);
-    	}
-    }
-    
-    public class MyStreamingNotifier implements StreamingNotifier {
-    	public MyStreamingNotifier() {
-    		
-    	}
-
-		@Override
-		public void updatedStream() {
-			Runnable updater = new Runnable() {
-		        public void run() {
-		        	textStreamed.setText((audioStreamer.totalKbRead + " Kb read"));
-		    		int iLoadedPer = (int)audioStreamer.getStreamingPer();
-		    		progressBar.setSecondaryProgress(iLoadedPer);
-		        }
-		    };
-		    handler.post(updater);			
-		}
-
-		@Override
-		public void finishedStream() {
-			Runnable updater = new Runnable() { 
-				public void run() {
-		        	textStreamed.setText(("Audio full loaded: " + audioStreamer.totalKbRead + " Kb read"));
-		        }
-		    };
-		    handler.post(updater);			
-		}
-
-		@Override
-		public void playStream() {
-			Runnable updater = new Runnable() {
-		        public void run() {
-					if (audioStreamer.getMediaPlayer() != null) {
-						startPlayProgressUpdater();        	
-						playButton.setEnabled(true);
-					}
-		        }
-			};
-			handler.post(updater);
+    	if (Const.ISDEBUG) {
+	    	float progress = (((float)audioStreamer.getCurrentPosition()/1000)/audioStreamer.mediaLengthInSeconds);
+	    	if (progressBar != null)
+	    		progressBar.setProgress((int)(progress*100));
 	    	
-		}
+			if (audioStreamer.isPlaying()) {
+				Runnable notification = new Runnable() {
+			        public void run() {
+			        	startPlayProgressUpdater();
+					}
+			    };
+			    handler.postDelayed(notification,1000);
+	    	}
+    	}
     }
-
 }

@@ -30,7 +30,7 @@ public class AlarmManagerMgr
     private Button btn_cel;
     private TextView tv;
     
-    public AlarmManagerMgr(final Context context, Button btn_set, Button btn_cel, final TextView tv)
+    public AlarmManagerMgr(Context context, Button btn_set, Button btn_cel, final TextView tv)
     {
         this.mContext = context;
         this.btn_set = btn_set;
@@ -44,7 +44,7 @@ public class AlarmManagerMgr
                 c.setTimeInMillis(System.currentTimeMillis());
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
-                new TimePickerDialog(context,new TimePickerDialog.OnTimeSetListener(){
+                new TimePickerDialog(mContext,new TimePickerDialog.OnTimeSetListener(){
                   
                     public void onTimeSet(TimePicker view, int hourOfDay,
                             int minute) {
@@ -80,7 +80,7 @@ public class AlarmManagerMgr
         });
     }
     
-    public AlarmManagerMgr(final Context context) {
+    public AlarmManagerMgr(Context context) {
     	this.mContext = context;
     }
     
@@ -137,7 +137,7 @@ public class AlarmManagerMgr
     {
         //to check if activity exists
         Intent intent = new Intent();  
-        intent.setClassName("com.test.alarmanagerserice", "MainActivity");        
+        intent.setClassName("com.moupress.app", "NewsAlarmActivity");        
         if(mContext.getPackageManager().resolveActivity(intent, 0) == null) {  
             return false;
         }

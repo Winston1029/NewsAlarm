@@ -14,6 +14,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Streaming Audio from external URL and Play
@@ -60,6 +61,7 @@ public class StreamingMediaPlayer {
 	        }   
 	    };   
 	    new Thread(r).start();
+	    Toast.makeText(context, "Streaming Started", Toast.LENGTH_SHORT).show();
     }
     
     /**  

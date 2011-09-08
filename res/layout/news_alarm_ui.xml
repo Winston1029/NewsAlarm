@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:newsalarm="http://schemas.android.com/apk/res/com.moupress.app"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<LinearLayout android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="fill_parent"
+				android:gravity="center_horizontal"
+				
+				>
+<com.moupress.app.ui.NewsAlarmDigiClock
+	android:id="@+id/digitalclock"
+  				style="@style/digiclock"
+  				android:gravity="center_horizontal"
+  				newsalarm:content="time"
+  				android:layout_marginTop="20dip"
+  				/>
+<LinearLayout android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:orientation="horizontal"
+			android:gravity="center_horizontal"
+			>
+			
+<com.moupress.app.ui.NewsAlarmDigiClock
+					android:id="@+id/weekday"
+					style ="@style/digiclock.small"
+	  				newsalarm:content="weekday"
+	  				/>
+	<com.moupress.app.ui.NewsAlarmDigiClock
+					android:id="@+id/date"
+	  				style ="@style/digiclock.small"
+	  				newsalarm:content="date"
+	  				android:layout_marginLeft="15dip"
+	  				/>
+	</LinearLayout>
+<ViewFlipper android:id="@+id/optionflipper"
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:layout_marginTop="30dip"
+              android:inAnimation="@anim/slidein"
+              android:outAnimation="@anim/slideout">
+	<LinearLayout style="@style/viewsliperchild">
+	<LinearLayout style="@style/viewsliperchild.sub">
+<!-- 	  <TextView android:id="@+id/homescreentitle"  -->
+<!-- 	        android:text="Home Screen" -->
+<!-- 	        style="@style/alarminfotxt" -->
+<!-- 	        ></TextView> -->
+	 <ListView android:id="@+id/hslistview"
+	 	android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	 	android:background="@android:color/transparent"
+	 	></ListView>
+	  </LinearLayout>
+	</LinearLayout>
+<LinearLayout style="@style/viewsliperchild">
+	<LinearLayout style="@style/viewsliperchild.sub">
+<!-- 	  <TextView android:id="@+id/snoozetitle"  -->
+<!-- 	        android:text="Set Snooze Mode" -->
+<!-- 	        style="@style/alarminfotxt" -->
+<!-- 	        ></TextView> -->
+	   <ListView android:id="@+id/snoozelistview"
+	 	android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	 	android:background="@android:color/transparent"
+	 	></ListView>
+	  </LinearLayout>
+	</LinearLayout>
+<LinearLayout style="@style/viewsliperchild">
+	<LinearLayout style="@style/viewsliperchild.sub">
+<!-- 	  <TextView android:id="@+id/addalarmtitle"  -->
+<!-- 	        android:text="Add New Alarm" -->
+<!-- 	        style="@style/alarminfotxt" -->
+<!-- 	        ></TextView> -->
+	<ListView android:id="@+id/alarmlistview"
+	 	android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	 	android:background="@android:color/transparent"
+	 	></ListView>
+	  </LinearLayout>
+	</LinearLayout>
+<LinearLayout style="@style/viewsliperchild">
+	<LinearLayout style="@style/viewsliperchild.sub">
+<!-- 	  <TextView android:id="@+id/alarmsound"  -->
+<!-- 	        android:text="Choose Alarm Sound" -->
+<!-- 	        style="@style/alarminfotxt" -->
+<!-- 	        ></TextView> -->
+	<ListView android:id="@+id/soundlistview"
+	 	android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	 	android:background="@android:color/transparent"
+	 	></ListView>
+	  </LinearLayout>
+	</LinearLayout>
+</ViewFlipper>
+
+</LinearLayout>
+<com.moupress.app.ui.NewsAlarmSlidingUpPanel
+   android:id="@+id/removeItemPanel"
+   android:layout_width="fill_parent"
+   android:layout_height="60dip"
+   android:orientation="horizontal"
+   android:visibility="visible"
+   android:background="@drawable/menu_bar"
+   android:layout_alignParentBottom="true"
+ 	>
+  <Button
+ 	android:id="@+id/homebtn"
+ 	style="@style/optionbtn"
+ 	android:background="@drawable/home_btn_selector"
+ 	android:onClick="homeBtnClick"
+ 	></Button>
+ 	<Button
+ 	android:id="@+id/snoozebtn"
+ 	style="@style/optionbtn"
+ 	android:background="@drawable/snooze_btn_selector"
+ 	android:onClick="snoozeBtnClick"
+ 	></Button>
+ 	 <Button
+ 	android:id="@+id/alarmbtn"
+ 	style="@style/optionbtn"
+ 	android:background="@drawable/alarm_btn_selector"
+ 	android:onClick="alarmBtnClick"
+ 	></Button>
+ 	 <Button
+ 	android:id="@+id/soundbtn"
+ 	style="@style/optionbtn"
+ 	android:background="@drawable/sound_btn_selector"
+ 	android:onClick="soundBtnClick"
+ 	></Button>
+ </com.moupress.app.ui.NewsAlarmSlidingUpPanel>
+</RelativeLayout>

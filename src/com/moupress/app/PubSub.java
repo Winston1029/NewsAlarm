@@ -33,7 +33,7 @@ public class PubSub {
 	private AlarmTTSMgr alarmTTSMgr;
 	
 	private UIMgr uiMgr;
-	
+		
 	// Create Handler to call View updates on the main UI thread.
 	private final Handler handler = new Handler();
 	
@@ -42,7 +42,7 @@ public class PubSub {
 		this.activity = activity;
 		initUI();
 		
-		initSnooze();
+		//initSnooze();
 		initMedia();
 		initWeather();
 		initAlarmMgr();
@@ -69,25 +69,42 @@ public class PubSub {
 	}
 	
 	private void initMedia() {
-		streamingMgr = new StreamingMgr(context, uiMgr.txv_stream, uiMgr.btn_play, uiMgr.btn_stream, uiMgr.progressBar);
-		//streamingMgr.getMediaPlayer().startStreaming(mediaUrl, mediaLengthInKb, mediaLengthInSeconds)
+		if (Const.ISDEBUG) {
+			streamingMgr = new StreamingMgr(context, uiMgr.txv_stream, uiMgr.btn_play, uiMgr.btn_stream, uiMgr.progressBar);
+		} else {
+			streamingMgr = new StreamingMgr(context);
+		}
+		//streamingMgr.getMediaPlayer().startStreaming("http://www.bbc.co.uk/iplayer/console/bbc_world_service",5208, 216);
 	}
 	
 	private void initWeather() {
-		weatherMgr = new WeatherMgr(context, uiMgr.refreshButton, uiMgr.txv_wind, uiMgr.txv_humidity, uiMgr.txv_updatetime, uiMgr.txv_location);
-		//weatherMgr.getWeather();
+		if (Const.ISDEBUG) {
+			weatherMgr = new WeatherMgr(context, uiMgr.refreshButton, uiMgr.txv_wind, uiMgr.txv_humidity, uiMgr.txv_updatetime, uiMgr.txv_location);
+		} else {
+			weatherMgr = new WeatherMgr(context);
+		}
+		weatherMgr.getWeather();
 	}
 	
 	private void initAlarmMgr() {
-		alarmMgr = new AlarmManagerMgr(this.activity, uiMgr.btn_set, uiMgr.btn_cel, uiMgr.tv);
+		if (Const.ISDEBUG) {
+			alarmMgr = new AlarmManagerMgr(this.activity, uiMgr.btn_set, uiMgr.btn_cel, uiMgr.tv);
+		} else {
+			alarmMgr = new AlarmManagerMgr(this.activity);
+		}
 		//alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
 		//alarmMgr.startAlarm();
 		//alarmMgr.cancelAlarm();
 	}
 	
 	private void initAlarmTTSMgr() {
-		alarmTTSMgr = new AlarmTTSMgr(context, uiMgr.btnPlay, uiMgr.btnPause, uiMgr.btnShutdown);
-		//alarmTTSMgr.talker.PlayOrResumeSpeak(msg);
+		if (Const.ISDEBUG) {
+			alarmTTSMgr = new AlarmTTSMgr(context, uiMgr.btnPlay, uiMgr.btnPause, uiMgr.btnShutdown);
+		} else {
+			alarmTTSMgr = new AlarmTTSMgr(context);
+		}
+		//alarmTTSMgr.getTalker().AddMsgToSpeak("Text to speach start");
+		//alarmTTSMgr.getTalker().PlayOrResumeSpeak();
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +17,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.moupress.app.R;
+import com.moupress.app.Const;
 import com.moupress.app.weather.Weather.WeatherCondition;
 
 public class WeatherMgr extends Service implements Runnable {
@@ -50,6 +50,10 @@ public class WeatherMgr extends Service implements Runnable {
 			}
         });
 	}
+	
+	public WeatherMgr(Context context) {
+		this.context = context;
+	}
 
 	private Location queryLocation() {
 		LocationManager	manager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
@@ -58,6 +62,9 @@ public class WeatherMgr extends Service implements Runnable {
         android.location.Location androidLocation = 
                 manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         
+        if (androidLocation == null) {
+        	return new Location(DEFAULT_LOCATION);
+        }
         Geocoder coder = new Geocoder(context);
         List<Address> addresses = null;
         try {
@@ -112,20 +119,23 @@ public class WeatherMgr extends Service implements Runnable {
 			e.printStackTrace();
 		}
 		updateUI();
+		Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
 	}
 
 	private void updateUI() {
-		// location & time
-		txv_location.setText(weather.getLocation().getText());
-		txv_updatetime.setText(weather.getTime().toLocaleString());
-		
-		//humidity & wind
-		if (weather.getConditions().size() <= 0) {
-            return;
-        }
-		WeatherCondition currentCondition = weather.getConditions().get(0);
-		txv_humidity.setText(currentCondition.getHumidityText());
-		txv_wind.setText(currentCondition.getWindText());
+		if (Const.ISDEBUG) {
+			// location & time
+			txv_location.setText(weather.getLocation().getText());
+			txv_updatetime.setText(weather.getTime().toLocaleString());
+			
+			//humidity & wind
+			if (weather.getConditions().size() <= 0) {
+	            return;
+	        }
+			WeatherCondition currentCondition = weather.getConditions().get(0);
+			txv_humidity.setText(currentCondition.getHumidityText());
+			txv_wind.setText(currentCondition.getWindText());
+		}		
 	}
 
 	private boolean isExpired(long timestamp) {

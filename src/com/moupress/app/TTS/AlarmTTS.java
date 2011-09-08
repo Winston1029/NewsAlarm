@@ -39,7 +39,7 @@ public class AlarmTTS implements OnInitListener, OnUtteranceCompletedListener
         }  
     }
     
-    protected void PlayOrResumeSpeak()  
+    public void PlayOrResumeSpeak()  
     {  
         this.isPaused = false;
         lastUtterance++;  

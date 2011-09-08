@@ -12,7 +12,7 @@ public class AlarmTTSMgr {
 	private Button btnShutdown;
 	
 	private Context context;
-	public AlarmTTS talker;
+	private AlarmTTS talker;
 
 	public AlarmTTSMgr(Context context, final Button btnPlay, Button btnPause, Button btnShutDown) {
 		this.btnPause = btnPause;
@@ -54,6 +54,14 @@ public class AlarmTTSMgr {
         });
 	}
 	
+	public AlarmTTSMgr(Context context) {
+		this.context = context;
+		talker = new AlarmTTS(context);
+	}
+	
+	public AlarmTTS getTalker() {
+		return this.talker;
+	}
 	public void setTalkerMsg() {
 		talker.AddMsgToSpeak("I have, myself, full confidence that if all do their duty, if nothing is neglected, and if the best arrangements are made, as they are being made, we shall prove ourselves once again able to defend our Island home, to ride out the storm of war, and to outlive the menace of tyranny, if necessary for years, if necessary alone." +
         		"At any rate, that is what we are going to try to do. That is the resolve of His Majesty¡¯s Government-every man of them. That is the will of Parliament and the nation." +
