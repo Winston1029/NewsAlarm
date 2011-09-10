@@ -124,6 +124,7 @@ public class SnoonzeMgr {
 	
 	public static final int  SENSOR_SNOOZE_TYPE = 1;
 	public static final int  GESTURE_SNOOZE_TYPE = 2;
+	public static final int SWING_SNOOZE_TYPE = 3;
 	
 	private SensorManager sensorManager;
 	public void unRegisterListener(int snoozeType) {

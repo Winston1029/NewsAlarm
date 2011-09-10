@@ -15,7 +15,18 @@
     style="@style/optiontxtview"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:width="130dip"
     android:gravity="left"
     android:id="@+id/alarmitemtxt">
 </TextView>
+<ImageView
+	android:id="@+id/checked"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:width="30dip"
+	android:height="30dip"
+	android:layout_gravity="right"
+	android:gravity="right"
+	>
+</ImageView>
 </LinearLayout>

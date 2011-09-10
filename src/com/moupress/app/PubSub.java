@@ -13,6 +13,9 @@ import com.moupress.app.media.StreamingNotifier;
 import com.moupress.app.snoozer.SnoonzeMgr;
 import com.moupress.app.snoozer.SnoozeListener;
 import com.moupress.app.ui.UIMgr;
+import com.moupress.app.ui.uiControlInterface.OnAlarmSoundSelectListener;
+import com.moupress.app.ui.uiControlInterface.OnAlarmTimeChangeListener;
+import com.moupress.app.ui.uiControlInterface.OnSnoozeModeSelectListener;
 import com.moupress.app.weather.WeatherMgr;
 
 public class PubSub {
@@ -37,6 +40,48 @@ public class PubSub {
 	// Create Handler to call View updates on the main UI thread.
 	private final Handler handler = new Handler();
 	
+	private OnAlarmSoundSelectListener onAlarmSoundSelectListener = new OnAlarmSoundSelectListener()
+	{
+
+		@Override
+		public void onAlarmSoundSelected(int alarmSoundPosition,
+				boolean selected) {
+			// TODO Auto-generated method stub
+			System.out.println("Alarm Sound is selected/unselected!");
+		}
+		
+	};
+	
+	private OnAlarmTimeChangeListener onAlarmTimeChangeListener = new OnAlarmTimeChangeListener(){
+
+		@Override
+		public void onAlarmTimeChanged(int alarmPosition, int hourOfDay,
+				int minute, int second, int millisecond) {
+			
+			System.out.println("Alarm Time is changed!");
+			
+		}
+
+		@Override
+		public void onAlarmTimeSelected(int alarmPosition, boolean selected) {
+			
+			System.out.println("Alarm Time is selected/unselected!");
+			
+		}
+		
+	};
+	
+	private OnSnoozeModeSelectListener onSnoozeModeSelectListener = new OnSnoozeModeSelectListener()
+	{
+
+		@Override
+		public void onSnoozeModeSelected(int snoozeMode, boolean selected) {
+			// TODO Auto-generated method stub
+			System.out.println("Snooze Mode is selected/unselected!");
+		}
+		
+	};
+	
 	public PubSub(Context context, Activity activity) {
 		this.context = context;
 		this.activity = activity;
@@ -52,6 +97,9 @@ public class PubSub {
 	
 	private void initUI() {
 		uiMgr = new UIMgr(activity);
+		uiMgr.registerAlarmSoundSelectListener(onAlarmSoundSelectListener);
+		uiMgr.registerAlarmTimeChangeListener(onAlarmTimeChangeListener);
+		uiMgr.registerSnoozeModeSelectListener(onSnoozeModeSelectListener);
 	}
 	
 	private void initSnooze() {

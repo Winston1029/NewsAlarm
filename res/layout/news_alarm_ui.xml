@@ -7,9 +7,8 @@
     >
 <LinearLayout android:orientation="vertical"
 				android:layout_height="wrap_content"
-				android:layout_width="fill_parent"
+				android:layout_width="match_parent"
 				android:gravity="center_horizontal"
-				
 				>
 <com.moupress.app.ui.NewsAlarmDigiClock
 	android:id="@+id/digitalclock"
@@ -49,7 +48,7 @@
 <!-- 	        style="@style/alarminfotxt" -->
 <!-- 	        ></TextView> -->
 	 <ListView android:id="@+id/hslistview"
-	 	android:layout_width="fill_parent"
+	 	android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	 	android:background="@android:color/transparent"
 	 	></ListView>
@@ -62,7 +61,7 @@
 <!-- 	        style="@style/alarminfotxt" -->
 <!-- 	        ></TextView> -->
 	   <ListView android:id="@+id/snoozelistview"
-	 	android:layout_width="fill_parent"
+	 	android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	 	android:background="@android:color/transparent"
 	 	></ListView>
@@ -99,10 +98,10 @@
 </LinearLayout>
 <com.moupress.app.ui.NewsAlarmSlidingUpPanel
    android:id="@+id/removeItemPanel"
-   android:layout_width="fill_parent"
    android:layout_height="60dip"
    android:orientation="horizontal"
    android:visibility="visible"
+   android:layout_width="match_parent"
    android:background="@drawable/menu_bar"
    android:layout_alignParentBottom="true"
  	>
@@ -127,4 +126,47 @@
  	android:background="@drawable/sound_btn_selector"
  	></Button>
  </com.moupress.app.ui.NewsAlarmSlidingUpPanel>
+<com.moupress.app.ui.NewsAlarmSlidingUpPanel
+   android:id="@+id/timeupdatepanel"
+   android:layout_width="match_parent"
+   android:layout_height="140dip"
+   android:orientation="vertical"
+   android:visibility="gone"
+   android:background="@drawable/menu_bar"
+   android:layout_alignParentBottom="true"
+ 	>
+<LinearLayout
+ android:orientation="horizontal"
+ style="@style/viewsliperchild.sub"
+ android:background="@android:color/transparent"
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:layout_marginTop="20dip"
+>
+<kankan.wheel.widget.WheelView android:id="@+id/wheelhour"
+		style="@style/timewheel"/>
+	<kankan.wheel.widget.WheelView android:id="@+id/wheelminute"
+		style="@style/timewheel"/>
+	<kankan.wheel.widget.WheelView android:id="@+id/wheelsecond"
+		style="@style/timewheel"/>
+</LinearLayout>
+<LinearLayout android:orientation="horizontal"
+ style="@style/viewsliperchild.sub"
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:background="@android:color/transparent"
+ android:layout_marginTop="5dip"
+ >
+ <Button android:id="@+id/timeaddok"
+ 		android:layout_width="80dip"
+ 		android:layout_height="wrap_content"
+ 		android:text="OK"
+ 		></Button>
+ <Button android:id="@+id/timeaddcancel"
+ 		android:layout_width="80dip"
+ 		android:layout_height="wrap_content"
+ 		android:text="Cancel"
+ 		></Button>
+ </LinearLayout>
+</com.moupress.app.ui.NewsAlarmSlidingUpPanel>
 </RelativeLayout>
