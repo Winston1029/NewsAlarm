@@ -64,4 +64,12 @@
 	<item name="android:layout_marginRight">35dip</item>
 	<item name="android:background">@drawable/viewslider_bg</item> 
 </style>
+
+<style name="ccWindowTitleBackground">
+    <item name="android:background">#BFBFBF</item>
+</style>
+<style name="newsAlarmTitleBar" parent="android:Theme.NoTitleBar">
+<!-- 	<item name="android:windowTitleBackgroundStyle">@style/ccWindowTitleBackground</item> -->
+</style>
+
 </resources>

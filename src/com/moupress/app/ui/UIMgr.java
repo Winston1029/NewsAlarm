@@ -5,6 +5,7 @@ import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -104,7 +105,12 @@ public class UIMgr {
 	private int[] alarmDisplayIcon =  {R.drawable.clock,R.drawable.clock,R.drawable.clock};
 	private String[] soundDisplayTxt =  {"BBC News","Wall Street Journal","Personal Notes"};
 	private int[] soundDisplayIcon =  {R.drawable.radio,R.drawable.radio,R.drawable.radio};
-    private void initNewUI() {
+    public Button btnHome;
+    public Button btnSoonze;
+    public Button btnAlarm;
+    public Button btnSound;
+
+	private void initNewUI() {
     	alarmInfoViewSlipper = (ViewFlipper)activity.findViewById(R.id.optionflipper);
         hsListView = (ListView) activity.findViewById(R.id.hslistview);
         hsListView.setAdapter(new HsLVAdapter(hsDisplayTxt,hsDisplayIcon));
@@ -114,33 +120,81 @@ public class UIMgr {
         alarmListView.setAdapter(new HsLVAdapter(alarmDisplayTxt,alarmDisplayIcon));
         soundListView = (ListView)activity.findViewById(R.id.soundlistview);
         soundListView.setAdapter(new HsLVAdapter(soundDisplayTxt,soundDisplayIcon) );
+        btnHome = (Button)activity.findViewById(R.id.homebtn);
+        btnHome.setOnClickListener(SlidingUpPanelButtonListener);
+        btnSoonze = (Button)activity.findViewById(R.id.snoozebtn);
+        btnSoonze.setOnClickListener(SlidingUpPanelButtonListener);
+        btnAlarm = (Button)activity.findViewById(R.id.alarmbtn);
+        btnAlarm.setOnClickListener(SlidingUpPanelButtonListener);
+        btnSound = (Button)activity.findViewById(R.id.soundbtn);
+        btnSound.setOnClickListener(SlidingUpPanelButtonListener);
+        
     }
     
-    public void homeBtnClick(View v)
+	Button.OnClickListener SlidingUpPanelButtonListener = new OnClickListener(){
+
+        @Override
+        public void onClick(View v)
+        {
+            switch(v.getId())
+            {
+                case R.id.homebtn:
+                    homeBtnClick();
+                    break;
+                case R.id.snoozebtn:
+                    snoozeBtnClick();
+                    break;
+                case R.id.alarmbtn:
+                    alarmBtnClick();
+                    break;
+                case R.id.soundbtn:
+                    soundBtnClick();
+                    break;
+                default://no match
+                    System.out.println("btn is from nowhere."); 
+            }
+            
+        }
+	
+	};
+    
+    protected void flipperListView(int toDisplayedChild)
+    {
+        if( alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild)
+        {
+           alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
+           alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideout);
+           alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild); 
+        }
+        else if( alarmInfoViewSlipper.getDisplayedChild() < toDisplayedChild)
+        {
+           alarmInfoViewSlipper.setInAnimation(activity, R.anim.slideinfromright);
+           alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideouttoleft);
+           alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild); 
+        }
+    }
+    protected void homeBtnClick()
     {
     	System.out.println("Home Button On Click!");
-    	alarmInfoViewSlipper.setDisplayedChild(0);
+        flipperListView(0);
     }
     
-    public void snoozeBtnClick(View v)
+    protected void snoozeBtnClick()
     {
     	System.out.println("Snooze Button On Click!");
-    	alarmInfoViewSlipper.showNext();
-    	alarmInfoViewSlipper.setDisplayedChild(1);
+        flipperListView(1);
     }
     
-    public void alarmBtnClick(View v)
+    protected void alarmBtnClick()
     {
     	System.out.println("Alarm Button On Click!");
-    	alarmInfoViewSlipper.showNext();
-    	alarmInfoViewSlipper.setDisplayedChild(2);
+        flipperListView(2);
     }
     
-    public void soundBtnClick(View v)
+    protected void soundBtnClick()
     {
     	System.out.println("Sound Button On Click!");
-    	alarmInfoViewSlipper.showNext();
-    	alarmInfoViewSlipper.setDisplayedChild(3);
+        flipperListView(3);
     }
     
     private class HsLVAdapter extends BaseAdapter{
@@ -155,19 +209,16 @@ public class UIMgr {
     	}
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return txtisplays.length;
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return txtisplays[position];
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 

@@ -110,25 +110,21 @@
  	android:id="@+id/homebtn"
  	style="@style/optionbtn"
  	android:background="@drawable/home_btn_selector"
- 	android:onClick="homeBtnClick"
  	></Button>
  	<Button
  	android:id="@+id/snoozebtn"
  	style="@style/optionbtn"
  	android:background="@drawable/snooze_btn_selector"
- 	android:onClick="snoozeBtnClick"
  	></Button>
  	 <Button
  	android:id="@+id/alarmbtn"
  	style="@style/optionbtn"
  	android:background="@drawable/alarm_btn_selector"
- 	android:onClick="alarmBtnClick"
  	></Button>
  	 <Button
  	android:id="@+id/soundbtn"
  	style="@style/optionbtn"
  	android:background="@drawable/sound_btn_selector"
- 	android:onClick="soundBtnClick"
  	></Button>
  </com.moupress.app.ui.NewsAlarmSlidingUpPanel>
 </RelativeLayout>
