@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -128,9 +129,8 @@ public class UIMgr {
         btnAlarm.setOnClickListener(SlidingUpPanelButtonListener);
         btnSound = (Button)activity.findViewById(R.id.soundbtn);
         btnSound.setOnClickListener(SlidingUpPanelButtonListener);
-        
     }
-    
+	
 	Button.OnClickListener SlidingUpPanelButtonListener = new OnClickListener(){
 
         @Override
@@ -173,6 +173,7 @@ public class UIMgr {
            alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild); 
         }
     }
+    
     protected void homeBtnClick()
     {
     	System.out.println("Home Button On Click!");
