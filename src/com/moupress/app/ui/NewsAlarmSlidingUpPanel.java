@@ -16,7 +16,8 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 
 	private int speed=300;
 	private boolean isOpen=false;
-	private Cursor currFavor;
+	//private Cursor currFavor;
+	private PanelSlidingListener panelSlidingListener;
 	
 	public NewsAlarmSlidingUpPanel(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -49,6 +50,7 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 	Animation.AnimationListener collapseListener=new Animation.AnimationListener() {
 		public void onAnimationEnd(Animation animation) {
 			setVisibility(View.GONE);
+			panelSlidingListener.onSlidingDownEnd();
 		}
 		
 		public void onAnimationRepeat(Animation animation) {
@@ -60,4 +62,14 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 		}
 	};
 	
+	public void setPanelSlidingListener(PanelSlidingListener panelSlidingListener)
+	{
+		this.panelSlidingListener = panelSlidingListener;
+	}
+	
+	public interface PanelSlidingListener{
+		
+		public void onSlidingUpEnd();
+		public void onSlidingDownEnd();
+	}
 }

@@ -2,7 +2,7 @@
 <resources>
 <style name="optionlayout">
 	 <item name="android:layout_height">wrap_content</item>
-	 <item name="android:layout_width">fill_parent</item>
+	 <item name="android:layout_width">match_parent</item>
 	 <item name="android:orientation">horizontal</item>
 	 <item name="android:layout_marginLeft">40dip</item>
 </style>
@@ -34,7 +34,7 @@
 </style>
 
 <style name="alarminfotxt">
-	<item name="android:layout_width">fill_parent</item>
+	<item name="android:layout_width">match_parent</item>
 	<item name="android:layout_height">wrap_content</item>
 	<item name="android:gravity">center_horizontal</item>
 	<item name="android:textColor">@color/snow</item>
@@ -53,11 +53,12 @@
  	<item name="android:layout_marginRight">10dip</item>
 </style>
 <style name="viewsliperchild">
-	<item name="android:layout_height">fill_parent</item>
-	<item name="android:layout_width">fill_parent</item>
+	<item name="android:layout_height">match_parent</item>
+	<item name="android:layout_width">match_parent</item>
 	<item name="android:orientation">vertical</item>
 	<item name="android:gravity">center_horizontal</item>
 </style>
+
 
 <style name="viewsliperchild.sub">
 	<item name="android:layout_marginLeft">35dip</item>
@@ -70,6 +71,14 @@
 </style>
 <style name="newsAlarmTitleBar" parent="android:Theme.NoTitleBar">
 <!-- 	<item name="android:windowTitleBackgroundStyle">@style/ccWindowTitleBackground</item> -->
+</style>
+
+<style name="timewheel">
+	<item name="android:layout_height">80dip</item>
+	<item name="android:layout_width">20dip</item>
+    <item name="android:layout_gravity">center_vertical</item>
+	<item name="android:background">@drawable/wheel_bg</item>
+	<item name="android:layout_weight">1</item>
 </style>
 
 </resources>
