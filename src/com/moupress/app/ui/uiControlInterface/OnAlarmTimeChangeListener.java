@@ -12,7 +12,7 @@ public interface OnAlarmTimeChangeListener {
 	 * @param second    the second of updated alarm
 	 * @param millisecond  the millisecond of udpate alarm
 	 */
-	public void onAlarmTimeChanged(int alarmPosition, int hourOfDay, int minute, int second, int millisecond );
+	public void onAlarmTimeChanged(int alarmPosition, Boolean selected, int hourOfDay, int minute, int second, int millisecond );
 	
 	/**
 	 * Call back function when a alarm time in the list is selected/unselected

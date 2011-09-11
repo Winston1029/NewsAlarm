@@ -55,10 +55,12 @@ public class PubSub {
 	private OnAlarmTimeChangeListener onAlarmTimeChangeListener = new OnAlarmTimeChangeListener(){
 
 		@Override
-		public void onAlarmTimeChanged(int alarmPosition, int hourOfDay,
+		public void onAlarmTimeChanged(int alarmPosition, Boolean selected, int hourOfDay,
 				int minute, int second, int millisecond) {
-			
 			System.out.println("Alarm Time is changed!");
+			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute, second, millisecond);
+	        //alarmMgr.startAlarm();
+	        //alarmMgr.cancelAlarm();
 			
 		}
 
@@ -66,7 +68,10 @@ public class PubSub {
 		public void onAlarmTimeSelected(int alarmPosition, boolean selected) {
 			
 			System.out.println("Alarm Time is selected/unselected!");
-			
+			if(selected)
+			    alarmMgr.startAlarm(alarmPosition);
+			else
+			    alarmMgr.cancelAlarm(alarmPosition);
 		}
 		
 	};
@@ -85,6 +90,7 @@ public class PubSub {
 	public PubSub(Context context, Activity activity) {
 		this.context = context;
 		this.activity = activity;
+		
 		initUI();
 		
 		//initSnooze();
@@ -95,7 +101,7 @@ public class PubSub {
 		
 	}
 	
-	private void initUI() {
+    private void initUI() {
 		uiMgr = new UIMgr(activity);
 		uiMgr.registerAlarmSoundSelectListener(onAlarmSoundSelectListener);
 		uiMgr.registerAlarmTimeChangeListener(onAlarmTimeChangeListener);

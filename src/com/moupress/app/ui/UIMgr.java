@@ -1,12 +1,13 @@
 package com.moupress.app.ui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
-
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,14 +24,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.moupress.app.Const;
 import com.moupress.app.R;
 import com.moupress.app.ui.uiControlInterface.OnAlarmSoundSelectListener;
 import com.moupress.app.ui.uiControlInterface.OnAlarmTimeChangeListener;
 import com.moupress.app.ui.uiControlInterface.OnSnoozeModeSelectListener;
+import com.moupress.app.util.DbHelper;
 
 public class UIMgr {
 
@@ -164,7 +165,7 @@ public class UIMgr {
 	private boolean[] snoozeSelected = {true,true,true};
 	private String[] alarmDisplayTxt =  {"8:00 am","9:00 am","10:00 am"};
 	private int[] alarmDisplayIcon =  {R.drawable.clock,R.drawable.clock,R.drawable.clock};
-	private boolean[] alarmSelected = {true,true,true};
+	private boolean[] alarmSelected = {false,false,false};
 	private String[] soundDisplayTxt =  {"BBC News","WSJ","Reminders"};
 	private int[] soundDisplayIcon =  {R.drawable.radio,R.drawable.radio,R.drawable.radio};
 	private boolean[] soundSelected = {true,true,true};
@@ -184,6 +185,8 @@ public class UIMgr {
     private OnSnoozeModeSelectListener onSnoozeModeSelectListener;
 
 	private void initNewUI() {
+	    initSettings();
+	    
     	alarmInfoViewSlipper = (ViewFlipper)activity.findViewById(R.id.optionflipper);
         hsListView = (ListView) activity.findViewById(R.id.hslistview);
         hsListView.setAdapter(new HsLVAdapter(hsDisplayTxt,hsDisplayIcon,hsSelected));
@@ -251,7 +254,46 @@ public class UIMgr {
     }
 	
 	
-	AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener()
+	private void initSettings()
+    {
+	    DbHelper helper = new DbHelper(this.activity);
+	    Calendar cal =  Calendar.getInstance();
+	    int hours, mins;
+	    //alarm Time
+	    for (int i = 0; i < alarmDisplayTxt.length; i++)
+        {
+	        long alarmTime = helper.GetLong(DbHelper.ALARM + Integer.toString(i)); 
+	        if( alarmTime != DbHelper.DefNum)
+	          {
+	              cal.setTimeInMillis(alarmTime); 
+	             
+	          }
+	          else {
+	              cal.setTimeInMillis(System.currentTimeMillis()+AlarmManager.INTERVAL_FIFTEEN_MINUTES); 
+	        }
+	        hours = cal.get(Calendar.HOUR);
+            mins = cal.get(Calendar.MINUTE);
+            switch (cal.get(Calendar.AM_PM))
+            {
+                case Calendar.AM:
+                    alarmDisplayTxt[i] = Integer.toString(hours)+":"+String.format("%02d", mins)+" "+ this.AMPM[0];
+                    break;
+                case Calendar.PM:
+                    alarmDisplayTxt[i] = Integer.toString(hours)+":"+String.format("%02d", mins)+" "+ this.AMPM[1];
+                    break;
+                default:
+                    break;
+            }
+        }
+	    //is alarm set
+	    for (int i = 0; i < alarmSelected.length; i++)
+        {
+	        alarmSelected[i] = helper.GetBool(DbHelper.ISALARMSET +Integer.toString(i));
+        }
+        
+    }
+
+    AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener()
 	{
 
 		@Override
@@ -291,7 +333,8 @@ public class UIMgr {
 				alarmAdapter.updateTxtArrayList(""+hours.getCurrentItem()+":"+String.format("%02d", minutes.getCurrentItem())+" "+(amOrpm.getCurrentItem()==0?"am":"pm"), ALARM_POSITION);
 		    	timeSlidingUpPanel.toggle();
 		    	//Call Back function on Alarm Time Change
-		    	onAlarmTimeChangeListener.onAlarmTimeChanged(ALARM_POSITION, hours.getCurrentItem(),  minutes.getCurrentItem(), 0, 0);
+		    	int hours24 = amOrpm.getCurrentItem()==0?hours.getCurrentItem():hours.getCurrentItem()+12;
+		    	onAlarmTimeChangeListener.onAlarmTimeChanged(ALARM_POSITION,alarmSelected[ALARM_POSITION], hours24,  minutes.getCurrentItem(), 0, 0);
 				break;
 			case R.id.timeaddcancel:
 				timeSlidingUpPanel.toggle();
