@@ -102,7 +102,7 @@ public class WeatherMgr extends Service implements Runnable {
 		updateUI();
 	}
 	
-	public void getWeather() {
+	public String getWeather() {
 		weather = new GoogleWeather();
 		
 		boolean autoLocation = true;
@@ -119,7 +119,17 @@ public class WeatherMgr extends Service implements Runnable {
 			e.printStackTrace();
 		}
 		updateUI();
+		
+		if (weather.getConditions().size() <= 0) {
+            return "";
+        }
+		WeatherCondition currentCondition = weather.getConditions().get(0);
+		String sCondition;
+		if (currentCondition.temperature.unit.name() == "US")
+			sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " F";
+		else  sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " C";
 		Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
+		return sCondition;
 	}
 
 	private void updateUI() {

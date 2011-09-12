@@ -137,7 +137,7 @@ public class PubSub {
 		} else {
 			weatherMgr = new WeatherMgr(context);
 		}
-		weatherMgr.getWeather();
+		uiMgr.updateWeatherUI(weatherMgr.getWeather());
 	}
 	
 	private void initAlarmMgr() {

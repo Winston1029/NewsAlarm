@@ -1,2 +1,0 @@
-xiaoyf:
-1.When starting streaming, check if internet is available.
