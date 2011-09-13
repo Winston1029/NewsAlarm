@@ -118,11 +118,13 @@ public class UIMgr
         txv_wind = (TextView) activity.findViewById(R.id.wind);
     }
 
+    //--------------Production UI Component Start Here -------------------
     private static int ALARM_POSITION = 0;
     private String[] AMPM = { "am", "pm" };
 
     public ViewFlipper alarmInfoViewSlipper;
     public ListView hsListView;
+    private HsLVAdapter hsListAdapter;
     public ListView snoozeListView;
     private HsLVAdapter snoozeAdapter;
     public ListView alarmListView;
@@ -207,12 +209,11 @@ public class UIMgr
 
         alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
         hsListView = (ListView) activity.findViewById(R.id.hslistview);
-        hsListView.setAdapter(new HsLVAdapter(hsDisplayTxt, hsDisplayIcon,
-                                              hsSelected));
-
-        snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
-        snoozeAdapter = new HsLVAdapter(snoozeDisplayTxt, snoozeDisplayIcon,
-                                        snoozeSelected);
+        hsListAdapter = new HsLVAdapter(hsDisplayTxt,hsDisplayIcon,hsSelected);
+        hsListView.setAdapter(hsListAdapter);
+        
+        snoozeListView = (ListView)activity.findViewById(R.id.snoozelistview);
+        snoozeAdapter = new HsLVAdapter(snoozeDisplayTxt,snoozeDisplayIcon,snoozeSelected);
         snoozeListView.setAdapter(snoozeAdapter);
         snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
 
@@ -221,8 +222,9 @@ public class UIMgr
                                        alarmSelected);
         alarmListView.setAdapter(alarmAdapter);
         alarmListView.setOnItemClickListener(optionListOnItemClickListener);
-
-        alarmListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        
+        alarmListView.setOnItemLongClickListener(new OnItemLongClickListener()
+        {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -472,6 +474,10 @@ public class UIMgr
     {
         System.out.println("Sound Button On Click!");
         flipperListView(3);
+    }
+    
+    public void updateWeatherUI(String displayString) {
+    	hsListAdapter.updateTxtArrayList(displayString, 0);
     }
 
     private class HsLVAdapter extends BaseAdapter
