@@ -1,6 +1,7 @@
 package com.moupress.app.alarm;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import android.R.integer;
 import android.app.Activity;
@@ -117,33 +118,9 @@ public class AlarmManagerMgr
 
     private void initAlarms()
     {
-        // store into database
-        // alarm Time
-        int hours, mins;
         for (int i = 0; i < lstCalendars.length; i++)
         {
-            long alarmTime = helper.GetLong(DbHelper.ALARM
-                    + Integer.toString(i));
-
-            if (alarmTime != DbHelper.DefNum)
-            {
-                mCalendar.setTimeInMillis(alarmTime);
-                hours = mCalendar.get(Calendar.HOUR_OF_DAY);
-                mins = mCalendar.get(Calendar.MINUTE);
-               
-                mCalendar.setTimeInMillis(System.currentTimeMillis());
-                mCalendar.set(Calendar.HOUR_OF_DAY, hours);
-                mCalendar.set(Calendar.MINUTE, mins);
-                mCalendar.set(Calendar.SECOND, 0);
-                mCalendar.set(Calendar.MILLISECOND, 0);
-                lstCalendars[i] = mCalendar;
-            }
-            else
-            {
-                mCalendar.setTimeInMillis(System.currentTimeMillis()
-                        + AlarmManager.INTERVAL_FIFTEEN_MINUTES);
-                lstCalendars[i] = mCalendar;
-            }
+            lstCalendars[i] = getAlarm(i);
         }
     }
 
@@ -163,17 +140,18 @@ public class AlarmManagerMgr
         mCalendar.set(Calendar.MILLISECOND, millisecond);
         lstCalendars[alarmPosition] = mCalendar;
 
-//        Toast.makeText(
-//                mContext,
-//                "" + lstCalendars[alarmPosition].get(Calendar.HOUR_OF_DAY)
-//                        + ":"
-//                        + lstCalendars[alarmPosition].get(Calendar.MINUTE),
-//                Toast.LENGTH_LONG).show();
+        // Toast.makeText(
+        // mContext,
+        // "" + lstCalendars[alarmPosition].get(Calendar.HOUR_OF_DAY)
+        // + ":"
+        // + lstCalendars[alarmPosition].get(Calendar.MINUTE),
+        // Toast.LENGTH_LONG).show();
         // Check if the alarm is started. If true, send an updated pendingintent
         // No need to stop it first because the pendingintent will override.
         if (selected)
         {
             startAlarm(alarmPosition);
+            return;
         }
 
         saveAlarm(alarmPosition);
@@ -196,17 +174,27 @@ public class AlarmManagerMgr
             PendingIntent pi = PendingIntent.getBroadcast(mContext,
                     alarmPosition, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            
             // to avoid trigger immediately
             long alarmTime = lstCalendars[alarmPosition].getTimeInMillis();
-            if (alarmTime < System.currentTimeMillis())
+            //if (alarmTime < System.currentTimeMillis())
+            if(lstCalendars[alarmPosition].before(Calendar.getInstance()))
             {
                 while (alarmTime < System.currentTimeMillis())
                 {
                     alarmTime += AlarmManager.INTERVAL_DAY;
                 }
+                //alarmTime += AlarmManager.INTERVAL_DAY;
                 lstCalendars[alarmPosition].setTimeInMillis(alarmTime);
                 saveAlarm(alarmPosition);
             }
+            StringBuilder sBuilder = new StringBuilder();
+            sBuilder.append(lstCalendars[alarmPosition].getTime());
+            sBuilder.append("\n");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            sBuilder.append(calendar.getTime());
+            Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
             // setup alarm && repeater
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
             // alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
@@ -276,8 +264,34 @@ public class AlarmManagerMgr
 
     private void saveAlarm(int alarmPosition)
     {
+        
         helper.Insert(DbHelper.ALARM + Integer.toString(alarmPosition),
                 this.lstCalendars[alarmPosition].getTimeInMillis());
+        helper.Insert(DbHelper.Hours + Integer.toString(alarmPosition),
+                this.lstCalendars[alarmPosition].get(Calendar.HOUR_OF_DAY));
+        helper.Insert(DbHelper.Mins + Integer.toString(alarmPosition),
+                this.lstCalendars[alarmPosition].get(Calendar.MINUTE));
+
+        Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition, Toast.LENGTH_LONG).show();
+
+    }
+
+    private Calendar getAlarm(int alarmPosition)
+    {
+        Calendar calendar = Calendar.getInstance();
+        int hours = helper.GetInt(DbHelper.Hours
+                + Integer.toString(alarmPosition));
+        int mins = helper.GetInt(DbHelper.Mins
+                + Integer.toString(alarmPosition));
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        if(hours == DbHelper.DefNum|| mins == DbHelper.DefNum)
+        {
+             return mCalendar;
+        }
+        
+        calendar.set(Calendar.HOUR_OF_DAY, hours);
+        calendar.set(Calendar.MINUTE, mins);
+        return calendar;
     }
 
     private void saveAlarmStatus(int alarmPosition, boolean blnSet)
