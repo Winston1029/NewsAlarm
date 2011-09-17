@@ -42,7 +42,7 @@ public class StreamingMgr {
 			public void onClick(View view) {
 				try {
 					//startStreaming("http://dl.dropbox.com/u/5758134/sara.mp3",5208, 216);
-					startStreaming("http://www.bbc.co.uk/iplayer/console/bbc_world_service",5208, 216);
+					startStreaming(Const.BBC_WORLD_SERVICE,5208, 216);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

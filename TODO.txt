@@ -3,7 +3,9 @@ xiaoyf:
 
 winston(2011-09-12):
 1. To add notify funciton or reference in alarm.setActivityParam to trigger streaming(YF)
-2. To add BBC URL, reference app BBC Radio by aor.leadapps (WL)
+2. To cater for more streaming services, currently only work for url ends with pls and m3u format (WL)
+	to explore ur with asx and mms protocal (WL)
 3. To add google calendar events (WL)
 4. To add alarm date settings (LJ)
 5. To fix clock slide up bug (LJ)
+6. To find URL for WJS (WL)

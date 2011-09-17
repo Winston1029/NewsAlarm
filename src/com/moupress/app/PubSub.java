@@ -1,5 +1,7 @@
 package com.moupress.app;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -129,6 +131,13 @@ public class PubSub {
 			streamingMgr = new StreamingMgr(context);
 		}
 		//streamingMgr.getMediaPlayer().startStreaming("http://www.bbc.co.uk/iplayer/console/bbc_world_service",5208, 216);
+		try {
+			StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
+			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void initWeather() {
@@ -136,8 +145,9 @@ public class PubSub {
 			weatherMgr = new WeatherMgr(context, uiMgr.refreshButton, uiMgr.txv_wind, uiMgr.txv_humidity, uiMgr.txv_updatetime, uiMgr.txv_location);
 		} else {
 			weatherMgr = new WeatherMgr(context);
+			uiMgr.updateWeatherUI(weatherMgr.getWeather());
 		}
-		uiMgr.updateWeatherUI(weatherMgr.getWeather());
+		
 	}
 	
 	private void initAlarmMgr() {

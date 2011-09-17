@@ -7,12 +7,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
+import java.util.List;
+import com.moupress.app.Const;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class StreamingMediaPlayer {
 
 	private MediaPlayer 	mediaPlayer;
 	private File downloadingMediaFile; 
+	private List<String> playlistUrls;
 	private boolean isInterrupted;
 	private Context context;
 	private StreamingNotifier notifier;
@@ -69,13 +73,25 @@ public class StreamingMediaPlayer {
      * for that local file
      */  
     public void downloadAudioIncrement(String mediaUrl) throws IOException {
+    	String playURL = "";
+    	downloadPlaylist(mediaUrl);
+    	if (isPlaylist(mediaUrl)) {
+    		downloadPlaylist(mediaUrl);
+    		if (playlistUrls.size() > 0) {
+    			playURL = playlistUrls.remove(0);
+    		} else {
+    			throw new IOException("Empty playlist downloaded");
+    		}
+	    }
     	
-    	URLConnection cn = new URL(mediaUrl).openConnection();   
+    	URLConnection cn = new URL(playURL).openConnection();   
         cn.connect();   
         InputStream stream = cn.getInputStream();
         if (stream == null) {
         	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
         }
+        
+        
         
 		downloadingMediaFile = new File(context.getCacheDir(),"downloadMedia.dat");
 		
@@ -103,7 +119,41 @@ public class StreamingMediaPlayer {
    		if (validateNotInterrupted()) {
 	       	notifyDataFinished(); // info UI download finished
         }
-    }  
+    }
+    
+    private boolean isPlaylist(String url) {
+        return url.indexOf("m3u") > -1 || url.indexOf("pls") > -1;
+    }
+    
+    private boolean downloadPlaylist(String url) throws IOException {
+    	URLConnection cn = new URL(url).openConnection();
+        cn.connect();
+        InputStream stream = cn.getInputStream();
+        if (stream == null) {
+          return false;
+        }
+
+        File downloadingMediaFile = new File(context.getCacheDir(), "playlist_data");
+        FileOutputStream out = new FileOutputStream(downloadingMediaFile);
+        byte buf[] = new byte[16384];
+        int bytesRead;
+        while ((bytesRead = stream.read(buf)) > 0) {
+          out.write(buf, 0, bytesRead);
+        }
+
+        stream.close();
+        out.close();
+        PlaylistParser parser;
+        if (url.indexOf("m3u") > -1) {
+          parser = new M3uParser(downloadingMediaFile);
+        } else if (url.indexOf("pls") > -1) {
+          parser = new PlsParser(downloadingMediaFile);
+        } else {
+          return false;
+        }
+        playlistUrls = parser.getUrls();
+        return true;
+    }
 
     public boolean validateNotInterrupted() {
 		if (isInterrupted) {
