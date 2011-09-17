@@ -140,12 +140,6 @@ public class AlarmManagerMgr
         mCalendar.set(Calendar.MILLISECOND, millisecond);
         lstCalendars[alarmPosition] = mCalendar;
 
-        // Toast.makeText(
-        // mContext,
-        // "" + lstCalendars[alarmPosition].get(Calendar.HOUR_OF_DAY)
-        // + ":"
-        // + lstCalendars[alarmPosition].get(Calendar.MINUTE),
-        // Toast.LENGTH_LONG).show();
         // Check if the alarm is started. If true, send an updated pendingintent
         // No need to stop it first because the pendingintent will override.
         if (selected)
@@ -165,10 +159,10 @@ public class AlarmManagerMgr
 
             Intent intent = new Intent(mContext, AlarmReceiver.class);
             Bundle bundle = new Bundle();
-            bundle.putString(AlarmManagerMgr.AlarmType,
-                    AlarmManagerMgr.Alarm.ToDo.toString());
-            bundle.putString(AlarmManagerMgr.SnoozeType,
-                    AlarmManagerMgr.Soonze.Shake.toString());
+//            bundle.putString(AlarmManagerMgr.AlarmType,
+//                    AlarmManagerMgr.Alarm.ToDo.toString());
+//            bundle.putString(AlarmManagerMgr.SnoozeType,
+//                    AlarmManagerMgr.Soonze.Shake.toString());
             bundle.putInt(AlarmManagerMgr.AlarmNumber, alarmPosition);
             intent.putExtras(bundle);
             PendingIntent pi = PendingIntent.getBroadcast(mContext,
@@ -186,7 +180,7 @@ public class AlarmManagerMgr
                 }
                 //alarmTime += AlarmManager.INTERVAL_DAY;
                 lstCalendars[alarmPosition].setTimeInMillis(alarmTime);
-                saveAlarm(alarmPosition);
+                
             }
             StringBuilder sBuilder = new StringBuilder();
             sBuilder.append(lstCalendars[alarmPosition].getTime());
@@ -201,6 +195,7 @@ public class AlarmManagerMgr
             // mCalendar.getTimeInMillis(), (10*1000), pi);
 
             saveAlarmStatus(alarmPosition, true);
+            saveAlarm(alarmPosition);
         }
         catch (Exception e)
         {
@@ -224,6 +219,7 @@ public class AlarmManagerMgr
         Intent intent = new Intent(mContext, NewsAlarmActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(extras);
+        
         // mContext.startActivity(intent);
 
     }

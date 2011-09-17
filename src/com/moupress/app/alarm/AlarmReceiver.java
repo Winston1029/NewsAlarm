@@ -1,5 +1,7 @@
 package com.moupress.app.alarm;
 
+import com.moupress.app.NewsAlarmActivity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +19,17 @@ public class AlarmReceiver extends BroadcastReceiver
     {
     	System.out.println("On Received is Triggered !! ");
         Bundle extras = intent.getExtras();
+        
         if(extras != null)
         {
-            AlarmManagerMgr AMController = new AlarmManagerMgr(context);
-            AMController.setActivityParams(extras);
+            //start the main activity
+            Intent alarmIntent = new Intent(context,NewsAlarmActivity.class );
+            Bundle bundleInfo = new Bundle();
+            //bundleInfo.putString("ALARM", "Time is Now!");
+            bundleInfo.putInt(AlarmManagerMgr.AlarmNumber, extras.getInt(AlarmManagerMgr.AlarmNumber));
+            alarmIntent.putExtras(bundleInfo);
+            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(alarmIntent);
             return;
         }
         else
