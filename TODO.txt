@@ -16,12 +16,12 @@ winston(2011-09-12):
 
 Meeting update for 18 Sep.
 Important:
-*** UI App, Flip between pages when user swipe the screen
-*** UI Alarm Page, After set time, always ask user to set frequency
-*** Fcn, integrate snooze function
-*** Fcn, integrate check network communication function
+*** UI App, Flip between pages when user swipe the screen (YF)
+*** UI Alarm Page, After set time, always ask user to set frequency (LJ)
+*** Fcn, integrate snooze function (LJ)
+*** Fcn, integrate check network communication function (LJ) 
 *** Fcn, integrate calendar events
-*** Fcn, stop streaming when program exit
+(X)*** Fcn, stop streaming when program exit
 *** Fcn, streaming local media like ChannelNews Asia instead of WSJ to cater for Singapore User.
 WSJ do not have 24 hrs live broadcast
 Individual program can be downloaded via RSS feeds, but hard to cater for individual audiance as we don't allow them to add their own program at this stage.
@@ -29,11 +29,12 @@ AOL provide similar service like BBC World Service, but not sure which one is mo
 To cater local users, LJ and I feel good to add a local news station. What do you think YF?
 
 Required but not important
-UI App, Warm user when they click back button "Do you want to Exit Program"
-UI App, Disable landscape mode
-UI Info page, when user click weather, display more info, when user click the other two, link to relevant setting page
-UI Info page, display the proper next alarm in Info Page.
-UI Alarm page, add check box and edit button, because many users are not aware long press will allow them to change time
+(X)UI App, Warm user when they click back button "Do you want to Exit Program"
+(X)UI App, Disable landscape mode
+UI Info page, when user click weather, display more info, (WL) 
+(X)UI Info page, when user click the other two, link to relevant setting page
+UI Info page, display the proper next alarm in Info Page. (YF)
+UI Alarm page, add check box and edit button, because many users are not aware long press will allow them to change time (LJ)
 
 
 Further enhancement

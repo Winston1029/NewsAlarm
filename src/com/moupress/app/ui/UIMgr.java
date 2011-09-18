@@ -211,6 +211,7 @@ public class UIMgr
         hsListView = (ListView) activity.findViewById(R.id.hslistview);
         hsListAdapter = new HsLVAdapter(hsDisplayTxt,hsDisplayIcon,hsSelected);
         hsListView.setAdapter(hsListAdapter);
+        hsListView.setOnItemClickListener(optionListOnItemClickListener);
         
         snoozeListView = (ListView)activity.findViewById(R.id.snoozelistview);
         snoozeAdapter = new HsLVAdapter(snoozeDisplayTxt,snoozeDisplayIcon,snoozeSelected);
@@ -345,6 +346,8 @@ public class UIMgr
                     onAlarmTimeChangeListener.onAlarmTimeSelected(position,
                             alarmSelected[position]);
                     break;
+                case R.id.hslistview:
+                	hsListViewClicked(position);
             }
         }
     };
@@ -480,6 +483,20 @@ public class UIMgr
     	hsListAdapter.updateTxtArrayList(displayString, 0);
     }
 
+    private void hsListViewClicked(int position) {
+		switch (position) {
+		case 0:
+			//display weather info
+			break;
+		case 1:
+			alarmBtnClick();
+			break;
+		case 2:
+			snoozeBtnClick();
+			break;
+		}
+	}
+    
     private class HsLVAdapter extends BaseAdapter
     {
         // private String[] txtisplays ;
