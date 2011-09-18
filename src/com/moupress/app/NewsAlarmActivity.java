@@ -1,7 +1,8 @@
 package com.moupress.app;
 
-import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -44,6 +45,27 @@ public class NewsAlarmActivity extends Activity {
         }
         
        
+    }
+    
+    @Override
+    public void onBackPressed() {
+    	// Warning message when Back Button is Pressed
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("Are you sure you want to exit?")
+    	       .setCancelable(false)
+    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	        	   pubsub.exit();
+    	        	   NewsAlarmActivity.this.finish();
+    	           }
+    	       })
+    	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	                dialog.cancel();
+    	           }
+    	       });
+    	builder.create().show();
+	    return;
     }
     
 }

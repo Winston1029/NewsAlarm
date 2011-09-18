@@ -130,9 +130,8 @@ public class PubSub {
 		} else {
 			streamingMgr = new StreamingMgr(context);
 		}
-		//streamingMgr.getMediaPlayer().startStreaming("http://www.bbc.co.uk/iplayer/console/bbc_world_service",5208, 216);
+		StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
 		try {
-			StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
 			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -169,6 +168,10 @@ public class PubSub {
 		}
 		//alarmTTSMgr.getTalker().AddMsgToSpeak("Text to speach start");
 		//alarmTTSMgr.getTalker().PlayOrResumeSpeak();
+	}
+	
+	public void exit() {
+		streamingMgr.interrupt();
 	}
 	
 }

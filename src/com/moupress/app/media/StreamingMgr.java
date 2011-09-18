@@ -138,7 +138,7 @@ public class StreamingMgr {
 	}
 
 	public void interrupt() {
-		playButton.setEnabled(false);
+		//playButton.setEnabled(false);
 		audioStreamer.interrupt();
 	}
     
