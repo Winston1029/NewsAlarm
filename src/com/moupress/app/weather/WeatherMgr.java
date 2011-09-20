@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moupress.app.Const;
+import com.moupress.app.util.NetworkConnection;
 import com.moupress.app.weather.Weather.WeatherCondition;
 
 public class WeatherMgr extends Service implements Runnable {
@@ -35,6 +36,7 @@ public class WeatherMgr extends Service implements Runnable {
 	private TextView txv_humidity;
 	private TextView txv_updatetime;
 	private TextView txv_location;
+	private NetworkConnection nc;
 	
 	public WeatherMgr(Context context, ImageButton refreshBtn, TextView wind, TextView humidity, TextView updatetime, TextView location) {
 		this.context = context;
@@ -43,6 +45,9 @@ public class WeatherMgr extends Service implements Runnable {
 		this.txv_humidity = humidity;
 		this.txv_updatetime = updatetime;
 		this.txv_location = location;
+		
+		//Connect Check
+		this.nc = new NetworkConnection(Const.HOST_WEATHER_SERVICE,context);
 		
 		refreshButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -53,6 +58,9 @@ public class WeatherMgr extends Service implements Runnable {
 	
 	public WeatherMgr(Context context) {
 		this.context = context;
+		
+		//Connect Check
+		this.nc = new NetworkConnection(Const.HOST_WEATHER_SERVICE,context);
 	}
 
 	private Location queryLocation() {
@@ -67,6 +75,8 @@ public class WeatherMgr extends Service implements Runnable {
         }
         Geocoder coder = new Geocoder(context);
         List<Address> addresses = null;
+        
+        if(nc.checkInternetConnection()==true)
         try {
             addresses = coder.getFromLocation(androidLocation.getLatitude(),
                     androidLocation.getLongitude(), 1);
@@ -94,11 +104,13 @@ public class WeatherMgr extends Service implements Runnable {
 			location = new Location(DEFAULT_LOCATION);
 		}
 		
+		if(nc.checkInternetConnection()==true)
 		try {
 			weather.query(location, Locale.getDefault());
 		} catch (WeatherException e) {
 			e.printStackTrace();
 		}
+		
 		updateUI();
 	}
 	
@@ -113,6 +125,7 @@ public class WeatherMgr extends Service implements Runnable {
 			location = new Location(DEFAULT_LOCATION);
 		}
 		
+		if(nc.checkInternetConnection()==true)
 		try {
 			weather.query(location, Locale.getDefault());
 		} catch (WeatherException e) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.moupress.app.Const;
 import com.moupress.app.R;
+import com.moupress.app.util.NetworkConnection;
 
 
 public class StreamingMgr {
@@ -23,6 +24,7 @@ public class StreamingMgr {
 	private ImageButton playButton;
 	private Button streamingButton;
 	private ProgressBar	progressBar;
+	
 	
 	// Create Handler to call View updates on the main UI thread.
 	private final Handler handler = new Handler();
@@ -37,6 +39,7 @@ public class StreamingMgr {
 		this.playButton = playButton;
 		this.streamingButton = streamButton;
 		this.progressBar = progressBar;
+		
 		
 		streamingButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
@@ -97,7 +100,6 @@ public class StreamingMgr {
 			        }
 				};
 				handler.post(updater);
-		    	
 			}
 			
 		};
@@ -127,6 +129,7 @@ public class StreamingMgr {
 			
 		};
 		audioStreamer = new StreamingMediaPlayer(context, notifier);
+		//nc = new NetworkConnection(Const.BBC_WORLD_SERVICE,context);
 	}
 
 	public void startStreaming(String string, int mediaLengthInKb, int mediaLengthInSeconds) throws IOException {

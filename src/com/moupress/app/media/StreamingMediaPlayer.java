@@ -12,7 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import com.moupress.app.Const;
-import com.spoledge.aacplayer.MMSInputStream;
+import com.moupress.app.util.NetworkConnection;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -40,10 +40,12 @@ public class StreamingMediaPlayer {
 	private Context context;
 	private StreamingNotifier notifier;
 	private int counter = 0;
+	private NetworkConnection nc;
 	
  	public StreamingMediaPlayer(Context  context, StreamingNotifier notifier) {
  		this.context = context;
  		this.notifier = notifier;
+ 		nc = new NetworkConnection(Const.BBC_WORLD_SERVICE,context);
 	}
 	
     /**  
@@ -58,14 +60,18 @@ public class StreamingMediaPlayer {
     	
 		Runnable r = new Runnable() {   
 	        public void run() {   
+	        	if(nc.checkInternetConnection()==true)
 	            try {   
 	        		downloadAudioIncrement(mediaUrl);
 	            } catch (IOException e) {
 	            	Log.e(getClass().getName(), "Unable to initialize the MediaPlayer for fileUrl=" + mediaUrl, e);
 	            	return;
 	            }   
+	            else
+	            	return;
 	        }   
 	    };   
+	    
 	    new Thread(r).start();
 	    Toast.makeText(context, "Streaming Started", Toast.LENGTH_SHORT).show();
     }
@@ -97,6 +103,9 @@ public class StreamingMediaPlayer {
         	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
         }
                 
+        
+        
+        
 		downloadingMediaFile = new File(context.getCacheDir(),"downloadMedia.dat");
 		
 		// Cleanup the previous downloaded file
@@ -108,11 +117,7 @@ public class StreamingMediaPlayer {
         FileOutputStream out = new FileOutputStream(downloadingMediaFile);   
         byte buf[] = new byte[16384];
         do {
-        	int numread = 0;
-        	if (stream instanceof MMSInputStream )
-        		numread = stream.read(buf, 0, 16384);
-        	else
-        		numread = stream.read(buf);
+        	int numread = stream.read(buf);   
             if (numread <= 0)   
                 break;   
             out.write(buf, 0, numread);
@@ -230,7 +235,6 @@ public class StreamingMediaPlayer {
     	// A good practise to use FileDescripter rather than direct media file
 		FileInputStream fis = new FileInputStream(mediaFile);
 		mPlayer.setDataSource(fis.getFD());
-		//mPlayer.setDataSource(mediaFile.getAbsolutePath());
 		mPlayer.prepare();
 		return mPlayer;
     }

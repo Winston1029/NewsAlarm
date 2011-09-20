@@ -93,6 +93,19 @@
 	 	></ListView>
 	  </LinearLayout>
 	</LinearLayout>
+<LinearLayout style="@style/viewsliperchild">
+	<LinearLayout style="@style/viewsliperchild.sub">
+ 	  <TextView android:id="@+id/snooze"  
+ 	        android:text="Draw a Circle" 
+ 	        style="@style/alarminfotxt" 
+ 	        ></TextView> 
+	<android.gesture.GestureOverlayView
+		android:id="@+id/gestures"
+		android:layout_width="fill_parent" 
+	    android:layout_height="120dip"
+	     />
+	  </LinearLayout>
+	</LinearLayout>
 </ViewFlipper>
 
 </LinearLayout>
