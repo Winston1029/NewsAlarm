@@ -95,12 +95,40 @@ public class PubSub {
 		
 		initUI();
 		
-		//initSnooze();
+		initSnooze();
 		initMedia();
 		initWeather();
 		initAlarmMgr();
 		initAlarmTTSMgr();
 		
+	}
+	
+	public PubSub(Context context, Activity activity, boolean snoozed)
+	{
+		this.context = context;
+		this.activity = activity;
+		
+		initUI();
+		
+		initSnooze();
+		initMedia();
+		initWeather();
+		initAlarmMgr();
+		initAlarmTTSMgr();
+	}
+	
+	public void onSnoozed()
+	{
+		uiMgr.showSnoozeView();
+		//initSnooze();
+		StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
+		try {
+			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.toString());
+		}
 	}
 	
     private void initUI() {
@@ -114,13 +142,15 @@ public class PubSub {
 		snoozeListener = new SnoozeListener() {
 			@Override
 			public void onSnoozed() {
-				//System.out.println("Snoozed");
-				Toast.makeText(context, "Snooze Detected", Toast.LENGTH_SHORT).show();
+				System.out.println("Snoozed");
+				//Toast.makeText(context, "Snooze Detected", Toast.LENGTH_SHORT).show();
+				streamingMgr.interrupt();
+				snoozeMgr.unRegisterListener(SnoonzeMgr.GESTURE_SNOOZE_TYPE);
 			}
 		};
 		snoozeMgr = new SnoonzeMgr(context, snoozeListener);
 		snoozeMgr.setGestureOverlayView(uiMgr.gesturesView);
-		//snoozeMgr.registerListener(snoozeType, listener);
+		snoozeMgr.registerListener(SnoonzeMgr.GESTURE_SNOOZE_TYPE, snoozeListener);
 		//snoozeMgr.unRegisterListener(snoozeType);
 	}
 	
@@ -129,13 +159,6 @@ public class PubSub {
 			streamingMgr = new StreamingMgr(context, uiMgr.txv_stream, uiMgr.btn_play, uiMgr.btn_stream, uiMgr.progressBar);
 		} else {
 			streamingMgr = new StreamingMgr(context);
-		}
-		StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
-		try {
-			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -146,7 +169,6 @@ public class PubSub {
 			weatherMgr = new WeatherMgr(context);
 			uiMgr.updateWeatherUI(weatherMgr.getWeather());
 		}
-		
 	}
 	
 	private void initAlarmMgr() {
@@ -171,7 +193,10 @@ public class PubSub {
 	}
 	
 	public void exit() {
+		
 		streamingMgr.interrupt();
 	}
+	
+	
 	
 }

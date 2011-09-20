@@ -1,5 +1,5 @@
 xiaoyf:
-1.When starting streaming, check if internet is available.(WL)
+When starting streaming, check if internet is available.(LJ)
 
 winston(2011-09-12):
 1. To add notify funciton or reference in alarm.setActivityParam to trigger streaming(YF)
@@ -12,14 +12,13 @@ winston(2011-09-12):
 7. View Flip by gesture
 8. Cancel Set Alarm by pressing empty space
 9. How to stop streaming?
-10. Integrate snooze function
+10. Integrate snooze function()
 
 Meeting update for 18 Sep.
 Important:
 *** UI App, Flip between pages when user swipe the screen (YF)
 *** UI Alarm Page, After set time, always ask user to set frequency (LJ)
-*** Fcn, integrate snooze function (LJ)
-*** Fcn, integrate check network communication function (LJ) 
+(X) Fcn, integrate snooze function (LJ)
 *** Fcn, integrate calendar events
 (X)*** Fcn, stop streaming when program exit
 *** Fcn, streaming local media like ChannelNews Asia instead of WSJ to cater for Singapore User.

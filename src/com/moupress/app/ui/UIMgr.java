@@ -51,6 +51,7 @@ public class UIMgr
         else
         {
             initNewUI();
+            initSoonzeControls();
         }
 
     }
@@ -479,6 +480,11 @@ public class UIMgr
         flipperListView(3);
     }
     
+    public void showSnoozeView()
+    {
+    	flipperListView(4);
+    }
+    
     public void updateWeatherUI(String displayString) {
     	hsListAdapter.updateTxtArrayList(displayString, 0);
     }
@@ -533,7 +539,12 @@ public class UIMgr
         }
 
         public void updateTxtArrayList(String displayString, int position)
-        {
+        {   
+        	if(displayString.length()==0)
+        	{
+        	optionArrayList.get(position).setOptionTxt(Const.NON_WEATHER_MSG);
+        	}
+        	else
             optionArrayList.get(position).setOptionTxt(displayString);
             this.notifyDataSetChanged();
         }

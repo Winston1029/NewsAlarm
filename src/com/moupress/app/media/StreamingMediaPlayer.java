@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import com.moupress.app.Const;
+import com.moupress.app.util.NetworkConnection;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -38,10 +40,12 @@ public class StreamingMediaPlayer {
 	private Context context;
 	private StreamingNotifier notifier;
 	private int counter = 0;
+	private NetworkConnection nc;
 	
  	public StreamingMediaPlayer(Context  context, StreamingNotifier notifier) {
  		this.context = context;
  		this.notifier = notifier;
+ 		nc = new NetworkConnection(Const.BBC_WORLD_SERVICE,context);
 	}
 	
     /**  
@@ -56,14 +60,18 @@ public class StreamingMediaPlayer {
     	
 		Runnable r = new Runnable() {   
 	        public void run() {   
+	        	if(nc.checkInternetConnection()==true)
 	            try {   
 	        		downloadAudioIncrement(mediaUrl);
 	            } catch (IOException e) {
 	            	Log.e(getClass().getName(), "Unable to initialize the MediaPlayer for fileUrl=" + mediaUrl, e);
 	            	return;
 	            }   
+	            else
+	            	return;
 	        }   
 	    };   
+	    
 	    new Thread(r).start();
 	    Toast.makeText(context, "Streaming Started", Toast.LENGTH_SHORT).show();
     }
