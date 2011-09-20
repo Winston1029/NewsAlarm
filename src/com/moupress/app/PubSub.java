@@ -61,7 +61,9 @@ public class PubSub {
 				int minute, int second, int millisecond) {
 			System.out.println("Alarm Time is changed!");
 			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute, second, millisecond);
-	        //alarmMgr.startAlarm();
+	        uiMgr.notifyAlarmChange();
+	        
+			//alarmMgr.startAlarm();
 	        //alarmMgr.cancelAlarm();
 			
 		}

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.moupress.app.Const;
@@ -119,7 +120,7 @@ public class UIMgr
         txv_wind = (TextView) activity.findViewById(R.id.wind);
     }
 
-    //--------------Production UI Component Start Here -------------------
+    // --------------Production UI Component Start Here -------------------
     private static int ALARM_POSITION = 0;
     private String[] AMPM = { "am", "pm" };
 
@@ -175,7 +176,7 @@ public class UIMgr
         }
     };
 
-    private String[] hsDisplayTxt = { "Rain  10C", "10:00pm", "Gesture" };
+    private String[] hsDisplayTxt = { "Rain  10C", "No Alarm Set", "Gesture" };
     private int[] hsDisplayIcon = { R.drawable.world, R.drawable.clock,
             R.drawable.disc };
     private boolean[] hsSelected = { false, false, false };
@@ -206,16 +207,17 @@ public class UIMgr
 
     private void initNewUI()
     {
-        initSettings();
+        initAlarmSettings();
 
         alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
         hsListView = (ListView) activity.findViewById(R.id.hslistview);
-        hsListAdapter = new HsLVAdapter(hsDisplayTxt,hsDisplayIcon,hsSelected);
+        hsListAdapter = new HsLVAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected);
         hsListView.setAdapter(hsListAdapter);
         hsListView.setOnItemClickListener(optionListOnItemClickListener);
-        
-        snoozeListView = (ListView)activity.findViewById(R.id.snoozelistview);
-        snoozeAdapter = new HsLVAdapter(snoozeDisplayTxt,snoozeDisplayIcon,snoozeSelected);
+
+        snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
+        snoozeAdapter = new HsLVAdapter(snoozeDisplayTxt, snoozeDisplayIcon,
+                                        snoozeSelected);
         snoozeListView.setAdapter(snoozeAdapter);
         snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
 
@@ -224,9 +226,8 @@ public class UIMgr
                                        alarmSelected);
         alarmListView.setAdapter(alarmAdapter);
         alarmListView.setOnItemClickListener(optionListOnItemClickListener);
-        
-        alarmListView.setOnItemLongClickListener(new OnItemLongClickListener()
-        {
+
+        alarmListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -277,21 +278,27 @@ public class UIMgr
         amOrpm.setViewAdapter(new ArrayWheelAdapter<String>(activity, AMPM));
     }
 
-
-    private void initSettings()
+    // alarms
+    private void initAlarmSettings()
     {
         DbHelper helper = new DbHelper(this.activity);
         Calendar cal = Calendar.getInstance();
         int hours, mins;
+        int nextAlarmPosition = -1;
+        long nextAlarm = 0;
         // alarm Time
         for (int i = 0; i < alarmDisplayTxt.length; i++)
         {
+            alarmSelected[i] = helper.GetBool(DbHelper.ISALARMSET
+                    + Integer.toString(i));
+
             hours = helper.GetInt(DbHelper.Hours + Integer.toString(i));
             mins = helper.GetInt(DbHelper.Mins + Integer.toString(i));
             cal.setTimeInMillis(System.currentTimeMillis());
             if (hours != DbHelper.DefNum && mins != DbHelper.DefNum)
             {
                 cal.set(Calendar.HOUR_OF_DAY, hours);
+
                 cal.set(Calendar.MINUTE, mins);
             }
             hours = cal.get(Calendar.HOUR);
@@ -309,16 +316,37 @@ public class UIMgr
                 default:
                     break;
             }
+
+            if (alarmSelected[i])
+            {
+                long tmp = cal.getTimeInMillis();
+                if (tmp > System.currentTimeMillis())
+                    tmp += AlarmManager.INTERVAL_DAY;
+                if (nextAlarm != 0)
+                {
+                    if (nextAlarm > tmp)
+                    {
+                        nextAlarm = tmp;
+                        nextAlarmPosition = i;
+                    }
+                }
+                else
+                {
+                    nextAlarm = tmp;
+                    nextAlarmPosition = i;
+                }
+
+            }
         }
-        // is alarm set
-        for (int i = 0; i < alarmSelected.length; i++)
-        {
-            alarmSelected[i] = helper.GetBool(DbHelper.ISALARMSET
-                    + Integer.toString(i));
-        }
+        hsDisplayTxt[1] = alarmDisplayTxt[nextAlarmPosition];
 
     }
-
+    public void notifyAlarmChange()
+    {
+        initAlarmSettings();
+        hsListAdapter.updateTxtArrayList(hsDisplayTxt[1], 1);
+        //Toast.makeText(this.activity, hsDisplayTxt[1], Toast.LENGTH_LONG).show();
+    }
     AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -348,7 +376,7 @@ public class UIMgr
                             alarmSelected[position]);
                     break;
                 case R.id.hslistview:
-                	hsListViewClicked(position);
+                    hsListViewClicked(position);
             }
         }
     };
@@ -479,30 +507,33 @@ public class UIMgr
         System.out.println("Sound Button On Click!");
         flipperListView(3);
     }
-    
+
     public void showSnoozeView()
     {
-    	flipperListView(4);
-    }
-    
-    public void updateWeatherUI(String displayString) {
-    	hsListAdapter.updateTxtArrayList(displayString, 0);
+        flipperListView(4);
     }
 
-    private void hsListViewClicked(int position) {
-		switch (position) {
-		case 0:
-			//display weather info
-			break;
-		case 1:
-			alarmBtnClick();
-			break;
-		case 2:
-			snoozeBtnClick();
-			break;
-		}
-	}
-    
+    public void updateWeatherUI(String displayString)
+    {
+        hsListAdapter.updateTxtArrayList(displayString, 0);
+    }
+
+    private void hsListViewClicked(int position)
+    {
+        switch (position)
+        {
+            case 0:
+                // display weather info
+                break;
+            case 1:
+                alarmBtnClick();
+                break;
+            case 2:
+                snoozeBtnClick();
+                break;
+        }
+    }
+
     private class HsLVAdapter extends BaseAdapter
     {
         // private String[] txtisplays ;
@@ -539,13 +570,14 @@ public class UIMgr
         }
 
         public void updateTxtArrayList(String displayString, int position)
-        {   
-        	if(displayString.length()==0)
-        	{
-        	optionArrayList.get(position).setOptionTxt(Const.NON_WEATHER_MSG);
-        	}
-        	else
-            optionArrayList.get(position).setOptionTxt(displayString);
+        {
+            if (displayString.length() == 0)
+            {
+                optionArrayList.get(position).setOptionTxt(
+                        Const.NON_WEATHER_MSG);
+            }
+            else
+                optionArrayList.get(position).setOptionTxt(displayString);
             this.notifyDataSetChanged();
         }
 
