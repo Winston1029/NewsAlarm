@@ -132,7 +132,8 @@ public class PubSub {
 		}
 		StreamingMediaPlayer  player = streamingMgr.getMediaPlayer();
 		try {
-			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+			//player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+			player.startStreaming(Const.MEDIACORP_938_MMS, 1000, 600);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

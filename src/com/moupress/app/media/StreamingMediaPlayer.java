@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import com.moupress.app.Const;
+import com.spoledge.aacplayer.MMSInputStream;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -74,7 +76,7 @@ public class StreamingMediaPlayer {
      */  
     public void downloadAudioIncrement(String mediaUrl) throws IOException {
     	String playURL = "";
-    	downloadPlaylist(mediaUrl);
+    	InputStream stream = null;
     	if (isPlaylist(mediaUrl)) {
     		downloadPlaylist(mediaUrl);
     		if (playlistUrls.size() > 0) {
@@ -82,17 +84,19 @@ public class StreamingMediaPlayer {
     		} else {
     			throw new IOException("Empty playlist downloaded");
     		}
-	    }
+	    
     	
-    	URLConnection cn = new URL(playURL).openConnection();   
-        cn.connect();   
-        InputStream stream = cn.getInputStream();
+	    	URLConnection cn = new URL(playURL).openConnection();   
+	        cn.connect();   
+	        stream = cn.getInputStream();
+    	} else if (mediaUrl.indexOf("mms")> -1) {
+	    	//MMSInputStream mmsis = new MMSInputStream(mediaUrl);
+	    	stream = new MMSInputStream(mediaUrl);
+	    }
         if (stream == null) {
         	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
         }
-        
-        
-        
+                
 		downloadingMediaFile = new File(context.getCacheDir(),"downloadMedia.dat");
 		
 		// Cleanup the previous downloaded file
@@ -104,7 +108,11 @@ public class StreamingMediaPlayer {
         FileOutputStream out = new FileOutputStream(downloadingMediaFile);   
         byte buf[] = new byte[16384];
         do {
-        	int numread = stream.read(buf);   
+        	int numread = 0;
+        	if (stream instanceof MMSInputStream )
+        		numread = stream.read(buf, 0, 16384);
+        	else
+        		numread = stream.read(buf);
             if (numread <= 0)   
                 break;   
             out.write(buf, 0, numread);
@@ -222,6 +230,7 @@ public class StreamingMediaPlayer {
     	// A good practise to use FileDescripter rather than direct media file
 		FileInputStream fis = new FileInputStream(mediaFile);
 		mPlayer.setDataSource(fis.getFD());
+		//mPlayer.setDataSource(mediaFile.getAbsolutePath());
 		mPlayer.prepare();
 		return mPlayer;
     }
