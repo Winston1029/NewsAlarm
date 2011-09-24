@@ -27,15 +27,11 @@ import android.util.Log;
 /**
  * This is the parent of PCM Feeders.
  */
-public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPositionUpdateListener {
+public class PCMFeed implements Runnable {
 
-    private static final String LOG = "PCMFeed";
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Attributes
-    ////////////////////////////////////////////////////////////////////////////
-
+    private short[] samples;
+    private int n;
+    
     protected int sampleRate;
     protected int channels;
     protected int bufferSizeInMs;
@@ -68,10 +64,6 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
     protected int writtenTotal = 0;
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Constructors
-    ////////////////////////////////////////////////////////////////////////////
-
     /**
      * Creates a new PCMFeed object.
      * @param sampleRate the sampling rate in Hz (e.g. 44100)
@@ -86,43 +78,6 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
         this.bufferSizeInMs = bytesToMs( bufferSizeInBytes, sampleRate, channels );
         this.playerCallback = playerCallback;
     }
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Public
-    ////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Returns the sampling rate.
-     */
-    public final int getSampleRate() {
-        return sampleRate;
-    }
-
-
-    /**
-     * Returns the number of channels.
-     */
-    public final int getChannels() {
-        return channels;
-    }
-
-
-    /**
-     * Returns the buffer size in bytes.
-     */
-    public final int getBufferSizeInBytes() {
-        return bufferSizeInBytes;
-    }
-
-
-    /**
-     * Returns the buffer size in milliseconds.
-     */
-    public final int getBufferSizeInMs() {
-        return bufferSizeInMs;
-    }
-
 
     /**
      * Stops the PCM feeder.
@@ -200,34 +155,41 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
         }
     }
 
+    /**
+     * This is called by main thread when a new data are available.
+     *
+     * @param samples the array containing the PCM data
+     * @param n the length of the PCM data
+     * @return true if ok, false if the execution thread is not responding
+     */
+    public synchronized boolean feed( short[] samples, int n ) {
+        while (this.samples != null && !stopped) {
+            try { wait(); } catch (InterruptedException e) {}
+        }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Runnable
-    ////////////////////////////////////////////////////////////////////////////
+        this.samples = samples;
+        this.n = n;
+
+        notify();
+
+        return !stopped;
+    }
 
     /**
      * The main execution loop which should be executed in its own thread.
      */
     public void run() {
-        Log.d( LOG, "run(): sampleRate=" + sampleRate + ", channels=" + channels
-            + ", bufferSizeInBytes=" + bufferSizeInBytes
-            + " (" + bufferSizeInMs + " ms)");
 
         AudioTrack atrack = new AudioTrack(
                                 AudioManager.STREAM_MUSIC,
                                 sampleRate,
-                                channels == 1 ?
-                                    AudioFormat.CHANNEL_CONFIGURATION_MONO :
-                                    AudioFormat.CHANNEL_CONFIGURATION_STEREO,
+                                channels == 1 ? AudioFormat.CHANNEL_CONFIGURATION_MONO :AudioFormat.CHANNEL_CONFIGURATION_STEREO,
                                 AudioFormat.ENCODING_PCM_16BIT,
                                 bufferSizeInBytes,
                                 AudioTrack.MODE_STREAM );
-
-        atrack.setPlaybackPositionUpdateListener( this );
-        atrack.setPositionNotificationPeriod( msToSamples( 200, sampleRate, channels ));
+        //atrack.setPositionNotificationPeriod( msToSamples( 200, sampleRate, channels ));
 
         isPlaying = false;
-
         while (!stopped) {
             // fetch the samples into our "local" variable lsamples:
             int ln = acquireSamples();
@@ -242,14 +204,12 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
 
             do {
                 if (writtenNow != 0) {
-                    Log.d( LOG, "too fast for playback, sleeping...");
                     try { Thread.sleep( 50 ); } catch (InterruptedException e) {}
                 }
 
                 int written = atrack.write( lsamples, writtenNow, ln );
 
                 if (written < 0) {
-                    Log.e( LOG, "error in playback feed: " + written );
                     stopped = true;
                     break;
                 }
@@ -257,16 +217,12 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
                 writtenTotal += written;
                 int buffered = writtenTotal - atrack.getPlaybackHeadPosition()*channels;
 
-                // Log.d( LOG, "PCM fed by " + ln + " and written " + written + " samples - buffered " + buffered);
-
                 if (!isPlaying) {
                     if (buffered*2 >= bufferSizeInBytes) {
-                        Log.d( LOG, "start of AudioTrack - buffered " + buffered + " samples");
                         atrack.play();
                         isPlaying = true;
                     }
                     else {
-                        Log.d( LOG, "start buffer not filled enough - AudioTrack not started yet");
                     }
                 }
 
@@ -281,7 +237,6 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
         atrack.flush();
         atrack.release();
 
-        Log.d( LOG, "run() stopped." );
     }
 
 
@@ -294,13 +249,28 @@ public abstract class PCMFeed implements Runnable, AudioTrack.OnPlaybackPosition
      * Acquires samples into variable lsamples.
      * @return the actual size (in shorts) of the lsamples
      */
-    protected abstract int acquireSamples();
+    protected synchronized int acquireSamples() {
+        while (n == 0 && !stopped) {
+            try { wait(); } catch (InterruptedException e) {}
+        }
+
+        lsamples = samples;
+        int ln = n;
+
+        samples = null;
+        n = 0;
+        notify();
+
+        return ln;
+    }
 
 
     /**
      * Releases the lsamples variable.
      * This method is called always after processing the acquired lsamples.
      */
-    protected abstract void releaseSamples();
+    protected void releaseSamples() {
+        // nothing to be done
+    }
 
 }

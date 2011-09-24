@@ -18,10 +18,6 @@ import android.widget.Toast;
 
 import com.moupress.app.Const;
 import com.moupress.app.util.NetworkConnection;
-import com.spoledge.aacplayer.ArrayAACPlayer;
-import com.spoledge.aacplayer.ArrayDecoder;
-import com.spoledge.aacplayer.Decoder;
-import com.spoledge.aacplayer.PlayerCallback;
 
 /**
  * Streaming Audio from external URL and Play

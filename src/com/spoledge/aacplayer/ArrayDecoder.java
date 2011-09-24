@@ -21,25 +21,21 @@ package com.spoledge.aacplayer;
 /**
  * Parent class for all array decoders.
  */
-public class ArrayDecoder extends Decoder {
+public class ArrayDecoder {
 
     private static enum State { IDLE, RUNNING };
+    public static final int DECODER_FAAD2 = 0x01;
+    public static final int DECODER_FFMPEG = 0x02;
+    public static final int DECODER_OPENCORE = 0x04;
+    public static final int DECODER_FFMPEG_WMA = 0x08;
+
 
     private static boolean libLoaded = false;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Attributes
-    ////////////////////////////////////////////////////////////////////////////
-
     private int decoder;
     private int aacdw;
     private State state = State.IDLE;
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Constructors
-    ////////////////////////////////////////////////////////////////////////////
+    protected Info info;
 
     private ArrayDecoder( int decoder ) {
         this.decoder = decoder;
@@ -168,6 +164,88 @@ public class ArrayDecoder extends Decoder {
     private native int nativeDecode( int aacdw, short[] samples, int outLen );
 
     private native void nativeStop( int aacdw );
+    
+    /**
+     * Info about the stream.
+     */
+    public static final class Info {
+        private int sampleRate;
+        private int channels;
+
+        private int frameMaxBytesConsumed;
+        private int frameSamples;
+
+        private int roundFrames;
+        private int roundBytesConsumed;
+        private int roundSamples;
+
+
+        ////////////////////////////////////////////////////////////////////////////
+        // Public
+        ////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Returns the sampling rate in Hz.
+         * @return the sampling rate - always set
+         */
+        public int getSampleRate() {
+            return sampleRate;
+        }
+
+
+        /**
+         * Returns the number of channels (0=unknown yet, 1=mono, 2=stereo).
+         * @return the channels - always set
+         */
+        public int getChannels() {
+            return channels;
+        }
+
+
+        /**
+         * Returns the maximum bytes consumed per ADTS frame.
+         * @return the value - after each decode() round
+         */
+        public int getFrameMaxBytesConsumed() {
+            return frameMaxBytesConsumed;
+        }
+
+
+        /**
+         * Returns the samples produced per ADTS frame.
+         * @return the value - after each decode() round (but should be always the same)
+         */
+        public int getFrameSamples() {
+            return frameSamples;
+        }
+
+
+        /**
+         * Returns the number of ADTS frames decoded.
+         * @return the value - after each decode() round
+         */
+        public int getRoundFrames() {
+            return roundFrames;
+        }
+
+
+        /**
+         * Returns the number of bytes consumed.
+         * @return the value - after each decode() round
+         */
+        public int getRoundBytesConsumed() {
+            return roundBytesConsumed;
+        }
+
+
+        /**
+         * Returns the number of samples decoded.
+         * @return the value - after each decode() round
+         */
+        public int getRoundSamples() {
+            return roundSamples;
+        }
+    }
 }
 
 

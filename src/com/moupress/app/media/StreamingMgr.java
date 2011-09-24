@@ -3,25 +3,13 @@ package com.moupress.app.media;
 import java.io.IOException;
 
 import android.content.Context;
-import android.os.Handler;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.moupress.app.Const;
-import com.moupress.app.R;
-import com.moupress.app.util.NetworkConnection;
-import com.spoledge.aacplayer.ArrayAACPlayer;
-import com.spoledge.aacplayer.ArrayDecoder;
-import com.spoledge.aacplayer.Decoder;
+import com.spoledge.aacplayer.AACPlayer;
 
 
 public class StreamingMgr {
 	
 	private StreamingMediaPlayer audioStreamer;
-	private ArrayAACPlayer aacPlayer;
+	private AACPlayer aacPlayer;
 	private StreamingNotifier notifier;
 	
 	private Context context;
@@ -36,7 +24,7 @@ public class StreamingMgr {
 	public void startStreaming(String mediaURL, int mediaLengthInKb, int mediaLengthInSeconds) {
 		try {
 			if (mediaURL.startsWith("mms://")) {
-	    		aacPlayer = new ArrayAACPlayer( ArrayDecoder.create( Decoder.DECODER_FFMPEG_WMA  ));
+	    		aacPlayer = new AACPlayer();
 	    		aacPlayer.playAsync(mediaURL );
 			}
 			else {
@@ -48,12 +36,9 @@ public class StreamingMgr {
 		}
 	}
 
-	public StreamingMediaPlayer getMediaPlayer() {
-		return audioStreamer;
-	}
-
 	public void interrupt() {
-		audioStreamer.interrupt();
+		if (audioStreamer != null) audioStreamer.interrupt();
+		if (aacPlayer != null) aacPlayer.stop();
 	}
     
 }

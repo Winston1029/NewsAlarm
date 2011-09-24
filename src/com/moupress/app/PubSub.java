@@ -104,15 +104,7 @@ public class PubSub {
 
 	public void onSnoozed() {
 		uiMgr.showSnoozeView();
-		// initSnooze();
-		StreamingMediaPlayer player = streamingMgr.getMediaPlayer();
-		try {
-			player.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.toString());
-		}
+		streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
 	}
 
 	private void initUtil() {
@@ -150,8 +142,8 @@ public class PubSub {
 
 	private void initMedia() {
 		streamingMgr = new StreamingMgr(context);
-		String mediaUrl = Const.BBC_WORLD_SERVICE;
-		// String mediaUrl = Const.BBC_WORLD_SERVICE;
+		//String mediaUrl = Const.BBC_WORLD_SERVICE;
+		String mediaUrl = Const.MEDIACORP_938_MMS;
 		streamingMgr.startStreaming(mediaUrl, 1000, 600);
 	}
 

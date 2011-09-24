@@ -17,46 +17,18 @@
 **/
 package com.spoledge.aacplayer;
 
-import android.util.Log;
-
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.IOException;
-
-import java.net.URL;
-import java.net.URLConnection;
-
 
 /**
  * This is the AACPlayer parent class.
  * It uses Decoder to decode AAC stream into PCM samples.
  * This class is not thread safe.
  */
-public abstract class AACPlayer {
+public class AACPlayer {
 
-    /**
-     * The default expected bitrate.
-     * Used only if not specified in play() methods.
-     */
     public static final int DEFAULT_EXPECTED_KBITSEC_RATE = 64;
-
-
-    /**
-     * The default capacity of the audio buffer (AudioTrack) in ms.
-     * @see setAudioBufferCapacityMs(int)
-     */
     public static final int DEFAULT_AUDIO_BUFFER_CAPACITY_MS = 1500;
-
-
-    /**
-     * The default capacity of the output buffer used for decoding in ms.
-     * @see setDecodeBufferCapacityMs(int)
-     */
     public static final int DEFAULT_DECODE_BUFFER_CAPACITY_MS = 700;
-
-
-    private static final String LOG = "AACPlayer";
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Attributes
@@ -73,110 +45,26 @@ public abstract class AACPlayer {
     private int countKBitSecRate = 0;
     private int avgKBitSecRate = 0;
 
+    private ArrayDecoder decoder;
 
     ////////////////////////////////////////////////////////////////////////////
     // Constructors
     ////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Creates a new player.
-     */
-    protected AACPlayer() {
-        this( null );
-    }
 
 
     /**
      * Creates a new player.
      * @param playerCallback the callback, can be null
      */
-    protected AACPlayer( PlayerCallback playerCallback ) {
-        this( playerCallback, DEFAULT_AUDIO_BUFFER_CAPACITY_MS, DEFAULT_DECODE_BUFFER_CAPACITY_MS );
+    public AACPlayer( ) {
+    	this.stopped				= false;
+    	this.playerCallback 		= null;
+    	this.decoder				= ArrayDecoder.create( ArrayDecoder.DECODER_FFMPEG_WMA  );
+    	this.audioBufferCapacityMs 	= DEFAULT_AUDIO_BUFFER_CAPACITY_MS;
+    	this.decodeBufferCapacityMs	= DEFAULT_DECODE_BUFFER_CAPACITY_MS;
     }
 
-
-    /**
-     * Creates a new player.
-     * @param playerCallback the callback, can be null
-     * @param audioBufferCapacityMs the capacity of the audio buffer (AudioTrack) in ms
-     * @param decodeBufferCapacityMs the capacity of the buffer used for decoding in ms
-     * @see setAudioBufferCapacityMs(int)
-     * @see setDecodeBufferCapacityMs(int)
-     */
-    protected AACPlayer( PlayerCallback playerCallback, int audioBufferCapacityMs, int decodeBufferCapacityMs ) {
-        setPlayerCallback( playerCallback );
-        setAudioBufferCapacityMs( audioBufferCapacityMs );
-        setDecodeBufferCapacityMs( decodeBufferCapacityMs );
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Public
-    ////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Sets the audio buffer (AudioTrack) capacity.
-     * The capacity can be expressed in time of audio playing of such buffer.
-     * For example 1 second buffer capacity is 88100 samples for 44kHz stereo.
-     * By setting this the audio will start playing after the audio buffer is first filled.
-     *
-     * NOTE: this should be set BEFORE any of the play methods are called.
-     *
-     * @param audioBufferCapacityMs the capacity of the buffer in milliseconds
-     */
-    public void setAudioBufferCapacityMs( int audioBufferCapacityMs ) {
-        this.audioBufferCapacityMs = audioBufferCapacityMs;
-    }
-
-
-    /**
-     * Gets the audio buffer capacity as the audio playing time.
-     * @return the capacity of the audio buffer in milliseconds
-     */
-    public int getAudioBufferCapacityMs() {
-        return audioBufferCapacityMs;
-    }
-
-
-    /**
-     * Sets the capacity of the output buffer used for decoding.
-     * The capacity can be expressed in time of audio playing of such buffer.
-     * For example 1 second buffer capacity is 88100 samples for 44kHz stereo.
-     * Decoder tries to fill out the whole buffer in each round.
-     *
-     * NOTE: this should be set BEFORE any of the play methods are called.
-     *
-     * @param decodeBufferCapacityMs the capacity of the buffer in milliseconds
-     */
-    public void setDecodeBufferCapacityMs( int decodeBufferCapacityMs ) {
-        this.decodeBufferCapacityMs = decodeBufferCapacityMs;
-    }
-
-
-    /**
-     * Gets the capacity of the output buffer used for decoding as the audio playing time.
-     * @return the capacity of the decoding buffer in milliseconds
-     */
-    public int getDecodeBufferCapacityMs() {
-        return decodeBufferCapacityMs;
-    }
-
-
-    /**
-     * Sets the PlayerCallback.
-     * NOTE: this should be set BEFORE any of the play methods are called.
-     */
-    public void setPlayerCallback( PlayerCallback playerCallback ) {
-        this.playerCallback = playerCallback;
-    }
-
-
-    /**
-     * Returns the PlayerCallback or null if no PlayerCallback was set.
-     */
-    public PlayerCallback getPlayerCallback() {
-        return playerCallback;
-    }
 
 
     /**
@@ -185,25 +73,14 @@ public abstract class AACPlayer {
      * @param url the URL of the stream or file
      */
     public void playAsync( final String url ) {
-        playAsync( url, -1 );
-    }
-
-
-    /**
-     * Plays a stream asynchronously.
-     * This method starts a new thread.
-     * @param url the URL of the stream or file
-     * @param expectedKBitSecRate the expected average bitrate in kbit/sec; -1 means unknown
-     */
-    public void playAsync( final String url, final int expectedKBitSecRate ) {
-        new Thread(new Runnable() {
+    	new Thread(new Runnable() {
             public void run() {
                 try {
-                    play( url, expectedKBitSecRate );
+                	if (url.startsWith( "mms://" )) {
+                        play( new MMSInputStream( url ) );
+                    }
                 }
                 catch (Exception e) {
-                    Log.e( LOG, "playAsync():", e);
-
                     if (playerCallback != null) playerCallback.playerException( e );
                 }
             }
@@ -213,60 +90,16 @@ public abstract class AACPlayer {
 
     /**
      * Plays a stream synchronously.
-     * @param url the URL of the stream or file
-     */
-    public void play( String url ) throws Exception {
-        play( url, -1 );
-    }
-
-
-    /**
-     * Plays a stream synchronously.
-     * @param url the URL of the stream or file
-     * @param expectedKBitSecRate the expected average bitrate in kbit/sec; -1 means unknown
-     */
-    public void play( String url, int expectedKBitSecRate ) throws Exception {
-        if (url.startsWith( "mms://" )) {
-            play( new MMSInputStream( url ), expectedKBitSecRate );
-        }
-        else if (url.indexOf( ':' ) > 0) {
-            URLConnection cn = new URL( url ).openConnection();
-            cn.connect();
-
-            dumpHeaders( cn );
-
-            // TODO: try to get the expectedKBitSecRate from headers
-            play( cn.getInputStream(), expectedKBitSecRate);
-        }
-        else play( new FileInputStream( url ), expectedKBitSecRate );
-    }
-
-
-    /**
-     * Plays a stream synchronously.
-     * @param is the input stream
-     */
-    public void play( InputStream is ) throws Exception {
-        play( is, -1 );
-    }
-
-
-    /**
-     * Plays a stream synchronously.
      * @param is the input stream
      * @param expectedKBitSecRate the expected average bitrate in kbit/sec; -1 means unknown
      */
-    public final void play( InputStream is, int expectedKBitSecRate ) throws Exception {
-        stopped = false;
-
+    public final void play( InputStream is ) throws Exception {
         if (playerCallback != null) playerCallback.playerStarted();
-
-        if (expectedKBitSecRate <= 0) expectedKBitSecRate = DEFAULT_EXPECTED_KBITSEC_RATE;
 
         sumKBitSecRate = 0;
         countKBitSecRate = 0;
 
-        playImpl( is, expectedKBitSecRate );
+        playImpl( is, DEFAULT_EXPECTED_KBITSEC_RATE );
     }
 
 
@@ -288,20 +121,91 @@ public abstract class AACPlayer {
      * @param is the input stream
      * @param expectedKBitSecRate the expected average bitrate in kbit/sec
      */
-    protected abstract void playImpl( InputStream is, int expectedKBitSecRate ) throws Exception;
+    protected void playImpl( InputStream is, int expectedKBitSecRate ) throws Exception {
+        ArrayBufferReader reader = new ArrayBufferReader(
+                                        computeInputBufferSize( expectedKBitSecRate, decodeBufferCapacityMs ),
+                                        is );
+        new Thread( reader ).start();
+
+        PCMFeed pcmfeed = null;
+        Thread pcmfeedThread = null;
 
 
-    protected void dumpHeaders( URLConnection cn ) {
-        for (java.util.Map.Entry<String, java.util.List<String>> me : cn.getHeaderFields().entrySet()) {
-            for (String s : me.getValue()) {
-                Log.d( LOG, "header: key=" + me.getKey() + ", val=" + s);
-                
+        try {
+        	ArrayDecoder.Info info = decoder.start( reader );
+
+
+            if (info.getChannels() > 2) {
+                throw new RuntimeException("Too many channels detected: " + info.getChannels());
             }
+
+            // 3 buffers for result samples:
+            //   - one is used by decoder
+            //   - one is used by the PCMFeeder
+            //   - one is enqueued / passed to PCMFeeder - non-blocking op
+            short[][] decodeBuffers = createDecodeBuffers( 3, info );
+            short[] decodeBuffer = decodeBuffers[0]; 
+            int decodeBufferIndex = 0;
+
+            pcmfeed = createArrayPCMFeed( info );
+            pcmfeedThread = new Thread( pcmfeed );
+            pcmfeedThread.start();
+
+            do {
+                info = decoder.decode( decodeBuffer, decodeBuffer.length );
+                int nsamp = info.getRoundSamples();
+
+                if (nsamp == 0 || stopped) break;
+                if (!pcmfeed.feed( decodeBuffer, nsamp ) || stopped) break;
+
+                int kBitSecRate = computeAvgKBitSecRate( info );
+                if (Math.abs(expectedKBitSecRate - kBitSecRate) > 1) {
+                    reader.setCapacity( computeInputBufferSize( kBitSecRate, decodeBufferCapacityMs ));
+                    expectedKBitSecRate = kBitSecRate;
+                }
+
+                decodeBuffer = decodeBuffers[ ++decodeBufferIndex % 3 ];
+            } while (!stopped);
+        }
+        finally {
+            stopped = true;
+
+            if (pcmfeed != null) pcmfeed.stop();
+            decoder.stop();
+            reader.stop();
+
+            if (pcmfeedThread != null) pcmfeedThread.join();
+
+            if (playerCallback != null) playerCallback.playerStopped(0);
         }
     }
 
 
-    protected int computeAvgKBitSecRate( Decoder.Info info ) {
+    ////////////////////////////////////////////////////////////////////////////
+    // Private
+    ////////////////////////////////////////////////////////////////////////////
+
+    private short[][] createDecodeBuffers( int count, ArrayDecoder.Info info ) {
+        int size = PCMFeed.msToSamples( decodeBufferCapacityMs, info.getSampleRate(), info.getChannels());
+
+        short[][] ret = new short[ count ][];
+
+        for (int i=0; i < ret.length; i++) {
+            ret[i] = new short[ size ];
+        }
+
+        return ret;
+    }
+
+
+    private PCMFeed createArrayPCMFeed( ArrayDecoder.Info info ) {
+        int size = PCMFeed.msToBytes( audioBufferCapacityMs, info.getSampleRate(), info.getChannels());
+
+        return new PCMFeed( info.getSampleRate(), info.getChannels(), size, playerCallback );
+    }
+
+
+    protected int computeAvgKBitSecRate( ArrayDecoder.Info info ) {
         // do not change the value after a while - avoid changing of the out buffer:
         if (countKBitSecRate < 64) {
             int kBitSecRate = computeKBitSecRate( info );
@@ -316,7 +220,7 @@ public abstract class AACPlayer {
     }
 
 
-    protected static int computeKBitSecRate( Decoder.Info info ) {
+    private static int computeKBitSecRate( ArrayDecoder.Info info ) {
         if (info.getRoundSamples() <= 0) return -1;
 
         return computeKBitSecRate( info.getRoundBytesConsumed(), info.getRoundSamples(),
@@ -324,7 +228,7 @@ public abstract class AACPlayer {
     }
 
 
-    protected static int computeKBitSecRate( int bytesconsumed, int samples, int sampleRate, int channels ) {
+    private static int computeKBitSecRate( int bytesconsumed, int samples, int sampleRate, int channels ) {
         long ret = 8L * bytesconsumed * channels * sampleRate / samples;
 
         return (((int)ret) + 500) / 1000;
@@ -333,20 +237,6 @@ public abstract class AACPlayer {
 
     protected static int computeInputBufferSize( int kbitSec, int durationMs ) {
         return kbitSec * durationMs / 8;
-    }
-
-
-    protected static int computeInputBufferSize( Decoder.Info info, int durationMs ) {
-
-        return computeInputBufferSize( info.getRoundBytesConsumed(), info.getRoundSamples(),
-                                        info.getSampleRate(), info.getChannels(), durationMs );
-    }
-
-
-    protected static int computeInputBufferSize( int bytesconsumed, int samples,
-                                                 int sampleRate, int channels, int durationMs ) {
-
-        return (int)(((long) bytesconsumed) * channels * sampleRate * durationMs  / (1000L * samples));
     }
 
 }
