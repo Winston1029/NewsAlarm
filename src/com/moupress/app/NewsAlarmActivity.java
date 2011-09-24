@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.moupress.app.alarm.AlarmManagerMgr;
+import com.spoledge.aacplayer.PlayerCallback;
 
 
 public class NewsAlarmActivity extends Activity {
@@ -68,7 +69,7 @@ public class NewsAlarmActivity extends Activity {
     	       .setCancelable(false)
     	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
-    	        	   //pubsub.exit();
+    	        	   pubsub.exit();
     	        	   NewsAlarmActivity.this.finish();
     	           }
     	       })

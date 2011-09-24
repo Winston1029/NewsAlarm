@@ -167,7 +167,6 @@ public class WeatherMgr extends Service implements Runnable {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

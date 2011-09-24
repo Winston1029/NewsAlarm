@@ -7,28 +7,27 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import com.moupress.app.Const;
-import com.moupress.app.util.NetworkConnection;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.moupress.app.Const;
+import com.moupress.app.util.NetworkConnection;
+import com.spoledge.aacplayer.ArrayAACPlayer;
+import com.spoledge.aacplayer.ArrayDecoder;
+import com.spoledge.aacplayer.Decoder;
+import com.spoledge.aacplayer.PlayerCallback;
+
 /**
  * Streaming Audio from external URL and Play
- * Only works under Wifi mode now
  */
 public class StreamingMediaPlayer {
 
-    private static final int INTIAL_KB_BUFFER =  160*10/8;// larger means longer waiting time at the beginning
-	
 	//  Track for downloading progress
 	public long mediaLengthInKb, mediaLengthInSeconds;
 	public int totalKbRead = 0;
@@ -38,13 +37,11 @@ public class StreamingMediaPlayer {
 	private List<String> playlistUrls;
 	private boolean isInterrupted;
 	private Context context;
-	private StreamingNotifier notifier;
 	private int counter = 0;
 	private NetworkConnection nc;
 	
- 	public StreamingMediaPlayer(Context  context, StreamingNotifier notifier) {
+ 	public StreamingMediaPlayer(Context  context) {
  		this.context = context;
- 		this.notifier = notifier;
  		nc = new NetworkConnection(Const.BBC_WORLD_SERVICE,context);
 	}
 	
@@ -60,13 +57,14 @@ public class StreamingMediaPlayer {
     	
 		Runnable r = new Runnable() {   
 	        public void run() {   
-	        	if(nc.checkInternetConnection()==true)
-	            try {   
-	        		downloadAudioIncrement(mediaUrl);
-	            } catch (IOException e) {
-	            	Log.e(getClass().getName(), "Unable to initialize the MediaPlayer for fileUrl=" + mediaUrl, e);
-	            	return;
-	            }   
+	        	if(nc.checkInternetConnection()==true) {
+		            try {   
+		        		downloadAudioIncrement(mediaUrl);
+		            } catch (IOException e) {
+		            	Log.e(getClass().getName(), "Unable to initialize the MediaPlayer for fileUrl=" + mediaUrl, e);
+		            	return;
+		            }
+	        	}
 	            else
 	            	return;
 	        }   
@@ -80,31 +78,25 @@ public class StreamingMediaPlayer {
      * Download the url stream to a temporary location and then call the setDataSource  
      * for that local file
      */  
-    public void downloadAudioIncrement(String mediaUrl) throws IOException {
+    private void downloadAudioIncrement(String mediaUrl) throws IOException {
     	String playURL = "";
     	InputStream stream = null;
-    	if (isPlaylist(mediaUrl)) {
-    		downloadPlaylist(mediaUrl);
-    		if (playlistUrls.size() > 0) {
-    			playURL = playlistUrls.remove(0);
-    		} else {
-    			throw new IOException("Empty playlist downloaded");
-    		}
-	    
+		
+    	downloadPlaylist(mediaUrl);
+		if (playlistUrls.size() > 0) {
+			playURL = playlistUrls.remove(0);
+		} else {
+			throw new IOException("Empty playlist downloaded");
+		}
+    
+	
+    	URLConnection cn = new URL(playURL).openConnection();   
+        cn.connect();   
+        stream = cn.getInputStream();
     	
-	    	URLConnection cn = new URL(playURL).openConnection();   
-	        cn.connect();   
-	        stream = cn.getInputStream();
-    	} else if (mediaUrl.indexOf("mms")> -1) {
-	    	//MMSInputStream mmsis = new MMSInputStream(mediaUrl);
-	    	stream = new MMSInputStream(mediaUrl);
-	    }
         if (stream == null) {
         	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
         }
-                
-        
-        
         
 		downloadingMediaFile = new File(context.getCacheDir(),"downloadMedia.dat");
 		
@@ -115,60 +107,60 @@ public class StreamingMediaPlayer {
 		}
 
         FileOutputStream out = new FileOutputStream(downloadingMediaFile);   
-        byte buf[] = new byte[16384];
+        
         do {
+        	byte buf[] = new byte[16384];
         	int numread = stream.read(buf);   
-            if (numread <= 0)   
-                break;   
+            if (numread <= 0)   isInterrupted = true;   
             out.write(buf, 0, numread);
-            totalKbRead += numread/1000;
-            
+    		totalKbRead += numread/1000;
+    		
             bufferMedia();
-           	notifyDataUpdated(); //info UI download in progress
         } while (validateNotInterrupted());
         
+    	//Download finish :copy to playing dat file, delete caching dat file
    		stream.close();
+		transferBufferToMediaPlayer();
+		downloadingMediaFile.delete();
+    }
         
-   		if (validateNotInterrupted()) {
-	       	notifyDataFinished(); // info UI download finished
-        }
-    }
-    
-    private boolean isPlaylist(String url) {
-        return url.indexOf("m3u") > -1 || url.indexOf("pls") > -1;
-    }
-    
     private boolean downloadPlaylist(String url) throws IOException {
-    	URLConnection cn = new URL(url).openConnection();
-        cn.connect();
-        InputStream stream = cn.getInputStream();
-        if (stream == null) {
-          return false;
-        }
+    	if (url.indexOf("m3u") > -1 || url.indexOf("pls") > -1) {
+    		URLConnection cn = new URL(url).openConnection();
+            cn.connect();
+            InputStream stream = cn.getInputStream();
+            if (stream == null) {
+              return false;
+            }
 
-        File downloadingMediaFile = new File(context.getCacheDir(), "playlist_data");
-        FileOutputStream out = new FileOutputStream(downloadingMediaFile);
-        byte buf[] = new byte[16384];
-        int bytesRead;
-        while ((bytesRead = stream.read(buf)) > 0) {
-          out.write(buf, 0, bytesRead);
-        }
+            File downloadingMediaFile = new File(context.getCacheDir(), "playlist_data");
+            FileOutputStream out = new FileOutputStream(downloadingMediaFile);
+            byte buf[] = new byte[16384];
+            int bytesRead;
+            while ((bytesRead = stream.read(buf)) > 0) {
+              out.write(buf, 0, bytesRead);
+            }
 
-        stream.close();
-        out.close();
-        PlaylistParser parser;
-        if (url.indexOf("m3u") > -1) {
-          parser = new M3uParser(downloadingMediaFile);
-        } else if (url.indexOf("pls") > -1) {
-          parser = new PlsParser(downloadingMediaFile);
-        } else {
-          return false;
-        }
-        playlistUrls = parser.getUrls();
-        return true;
+            stream.close();
+            out.close();
+            PlaylistParser parser;
+            if (url.indexOf("m3u") > -1) {
+              parser = new M3uParser(downloadingMediaFile);
+            } else if (url.indexOf("pls") > -1) {
+              parser = new PlsParser(downloadingMediaFile);
+            } else {
+              return false;
+            }
+            playlistUrls = parser.getUrls();
+            return true;
+    	}
+    	else {
+    		throw new IOException("URL is not a proper playing list for this app");
+    	}
+    	
     }
 
-    public boolean validateNotInterrupted() {
+    private boolean validateNotInterrupted() {
 		if (isInterrupted) {
 			if (mediaPlayer != null) {
 				mediaPlayer.pause();
@@ -184,43 +176,27 @@ public class StreamingMediaPlayer {
      * Create MediaPlayer and start to play when initial buffer is ready
      * Create new thread to play media
      * Notify UI thread to update relevant views when player starts
+     * @throws IOException 
      */  
-    private void  bufferMedia() {
+    private void  bufferMedia() throws IOException {
         if (mediaPlayer == null) {
         	//  Only create the MediaPlayer once we have the minimum buffered data
-        	if ( totalKbRead >= INTIAL_KB_BUFFER) {
+        	if ( totalKbRead >= Const.INTIAL_KB_BUFFER) {
         		try {
-            		startMediaPlayer();
+        			File playingMediaFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
+                	// Seperate downloading file and playing file to prevent deadlock 
+                	copyToPlayingFile(downloadingMediaFile,playingMediaFile);
+                	
+                	mediaPlayer = createMediaPlayer(playingMediaFile);
+            		// start playing as we already have enough buffer
+        	    	mediaPlayer.start();
         		} catch (Exception e) {
-        			Log.e(getClass().getName(), "Error copying buffered conent.", e);    			
+        			Log.e(getClass().getName(), "Error initializing the MediaPlayer.", e);    			
         		}
         	}
         } else if ( mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition() <= 1000 ){ 
-        	//  NOTE:  When < 1s, media player will not play,
-        	//  Flush any left over data still buf data to media file
         	transferBufferToMediaPlayer();
         }
-	    notifier.playStream();
-    }
-    
-    private void startMediaPlayer() {
-        try {   
-        	File playingMediaFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
-        	
-        	// Seperate downloading file and playing file to prevent deadlock 
-        	copyToPlayingFile(downloadingMediaFile,playingMediaFile);
-    		
-        	Log.e(getClass().getName(),"Buffered File path: " + playingMediaFile.getAbsolutePath());
-        	Log.e(getClass().getName(),"Buffered File length: " + playingMediaFile.length()+"");
-        	
-        	mediaPlayer = createMediaPlayer(playingMediaFile);
-        	
-    		// start playing as we already have enough buffer
-	    	mediaPlayer.start();
-        } catch (IOException e) {
-        	Log.e(getClass().getName(), "Error initializing the MediaPlayer.", e);
-        	return;
-        }   
     }
     
     private MediaPlayer createMediaPlayer(File mediaFile) throws IOException {
@@ -276,39 +252,11 @@ public class StreamingMediaPlayer {
 	    	Log.e(getClass().getName(), "Error updating to newly loaded content.", e);            		
 		}
     }
-    
-    public void notifyDataUpdated() {
-    	notifier.updatedStream();
-    }
-    
-    /** 
-     * Download finish 
-     * Copy to playing dat file 
-     * Delete caching dat file
-     */
-    public void notifyDataFinished() {
-    	transferBufferToMediaPlayer();
-    	downloadingMediaFile.delete();
-    	notifier.finishedStream();
-    }
-    
-    public MediaPlayer getMediaPlayer() {
-    	return mediaPlayer;
-	}
-    
-    public float getStreamingPer() {
-		return (float)totalKbRead/(float)mediaLengthInKb * 100;
-	}
-    
-    public void interrupt() {
-    	isInterrupted = true;
-    	validateNotInterrupted();
-    }
-    
+
     /**
      *  Move the file in oldLocation to newLocation.
      */
-	public void copyToPlayingFile(File	oldLocation, File	newLocation) throws IOException {
+	private void copyToPlayingFile(File	oldLocation, File	newLocation) throws IOException {
 		if ( oldLocation.exists( )) {
 			BufferedInputStream  reader = new BufferedInputStream( new FileInputStream(oldLocation) );
 			BufferedOutputStream  writer = new BufferedOutputStream( new FileOutputStream(newLocation, false));
@@ -334,22 +282,18 @@ public class StreamingMediaPlayer {
 			throw new IOException("Old location does not exist when transferring " + oldLocation.getPath() + " to " + newLocation.getPath() );
         }
 	}
+	
+	public void interrupt() {isInterrupted = true;}
+	
+	public MediaPlayer getMediaPlayer() {return mediaPlayer;}
 
-	public boolean isPlaying() {
-		return mediaPlayer.isPlaying();
-	}
+	public boolean isPlaying() {return mediaPlayer.isPlaying();}
 
-	public void pause() {
-		mediaPlayer.pause();
-	}
+	public void pause() {mediaPlayer.pause();}
 
-	public void start() {
-		mediaPlayer.start();
-	}
+	public void start() {mediaPlayer.start();}
 
-	public float getCurrentPosition() {
-		return mediaPlayer.getCurrentPosition();
-	}
+	public float getCurrentPosition() {	return mediaPlayer.getCurrentPosition();}
 
 	
 }
