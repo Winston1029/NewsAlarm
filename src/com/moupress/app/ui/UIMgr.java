@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.moupress.app.Const;
@@ -188,6 +189,7 @@ public class UIMgr {
 
 		btnAlarm = (Button) activity.findViewById(R.id.alarmbtn);
 		btnAlarm.setOnClickListener(toolbarButtonListener);
+                                        snoozeSelected);
 
 		btnSound = (Button) activity.findViewById(R.id.soundbtn);
 		btnSound.setOnClickListener(toolbarButtonListener);
@@ -216,7 +218,6 @@ public class UIMgr {
 	public GestureOverlayView gesturesView;
 	public ViewFlipper alarmInfoViewSlipper;
 	private OnListViewItemChangeListener onListViewItemChangeListener;
-
 	/**
 	 * Initialize Display alarm time text
 	 */
@@ -262,6 +263,10 @@ public class UIMgr {
 					if (nextAlarm > tmp) {
 						nextAlarm = tmp;
 						nextAlarmPosition = i;
+                    {
+                        nextAlarm = tmp;
+                        nextAlarmPosition = i;
+                    }
 					}
 				} else {
 					nextAlarm = tmp;
@@ -278,6 +283,10 @@ public class UIMgr {
 	/**
 	 * List view Item click
 	 */
+        initAlarmSettings();
+        hsListAdapter.updateTxtArrayList(hsDisplayTxt[1], 1);
+        //Toast.makeText(this.activity, hsDisplayTxt[1], Toast.LENGTH_LONG).show();
+    }
 	AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
@@ -376,19 +385,22 @@ public class UIMgr {
 	 * 
 	 * @param position
 	 */
+    {
 	private void hsListViewClicked(int position) {
-		switch (position) {
-		case 0:
+    {
+        switch (position)
+        {
+            case 0:
 			// display weather info
-			break;
-		case 1:
+                break;
+            case 1:
 			flipperListView(Const.SCREENS.AlarmTimeUI.ordinal());
-			break;
-		case 2:
+                break;
+            case 2:
 			flipperListView(Const.SCREENS.AlarmSoundUI.ordinal());
-			break;
-		}
-	}
+                break;
+        }
+    }
 
 	/**
 	 * common adapter used in all listview
