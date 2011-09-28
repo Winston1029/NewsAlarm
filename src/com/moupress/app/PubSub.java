@@ -1,14 +1,13 @@
 package com.moupress.app;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
+import com.moupress.app.TTS.CalendarTask;
 import com.moupress.app.alarm.AlarmManagerMgr;
-import com.moupress.app.media.StreamingMediaPlayer;
 import com.moupress.app.media.StreamingMgr;
 import com.moupress.app.snoozer.SnoonzeMgr;
 import com.moupress.app.snoozer.SnoozeListener;
@@ -95,11 +94,12 @@ public class PubSub {
 
 		initUI();
 		initUtil();
+		initAlarmTTSMgr();
 		initSnooze();
 		initMedia();
 		initWeather();
 		initAlarmMgr();
-		initAlarmTTSMgr();
+		//initAlarmTTSMgr();
 	}
 
 	public void onSnoozed() {
@@ -143,8 +143,8 @@ public class PubSub {
 	private void initMedia() {
 		streamingMgr = new StreamingMgr(context);
 		//String mediaUrl = Const.BBC_WORLD_SERVICE;
-		String mediaUrl = Const.MEDIACORP_938_MMS;
-		streamingMgr.startStreaming(mediaUrl, 1000, 600);
+		//String mediaUrl = Const.MEDIACORP_938_MMS;
+		//streamingMgr.startStreaming(mediaUrl, 1000, 600);
 	}
 
 	private void initWeather() {
