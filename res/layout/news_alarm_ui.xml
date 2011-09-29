@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     >
-<LinearLayout android:orientation="vertical"
-				android:layout_height="wrap_content"
+<LinearLayout 
+				android:id="@+id/mainContainer" 
+				android:orientation="vertical"
+				android:layout_height="match_parent"
 				android:layout_width="match_parent"
 				android:gravity="center_horizontal"
 				>
@@ -17,7 +19,9 @@
   				newsalarm:content="time"
   				android:layout_marginTop="20dip"
   				/>
-<LinearLayout android:layout_height="wrap_content"
+<LinearLayout
+			
+			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:orientation="horizontal"
 			android:gravity="center_horizontal"

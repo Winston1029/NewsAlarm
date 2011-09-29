@@ -11,6 +11,7 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -19,15 +20,13 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.moupress.app.Const;
 import com.moupress.app.R;
-import com.moupress.app.ui.uiControlInterface.OnAlarmSoundSelectListener;
-import com.moupress.app.ui.uiControlInterface.OnAlarmTimeChangeListener;
-import com.moupress.app.ui.uiControlInterface.OnSnoozeModeSelectListener;
 import com.moupress.app.util.DbHelper;
 
 public class UIMgr {
@@ -50,6 +49,7 @@ public class UIMgr {
 		this.initAlarmTimeUI();
 		this.initAlarmSoundUI();
 		this.initToolbarUI();
+		this.initMainContainer();
 	}
 
 	// =======================Home UI==============================================
@@ -208,9 +208,61 @@ public class UIMgr {
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
 	}
-
-	
-
+	//================Main Container==========================================
+	public LinearLayout llMainContainer = null;
+	/**
+	 * Register the main container with onTouchlistener	
+	 */
+	private void initMainContainer() {
+	    llMainContainer = (LinearLayout)this.activity.findViewById(R.id.mainContainer);
+	    llMainContainer.setOnTouchListener(new View.OnTouchListener() {
+	        float XStart = 0;
+            float XEnd = 0;
+            int toDisplayChildId = 0;
+            static final int EFFECTIVE_MOVEMENT = 50;
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                
+                switch(event.getAction())
+                {
+                  case MotionEvent.ACTION_DOWN:
+                       //System.out.println("Action Down On Touch!! "+event.getX()+" "+event.getY()+" Action "+event.getAction());
+                       XStart = XEnd = event.getX();
+                       return true;
+                   case MotionEvent.ACTION_MOVE:
+                       //System.out.println("Action Move On Touch!! "+event.getY()+" Action "+event.getAction());
+                       XEnd = event.getX();
+                       return true;
+                   case MotionEvent.ACTION_UP:
+                       if(XEnd > XStart + EFFECTIVE_MOVEMENT)
+                       {
+                           System.out.println("from left: " + XStart + "to right: " + XEnd + " Page: "+ alarmInfoViewSlipper.getDisplayedChild());
+                           toDisplayChildId = alarmInfoViewSlipper.getDisplayedChild();
+                           if(toDisplayChildId == 0)
+                               flipperListView(3);
+                           else
+                               flipperListView(toDisplayChildId - 1);
+                       }
+                       else if(XEnd < XStart - EFFECTIVE_MOVEMENT){
+                         System.out.println("from right: " + XStart + "to left: " + XEnd);
+                           toDisplayChildId = alarmInfoViewSlipper.getDisplayedChild();
+                           if(toDisplayChildId == 3)
+                               flipperListView(0);
+                           else
+                               flipperListView(toDisplayChildId + 1);
+                       }
+                       XEnd = XStart = 0;
+                       return true;
+                   case MotionEvent.ACTION_CANCEL:
+                       return true;
+                    default:
+                        //System.out.println("Touch Event : " + event.getAction());
+                        return true;
+                }
+            }
+        });
+	}
 
 //All Listener Events===================================
 	public GestureOverlayView gesturesView;
@@ -275,6 +327,7 @@ public class UIMgr {
 		}
 	}
 
+	
 	/**
 	 * List view Item click
 	 */
@@ -485,6 +538,8 @@ public class UIMgr {
 			alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
 		}
 	}
+	
+	
 	private void initSoonzeControls() {
 		gesturesView = (GestureOverlayView) activity.findViewById(R.id.gestures);
 	}
