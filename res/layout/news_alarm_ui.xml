@@ -146,19 +146,28 @@
 <com.moupress.app.ui.NewsAlarmSlidingUpPanel
    android:id="@+id/timeupdatepanel"
    android:layout_width="match_parent"
-   android:layout_height="140dip"
+   android:layout_height="170dip"
    android:orientation="vertical"
    android:visibility="gone"
    android:background="@drawable/menu_bar"
    android:layout_alignParentBottom="true"
+   android:gravity = "center_horizontal"
  	>
+<com.moupress.app.ui.SlideButton.SlideButton
+ 		android:id = "@+id/slideBtn"  
+        android:layout_width="250dip"   
+        android:layout_height="40dip" 
+        android:background="@drawable/slide_bg"
+        android:layout_marginTop="7dip"
+        >
+</com.moupress.app.ui.SlideButton.SlideButton>
 <LinearLayout
  android:orientation="horizontal"
  style="@style/viewsliperchild.sub"
  android:background="@android:color/transparent"
  android:layout_width="match_parent"
  android:layout_height="wrap_content"
- android:layout_marginTop="20dip"
+ android:layout_marginTop="4dip"
 >
 <kankan.wheel.widget.WheelView android:id="@+id/wheelhour"
 		style="@style/timewheel"/>

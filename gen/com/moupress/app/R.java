@@ -67,13 +67,15 @@ containing a value of this type.
         public static final int icon=0x7f02000d;
         public static final int menu_bar=0x7f02000e;
         public static final int radio=0x7f02000f;
-        public static final int snooze_btn_selector=0x7f020010;
-        public static final int snooze_setting=0x7f020011;
-        public static final int snooze_setting_pressed=0x7f020012;
-        public static final int sound_btn_selector=0x7f020013;
-        public static final int viewslider_bg=0x7f020014;
-        public static final int wheel_bg=0x7f020015;
-        public static final int world=0x7f020016;
+        public static final int slide_bg=0x7f020010;
+        public static final int slide_thumb=0x7f020011;
+        public static final int snooze_btn_selector=0x7f020012;
+        public static final int snooze_setting=0x7f020013;
+        public static final int snooze_setting_pressed=0x7f020014;
+        public static final int sound_btn_selector=0x7f020015;
+        public static final int viewslider_bg=0x7f020016;
+        public static final int wheel_bg=0x7f020017;
+        public static final int world=0x7f020018;
     }
     public static final class id {
         public static final int Button01=0x7f090007;
@@ -86,7 +88,7 @@ containing a value of this type.
         public static final int btnPause=0x7f09000d;
         public static final int btnShutdown=0x7f09000b;
         public static final int btnStart=0x7f09000c;
-        public static final int btnselector=0x7f090047;
+        public static final int btnselector=0x7f090049;
         public static final int button_play=0x7f090012;
         public static final int button_stream=0x7f090010;
         public static final int checked=0x7f090002;
@@ -131,6 +133,7 @@ containing a value of this type.
         public static final int progress_bar=0x7f090011;
         public static final int refresh_button=0x7f090030;
         public static final int removeItemPanel=0x7f09003c;
+        public static final int slideBtn=0x7f090042;
         public static final int snooze=0x7f09003b;
         public static final int snoozebtn=0x7f09003e;
         public static final int snoozelistview=0x7f090038;
@@ -139,20 +142,22 @@ containing a value of this type.
         public static final int temp=0x7f09001b;
         public static final int testBtnLayout=0x7f090009;
         public static final int text_streamed=0x7f09000f;
-        public static final int timeaddcancel=0x7f090046;
-        public static final int timeaddok=0x7f090045;
+        public static final int timeaddcancel=0x7f090047;
+        public static final int timeaddok=0x7f090046;
         public static final int timeupdatepanel=0x7f090041;
         public static final int update_time=0x7f090015;
         public static final int weekday=0x7f090034;
-        public static final int wheelhour=0x7f090042;
-        public static final int wheelminute=0x7f090043;
-        public static final int wheelsecond=0x7f090044;
+        public static final int wheelhour=0x7f090043;
+        public static final int wheelminute=0x7f090044;
+        public static final int wheelsecond=0x7f090045;
         public static final int wind=0x7f090019;
+        public static final int wkday=0x7f090048;
     }
     public static final class layout {
         public static final int home_screen_item=0x7f030000;
         public static final int main=0x7f030001;
         public static final int news_alarm_ui=0x7f030002;
+        public static final int weekday=0x7f030003;
     }
     public static final class raw {
         public static final int spells=0x7f050000;

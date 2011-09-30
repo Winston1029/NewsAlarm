@@ -4,7 +4,6 @@ package com.moupress.app.ui;
 import com.moupress.app.R;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -71,5 +70,10 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 		
 		public void onSlidingUpEnd();
 		public void onSlidingDownEnd();
+	}
+
+	public void setOpen(boolean open) {
+		// TODO Auto-generated method stub
+		this.isOpen = open;
 	}
 }

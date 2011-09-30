@@ -25,6 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.moupress.app.ui.SlideButton.OnChangeListener;
+import com.moupress.app.ui.SlideButton.SlideButton;
+import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
+import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
 import com.moupress.app.Const;
 import com.moupress.app.R;
 import com.moupress.app.util.DbHelper;
@@ -102,6 +106,10 @@ public class UIMgr {
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
+	
+	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
+	private SlideButtonAdapter viewAdapter;
+	private SlideButton myBtn;
 
 	/**
 	 * Initialize Alarm Time Screen
@@ -130,6 +138,7 @@ public class UIMgr {
 		btnUpdateTimeOk.setOnClickListener(alarmWheelButtonListener);
 		btnUpdateTimeCancel.setOnClickListener(alarmWheelButtonListener);
 		timeSlidingUpPanel = (NewsAlarmSlidingUpPanel) activity.findViewById(R.id.timeupdatepanel);
+		timeSlidingUpPanel.setOpen(false);
 
 		timeSlidingUpPanel
 				.setPanelSlidingListener(new NewsAlarmSlidingUpPanel.PanelSlidingListener() {
@@ -150,6 +159,22 @@ public class UIMgr {
 		hours.setViewAdapter(new NumericWheelAdapter(activity, 0, 12));
 		minutes.setViewAdapter(new NumericWheelAdapter(activity, 0, 59, "%02d"));
 		amOrpm.setViewAdapter(new ArrayWheelAdapter<String>(activity, AMPM));
+		
+		myBtn =(SlideButton) activity.findViewById(R.id.slideBtn);
+	    myBtn.setOnChangedListener(new OnChangeListener()
+	    {
+
+	    	public void OnChanged(int i,boolean direction,View v) {
+
+	    		if(direction == true)
+	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+	    		else
+	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
+	    	}
+	    	
+	    });
+		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
+        myBtn.setViewAdapter(viewAdapter);
 	}
 
 	// =======================Alarm Sound UI==============================================
@@ -193,6 +218,7 @@ public class UIMgr {
 		btnSound.setOnClickListener(toolbarButtonListener);
 
 		buttonBarSlidingUpPanel = (NewsAlarmSlidingUpPanel) activity.findViewById(R.id.removeItemPanel);
+		buttonBarSlidingUpPanel.setOpen(true);
 		buttonBarSlidingUpPanel
 				.setPanelSlidingListener(new NewsAlarmSlidingUpPanel.PanelSlidingListener() {
 
