@@ -2,9 +2,11 @@ package com.moupress.app.weather;
 
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,47 +20,24 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.moupress.app.Const;
 import com.moupress.app.util.NetworkConnection;
+import com.moupress.app.weather.Weather.Temperature;
+import com.moupress.app.weather.Weather.UnitSystem;
 import com.moupress.app.weather.Weather.WeatherCondition;
 
-public class WeatherMgr extends Service implements Runnable {
+public class WeatherMgr implements Runnable {
 
 	
 	private static final String TAG = "NewsAlarm";
 	private static final String DEFAULT_LOCATION = "Singapore";
 	
 	private Context context;
-	
-	private ImageButton refreshButton;
-	private TextView txv_wind;
-	private TextView txv_humidity;
-	private TextView txv_updatetime;
-	private TextView txv_location;
+
 	private NetworkConnection nc;
-	
-	public WeatherMgr(Context context, ImageButton refreshBtn, TextView wind, TextView humidity, TextView updatetime, TextView location) {
-		this.context = context;
-		this.refreshButton = refreshBtn;
-		this.txv_wind = wind;
-		this.txv_humidity = humidity;
-		this.txv_updatetime = updatetime;
-		this.txv_location = location;
 		
-		//Connect Check
-		this.nc = new NetworkConnection(Const.HOST_WEATHER_SERVICE,context);
-		
-		refreshButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-			}
-        });
-	}
-	
 	public WeatherMgr(Context context) {
 		this.context = context;
-		
 		//Connect Check
 		this.nc = new NetworkConnection(Const.HOST_WEATHER_SERVICE,context);
 	}
@@ -110,11 +89,9 @@ public class WeatherMgr extends Service implements Runnable {
 		} catch (WeatherException e) {
 			e.printStackTrace();
 		}
-		
-		updateUI();
 	}
 	
-	public String getWeather() {
+	public Hashtable<String, String> getCurrentWeather() {
 		weather = new GoogleWeather();
 		
 		boolean autoLocation = true;
@@ -131,42 +108,54 @@ public class WeatherMgr extends Service implements Runnable {
 		} catch (WeatherException e) {
 			e.printStackTrace();
 		}
-		updateUI();
 		
-		if (weather.getConditions().size() <= 0) {
-            return "";
-        }
-		WeatherCondition currentCondition = weather.getConditions().get(0);
+		Hashtable<String, String> weatherDetail = new Hashtable<String, String>();
 		String sCondition;
-		if (currentCondition.temperature.unit.name() == "US")
-			sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " F";
-		else  sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " C";
-		Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
-		return sCondition;
-	}
-
-	private void updateUI() {
-		if (Const.ISDEBUG) {
-			// location & time
-			txv_location.setText(weather.getLocation().getText());
-			txv_updatetime.setText(weather.getTime().toLocaleString());
-			
-			//humidity & wind
-			if (weather.getConditions().size() <= 0) {
-	            return;
-	        }
+		if (weather.getConditions().size() <= 0) {
+			sCondition = "";
+        }
+		else {
 			WeatherCondition currentCondition = weather.getConditions().get(0);
-			txv_humidity.setText(currentCondition.getHumidityText());
-			txv_wind.setText(currentCondition.getWindText());
-		}		
+		
+			if (currentCondition.temperature.unit.name() == "US")
+				sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " F";
+			else  sCondition = currentCondition.getConditionText() + " " + currentCondition.temperature.getCurrent() + " C";
+		}
+		
+		weatherDetail.put(Const.WEATHERINFO_CURRENT, sCondition);
+		Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
+		return weatherDetail;
 	}
-
-	private boolean isExpired(long timestamp) {
-		return false;
+	
+	public Hashtable<String, String> getWeatherDetails() {
+		Hashtable<String, String> weatherDetail = new Hashtable<String, String>();
+		weatherDetail.put(Const.WEATHERINFO_WINDHUMIDITY, getWindHumidity());
+		weatherDetail.put(Const.WEATHERINFO_FORCAST, getForecasts());
+		return weatherDetail;
+	}
+	
+	private String getForecasts() {
+        String forecastsStr = new String();
+        for (int i = 1; i < 4; i++) {
+            if (weather.getConditions().size() <= i) {
+                break;
+            }
+            WeatherCondition forecastCondition = weather.getConditions().get(i);
+            Temperature forecastTemp = forecastCondition.getTemperature(forecastCondition.temperature.unit);
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(weather.getTime());
+            calendar.add(Calendar.DAY_OF_YEAR, i);
+            Date day = calendar.getTime();
+            
+            forecastsStr = forecastsStr + day.toString() + Const.WEATHERINFO_SEPARATOR + forecastCondition.getConditionText() + Const.WEATHERINFO_SEPARATOR;
+            forecastsStr = forecastsStr + forecastTemp.getHigh() + Const.WEATHERINFO_SEPARATOR + forecastTemp.getLow() + Const.WEATHERINFO_SEPARATOR;
+        }
+        return forecastsStr;
     }
-
-	@Override
-	public IBinder onBind(Intent arg0) {
-		return null;
-	}
+	
+	private String getWindHumidity() {
+		WeatherCondition currentCondition = weather.getConditions().get(0);
+        return currentCondition.getHumidityText() + Const.WEATHERINFO_SEPARATOR + currentCondition.getWindText();
+    }
 }
