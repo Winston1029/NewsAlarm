@@ -12,6 +12,11 @@ public class Const {
 
 	public static final String MEDIACORP_938_MMS = "mms://a1109.l11459635108.c114596.g.lm.akamaistream.net/D/1109/114596/v0001/reflector:35108";
 
+	public static final String WEATHERINFO_SEPARATOR = ";";
+	public static final String WEATHERINFO_WINDHUMIDITY = "windhumidity";
+	public static final String WEATHERINFO_FORCAST = "focast";
+	public static final String WEATHERINFO_CURRENT = "current";
+	
 	// larger means longer waiting time at the beginning
 	public static final int INTIAL_KB_BUFFER = 160 * 10 / 8;
 

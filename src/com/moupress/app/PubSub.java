@@ -148,14 +148,9 @@ public class PubSub {
 	}
 
 	private void initWeather() {
-		if (Const.ISDEBUG) {
-			weatherMgr = new WeatherMgr(context, uiMgrDebug.refreshButton,
-					uiMgrDebug.txv_wind, uiMgrDebug.txv_humidity,
-					uiMgrDebug.txv_updatetime, uiMgrDebug.txv_location);
-		} else {
-			weatherMgr = new WeatherMgr(context);
-			uiMgr.updateHomeWeatherText(weatherMgr.getWeather());
-		}
+		weatherMgr = new WeatherMgr(context);
+		String weatherConditionText = weatherMgr.getCurrentWeather().get(Const.WEATHERINFO_CURRENT);
+		uiMgr.updateHomeWeatherText(weatherConditionText);
 	}
 
 	private void initAlarmMgr() {

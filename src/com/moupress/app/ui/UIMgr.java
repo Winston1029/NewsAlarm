@@ -265,17 +265,17 @@ public class UIMgr {
                        {
                            System.out.println("from left: " + XStart + "to right: " + XEnd + " Page: "+ alarmInfoViewSlipper.getDisplayedChild());
                            toDisplayChildId = alarmInfoViewSlipper.getDisplayedChild();
-                           if(toDisplayChildId == 0)
-                               flipperListView(3);
-                           else
+                           if(toDisplayChildId != 0)
+//                               flipperListView(3);
+//                           else
                                flipperListView(toDisplayChildId - 1);
                        }
                        else if(XEnd < XStart - EFFECTIVE_MOVEMENT){
                          System.out.println("from right: " + XStart + "to left: " + XEnd);
                            toDisplayChildId = alarmInfoViewSlipper.getDisplayedChild();
-                           if(toDisplayChildId == 3)
-                               flipperListView(0);
-                           else
+                           if(toDisplayChildId != 3)
+//                               flipperListView(0);
+//                           else
                                flipperListView(toDisplayChildId + 1);
                        }
                        XEnd = XStart = 0;
