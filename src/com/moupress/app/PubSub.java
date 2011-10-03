@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
+import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
 import com.moupress.app.TTS.CalendarTask;
@@ -104,6 +106,9 @@ public class PubSub {
 
 	public void onSnoozed() {
 		uiMgr.showSnoozeView();
+		AudioManager mAudioManager = (AudioManager) activity.getSystemService(context.AUDIO_SERVICE);
+		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
 		streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
 	}
 
@@ -127,8 +132,7 @@ public class PubSub {
 			@Override
 			public void onSnoozed() {
 				System.out.println("Snoozed");
-				// Toast.makeText(context, "Snooze Detected",
-				// Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Sleep For 5 Mins", Toast.LENGTH_SHORT).show();
 				streamingMgr.interrupt();
 				snoozeMgr.unRegisterListener(SnoonzeMgr.GESTURE_SNOOZE_TYPE);
 			}
