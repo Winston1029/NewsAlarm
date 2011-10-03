@@ -43,6 +43,10 @@ public class SlideButton extends View implements OnTouchListener{
 	
 	private int preCensorPos = 0;
 	
+	private int slidePos = 0;
+	
+	private boolean isSliding = false;
+	
 	/** Left and right padding value */
 	private static final int PADDING = 7;
 	
@@ -52,7 +56,6 @@ public class SlideButton extends View implements OnTouchListener{
 	{
 		super(context);
 		init();
-		
 	}
 	private void init() {
 		slip_btn = BitmapFactory.decodeResource(getResources(), R.drawable.slide_thumb);
@@ -80,10 +83,9 @@ public class SlideButton extends View implements OnTouchListener{
 		itemsPostions = new int[itemsLayout.getChildCount()];
 		for(int i=0;i<itemsLayout.getChildCount();i++)
 		{
-			itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft()+((View)itemsLayout.getChildAt(i)).getWidth()/2;
+			itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft()+((View)itemsLayout.getChildAt(i)).getWidth();
 			//System.out.println("Child Position "+i+" " + itemsPostions[i]);
 		}
-		
 	}
 
 	@Override
@@ -112,6 +114,8 @@ public class SlideButton extends View implements OnTouchListener{
 		 }
 		 canvas.drawBitmap(slip_btn,x, 0, paint);
 		 censorPos = (int) currentX;
+		 
+		 if(isSliding == true)
 		 comparePosition();
 	}
 	
@@ -122,9 +126,13 @@ public class SlideButton extends View implements OnTouchListener{
 			if(itemsPostions[i]>=preCensorPos && itemsPostions[i]<=censorPos)
 			{
 				chgLsn.OnChanged(i,true,(TextView)itemsLayout.getChildAt(i));
-			}else if(itemsPostions[i]<=preCensorPos && itemsPostions[i]>=censorPos)
+				slidePos = i;
+			}
+			 else if(itemsPostions[i]<=preCensorPos && itemsPostions[i]>=censorPos)
 			{
 				chgLsn.OnChanged(i,false,(TextView)itemsLayout.getChildAt(i));
+				
+				slidePos = i-1;
 			}
 		}
 		
@@ -251,12 +259,22 @@ public class SlideButton extends View implements OnTouchListener{
 		 {	
 		 case MotionEvent.ACTION_MOVE:
 			 currentX = event.getX();
+			 isSliding = true;
 			 break;
 		 case MotionEvent.ACTION_DOWN:
 			 downX = event.getX();
 			 currentX = downX;
+			 
 			 break;
 		 case MotionEvent.ACTION_UP:
+			 if(isSliding == true)
+			 {
+			 if(slidePos>=0)
+			 currentX= itemsPostions[slidePos]+ slip_btn.getWidth()/2;
+			 else
+		     currentX = 0;
+			 isSliding = false;
+			 }
 			 break; 
 		 default: 
 		 }

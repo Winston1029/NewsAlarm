@@ -146,7 +146,7 @@
 <com.moupress.app.ui.NewsAlarmSlidingUpPanel
    android:id="@+id/timeupdatepanel"
    android:layout_width="match_parent"
-   android:layout_height="170dip"
+   android:layout_height="180dip"
    android:orientation="vertical"
    android:visibility="gone"
    android:background="@drawable/menu_bar"

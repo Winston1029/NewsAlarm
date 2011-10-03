@@ -63,6 +63,7 @@ public class UIMgr {
 	private int[] hsDisplayIcon = { R.drawable.world, R.drawable.clock,
 			R.drawable.disc };
 	private boolean[] hsSelected = { false, false, false };
+	
 
 	/**
 	 * Initilise home screen.
@@ -108,8 +109,9 @@ public class UIMgr {
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
+	private boolean[] daySelected = new boolean[]{false,false,false,false,false,false,false};
 	private SlideButtonAdapter viewAdapter;
-	private SlideButton myBtn;
+	private SlideButton slideBtn;
 
 	/**
 	 * Initialize Alarm Time Screen
@@ -160,21 +162,28 @@ public class UIMgr {
 		minutes.setViewAdapter(new NumericWheelAdapter(activity, 0, 59, "%02d"));
 		amOrpm.setViewAdapter(new ArrayWheelAdapter<String>(activity, AMPM));
 		
-		myBtn =(SlideButton) activity.findViewById(R.id.slideBtn);
-	    myBtn.setOnChangedListener(new OnChangeListener()
+		slideBtn =(SlideButton) activity.findViewById(R.id.slideBtn);
+	    slideBtn.setOnChangedListener(new OnChangeListener()
 	    {
 
 	    	public void OnChanged(int i,boolean direction,View v) {
 
 	    		if(direction == true)
+	    		{
 	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+	    		daySelected[i]=true;
+	    		}
 	    		else
+	    		{
 	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
+	    		daySelected[i]=false;
+	    		}
+	    		
 	    	}
 	    	
 	    });
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
-        myBtn.setViewAdapter(viewAdapter);
+        slideBtn.setViewAdapter(viewAdapter);
 	}
 
 	// =======================Alarm Sound UI==============================================
@@ -408,6 +417,9 @@ public class UIMgr {
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
 						minutes.getCurrentItem(), 0, 0);
+				//Get Weekdays selected
+				System.out.println("Days Selected" + daySelected[0]);
+				
 				break;
 			case R.id.timeaddcancel:
 				timeSlidingUpPanel.toggle();
