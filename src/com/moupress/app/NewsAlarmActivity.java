@@ -1,10 +1,13 @@
 package com.moupress.app;
 
+import com.moupress.app.alarm.AlarmManagerMgr;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 
 public class NewsAlarmActivity extends Activity {
@@ -18,9 +21,10 @@ public class NewsAlarmActivity extends Activity {
         
         Intent mainIntent = this.getIntent();
         Bundle extras = mainIntent.getExtras();
+        
+        
         //check if the activity is launch by user or broadcast receiver
 
-            //Logic to handle the event of launching by user
             if (Const.ISDEBUG) {
                 setContentView(R.layout.main);
             }  else {
@@ -28,6 +32,13 @@ public class NewsAlarmActivity extends Activity {
             }
            
             pubsub = new PubSub(getBaseContext(), this);
+            
+            if(extras != null)
+            {
+            	int alarmNo = extras.getInt(AlarmManagerMgr.AlarmNumber);
+                Toast.makeText(this, "Alarm : " + alarmNo, Toast.LENGTH_LONG).show();
+                pubsub.onSnoozed();
+            }
        
     }
     
