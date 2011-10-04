@@ -16,6 +16,7 @@ public class TextSlideButtonAdapter extends AbstractSlideButtonAdapter{
 	private LayoutInflater inflator;
 	private Context ctx;
 	
+	
 	public TextSlideButtonAdapter(String[] items,Context ctx)
 	{
 		this.items = items;
@@ -35,6 +36,7 @@ public class TextSlideButtonAdapter extends AbstractSlideButtonAdapter{
 		//TextView tv = new TextView(ctx);
 		tv.setTextColor(ctx.getResources().getColor(R.color.black));
 		tv.setText(items[index]);
+		
 		return tv;
 	}
 
