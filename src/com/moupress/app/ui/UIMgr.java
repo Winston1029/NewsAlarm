@@ -584,6 +584,7 @@ public class UIMgr {
 				alarmInfoViewSlipper.setOutAnimation(activity,R.anim.slideouttoleft);
 				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
 			}
+			buttonBarSlidingUpPanel.setVisibility(View.VISIBLE);
 		}
 	}
 	
