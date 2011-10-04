@@ -37,5 +37,8 @@ public class Const {
     public static final String ISALARMSET = "IsAlarmSet_";
     public static final String SNOOZE = "Snooze_";
     public static final String GESTURE = "Gesture";
-    
+    //===============Calendar Event==========================
+    public static final String CALENDER_ID = "_id";
+    public static final String CALENDER_TITLE = "title";
+    public static final String CALENDER_STARTDATE = "dtstart";
 }
