@@ -106,7 +106,8 @@ public class PubSub {
 
 	public void onSnoozed() {
 		uiMgr.showSnoozeView();
-		AudioManager mAudioManager = (AudioManager) activity.getSystemService(context.AUDIO_SERVICE);
+		uiMgr.getButtonBarSlidingUpPanel().toggle();
+		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
 		streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);

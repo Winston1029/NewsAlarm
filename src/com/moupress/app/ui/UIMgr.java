@@ -185,6 +185,7 @@ public class UIMgr {
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
         slideBtn.setViewAdapter(viewAdapter);
 	}
+	
 
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
@@ -242,6 +243,10 @@ public class UIMgr {
 				});
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
+	}
+
+	public NewsAlarmSlidingUpPanel getButtonBarSlidingUpPanel() {
+		return buttonBarSlidingUpPanel;
 	}
 	//================Main Container==========================================
 	public LinearLayout llMainContainer = null;
