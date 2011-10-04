@@ -34,6 +34,9 @@ public class CalendarTask {
 	public Hashtable[] getCalendarTasks() {
 		
 		int[] calIds = getSelectedCalendars();
+		if(calIds == null)
+		    return null;
+		
 		Hashtable[] events = new Hashtable[calIds.length];
 		for (int i = 0; i < calIds.length; i++) {
 			events[i] = getTDayCalEventSumary(calIds[i]);
@@ -53,11 +56,14 @@ public class CalendarTask {
 
         Cursor managedCursor = getCalendarManagedCursor(projection, selection, path);
 
-        String[] calNames = new String[managedCursor.getCount()];
-		int[] calIds = new int[managedCursor.getCount()];
+        //String[] calNames = new String[managedCursor.getCount()];
+		int[] calIds = null;
         
         if (managedCursor != null && managedCursor.moveToFirst()) {
-
+            
+            String[] calNames = new String[managedCursor.getCount()];
+            calIds = new int[managedCursor.getCount()];
+           
             int nameColumn = managedCursor.getColumnIndex("name");
             int idColumn = managedCursor.getColumnIndex("_id");
 

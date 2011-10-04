@@ -101,7 +101,7 @@ public class PubSub {
 		initMedia();
 		initWeather();
 		initAlarmMgr();
-		//initAlarmTTSMgr();
+		initAlarmTTSMgr();
 	}
 
 	public void onSnoozed() {
@@ -109,7 +109,8 @@ public class PubSub {
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
-		streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+		//streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+		alarmTTSMgr.ttsPlayOrResume();
 	}
 
 	private void initUtil() {
@@ -176,10 +177,10 @@ public class PubSub {
 			alarmTTSMgr = new AlarmTTSMgr(context, uiMgrDebug.btnPlay,
 					uiMgrDebug.btnPause, uiMgrDebug.btnShutdown);
 		} else {
-			alarmTTSMgr = new AlarmTTSMgr(context);
+			alarmTTSMgr = new AlarmTTSMgr(context, this.activity);
 		}
-		// alarmTTSMgr.getTalker().AddMsgToSpeak("Text to speach start");
-		// alarmTTSMgr.getTalker().PlayOrResumeSpeak();
+		//alarmTTSMgr.ttsPlayOrResume();
+
 	}
 
 	private Calendar getAlarm(int alarmPosition)
@@ -202,6 +203,7 @@ public class PubSub {
 	
 	public void exit() {
 		streamingMgr.interrupt();
+		alarmTTSMgr.ttsShutDown();
 	}
 
 }
