@@ -28,7 +28,8 @@ public class AlarmReceiver extends BroadcastReceiver
             //bundleInfo.putString("ALARM", "Time is Now!");
             bundleInfo.putInt(AlarmManagerMgr.AlarmNumber, extras.getInt(AlarmManagerMgr.AlarmNumber));
             alarmIntent.putExtras(bundleInfo);
-            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            //alarmIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(alarmIntent);
             return;
         }

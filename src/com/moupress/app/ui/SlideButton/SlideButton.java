@@ -119,6 +119,8 @@ public class SlideButton extends View implements OnTouchListener{
 		 comparePosition();
 	}
 	
+	
+	
 	private void comparePosition() {
 		//System.out.println("censor position "+ censorPos);
 		for(int i = 0;i<itemsPostions.length;i++)

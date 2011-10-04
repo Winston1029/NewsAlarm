@@ -106,6 +106,7 @@ public class UIMgr {
 	private boolean[] alarmSelected = { false, false, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
+	private boolean bSettingAlarmTimeDisableFlip;
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
@@ -144,12 +145,14 @@ public class UIMgr {
 
 		timeSlidingUpPanel
 				.setPanelSlidingListener(new NewsAlarmSlidingUpPanel.PanelSlidingListener() {
+
 					@Override
 					public void onSlidingUpEnd() {
 					}
 
 					@Override
 					public void onSlidingDownEnd() {
+						bSettingAlarmTimeDisableFlip = false;
 						buttonBarSlidingUpPanel.toggle();
 					}
 				});
@@ -184,7 +187,9 @@ public class UIMgr {
 	    });
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
         slideBtn.setViewAdapter(viewAdapter);
+        bSettingAlarmTimeDisableFlip = false;
 	}
+	
 
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
@@ -237,12 +242,14 @@ public class UIMgr {
 
 					@Override
 					public void onSlidingDownEnd() {
+						bSettingAlarmTimeDisableFlip = true;
 						timeSlidingUpPanel.toggle();
 					}
 				});
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
 	}
+	
 	//================Main Container==========================================
 	public LinearLayout llMainContainer = null;
 	/**
@@ -562,18 +569,22 @@ public class UIMgr {
 
 	/**
 	 * UI Flipper Animation
+	 * When user is setting alarm time using timeSlidingUpPanel, disable flip
 	 * 
 	 * @param toDisplayedChild
 	 */
 	private void flipperListView(int toDisplayedChild) {
-		if (alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild) {
-			alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
-			alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideout);
-			alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
-		} else if (alarmInfoViewSlipper.getDisplayedChild() < toDisplayedChild) {
-			alarmInfoViewSlipper.setInAnimation(activity,R.anim.slideinfromright);
-			alarmInfoViewSlipper.setOutAnimation(activity,R.anim.slideouttoleft);
-			alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+		if (!bSettingAlarmTimeDisableFlip) {
+			if (alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild) {
+				alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
+				alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideout);
+				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+			} else if (alarmInfoViewSlipper.getDisplayedChild() < toDisplayedChild) {
+				alarmInfoViewSlipper.setInAnimation(activity,R.anim.slideinfromright);
+				alarmInfoViewSlipper.setOutAnimation(activity,R.anim.slideouttoleft);
+				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+			}
+			buttonBarSlidingUpPanel.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -595,6 +606,7 @@ public class UIMgr {
 	 */
 	public void showSnoozeView() {
 		flipperListView(4);
+		buttonBarSlidingUpPanel.setVisibility(View.INVISIBLE);
 	}
 
 	public void updateHomeAlarmText() {
