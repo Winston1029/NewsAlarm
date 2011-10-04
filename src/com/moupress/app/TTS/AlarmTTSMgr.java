@@ -1,12 +1,9 @@
 package com.moupress.app.TTS;
 
 import java.util.Hashtable;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -67,24 +64,8 @@ public class AlarmTTSMgr {
 	public AlarmTTSMgr(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-        //talker = new AlarmTTS(context);
         talker = new AlarmTTS(activity);
         setDefaultMsg();
-
-        //talker.PlayOrResumeSpeak();
-        
-        
-    }
-	public AlarmTTSMgr(Activity activity) {
-        //this.context = context;
-        this.activity = activity;
-        //talker = new AlarmTTS(context);
-        talker = new AlarmTTS(activity);
-        setDefaultMsg();
-
-        //talker.PlayOrResumeSpeak();
-        
-        
     }
 	
 	private void setDefaultMsg()

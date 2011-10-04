@@ -8,7 +8,6 @@ import android.media.AudioManager;
 import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
-import com.moupress.app.TTS.CalendarTask;
 import com.moupress.app.alarm.AlarmManagerMgr;
 import com.moupress.app.media.StreamingMgr;
 import com.moupress.app.snoozer.SnoonzeMgr;
