@@ -106,7 +106,6 @@ public class PubSub {
 
 	public void onSnoozed() {
 		uiMgr.showSnoozeView();
-		uiMgr.getButtonBarSlidingUpPanel().toggle();
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
