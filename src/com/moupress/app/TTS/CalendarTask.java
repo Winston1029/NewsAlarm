@@ -34,6 +34,9 @@ public class CalendarTask {
 	public Hashtable[] getCalendarTasks() {
 		
 		int[] calIds = getSelectedCalendars();
+		if(calIds == null)
+		    return null;
+		
 		Hashtable[] events = new Hashtable[calIds.length];
 		for (int i = 0; i < calIds.length; i++) {
 			events[i] = getTDayCalEventSumary(calIds[i]);
@@ -53,11 +56,14 @@ public class CalendarTask {
 
         Cursor managedCursor = getCalendarManagedCursor(projection, selection, path);
 
-        String[] calNames = new String[managedCursor.getCount()];
-		int[] calIds = new int[managedCursor.getCount()];
+        //String[] calNames = new String[managedCursor.getCount()];
+		int[] calIds = null;
         
         if (managedCursor != null && managedCursor.moveToFirst()) {
-
+            
+            String[] calNames = new String[managedCursor.getCount()];
+            calIds = new int[managedCursor.getCount()];
+           
             int nameColumn = managedCursor.getColumnIndex("name");
             int idColumn = managedCursor.getColumnIndex("_id");
 
@@ -95,13 +101,16 @@ public class CalendarTask {
         ContentResolver contentResolver = activity.getContentResolver();
         Cursor eventCursor = contentResolver.query(builder.build(), projection, selection, null, "startDay ASC, startMinute ASC"); 
         Hashtable<String, String> eventSummary = new Hashtable<String, String>();
-        while (eventCursor.moveToNext()) {
-            int number = eventCursor.getColumnCount();
-            for (int i = 0; i < number; i++) {
-            	String colName = eventCursor.getColumnName(i);
-            	String colValue = eventCursor.getString(i);
-            	eventSummary.put(colName, colValue);
-            }
+        if (eventCursor != null && eventCursor.moveToFirst()) {
+        	do {
+        		int number = eventCursor.getColumnCount();
+                for (int i = 0; i < number; i++) {
+                	String colName = eventCursor.getColumnName(i);
+                	String colValue = eventCursor.getString(i);
+                	eventSummary.put(colName, colValue);
+                }
+        	} while  (eventCursor.moveToNext());
+        	
         }
         
         return eventSummary;

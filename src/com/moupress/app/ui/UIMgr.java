@@ -106,6 +106,7 @@ public class UIMgr {
 	private boolean[] alarmSelected = { false, false, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
+	private boolean bSettingAlarmTimeDisableFlip;
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
@@ -144,16 +145,18 @@ public class UIMgr {
 
 		timeSlidingUpPanel
 				.setPanelSlidingListener(new NewsAlarmSlidingUpPanel.PanelSlidingListener() {
+
 					@Override
 					public void onSlidingUpEnd() {
 					}
 
 					@Override
 					public void onSlidingDownEnd() {
+						bSettingAlarmTimeDisableFlip = false;
 						buttonBarSlidingUpPanel.toggle();
 					}
 				});
-
+bSettingAlarmTimeDisableFlip = false;
 		hours = (WheelView) activity.findViewById(R.id.wheelhour);
 		minutes = (WheelView) activity.findViewById(R.id.wheelminute);
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);
@@ -216,17 +219,20 @@ public class UIMgr {
 	    });
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
 		slideBtn.setViewAdapter(viewAdapter);
-		NewsAlarmDigiClock weekday = (NewsAlarmDigiClock) activity.findViewById(R.id.weekday);
+        bSettingAlarmTimeDisableFlip = false;
 		//System.out.println("Weekday "+weekday.getWeekDayRank());
 		slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
+		bSettingAlarmTimeDisableFlip = false;
 	}
+	
 
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC News", "WSJ", "Reminders" };
+	private String[] soundDisplayTxt = { "BBC", "933", "My Events" };
 	private int[] soundDisplayIcon = { R.drawable.radio, R.drawable.radio,R.drawable.radio };
-	private boolean[] soundSelected = { true, true, true };
+	private boolean[] soundSelected = { false, false, true };
+	private static final int BBC_OR_933 = 1;
 
 	/**
 	 * Initialize Alarm Sound Screen
@@ -237,6 +243,8 @@ public class UIMgr {
 		soundListView.setAdapter(soundAdapter);
 		soundListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
+	
+	public boolean[] getSoundSelected() {return soundSelected;}
 
 	// ==============Alarm Toolbar UI==============================================
 	public Button btnHome;
@@ -272,12 +280,14 @@ public class UIMgr {
 
 					@Override
 					public void onSlidingDownEnd() {
+						bSettingAlarmTimeDisableFlip = true;
 						timeSlidingUpPanel.toggle();
 					}
 				});
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
 	}
+	
 	//================Main Container==========================================
 	public LinearLayout llMainContainer = null;
 	/**
@@ -401,6 +411,7 @@ public class UIMgr {
 	/**
 	 * List view Item click
 	 */
+	
 	AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
@@ -415,6 +426,10 @@ public class UIMgr {
 						snoozeSelected[position]);
 				break;
 			case R.id.soundlistview:
+				if (position <= BBC_OR_933 && soundSelected[position] == false && soundSelected[1 - position] == true) {
+					// make BBC and 993 broadcasting mutual exclusive
+					toggleSelectListItem(soundAdapter, soundSelected, 1 - position);
+				}
 				toggleSelectListItem(soundAdapter, soundSelected, position);
 				// Call back function for Alarm Sound selected/unselected
 				onListViewItemChangeListener.onAlarmSoundSelected(position,
@@ -451,7 +466,7 @@ public class UIMgr {
 						.getCurrentItem() : hours.getCurrentItem() + 12;
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
-						minutes.getCurrentItem(), 0, 0);
+						minutes.getCurrentItem(), 0, 0, daySelected);
 				//Get Weekdays selected
 				System.out.println("Days Selected" + daySelected[0]);
 				
@@ -597,18 +612,22 @@ public class UIMgr {
 
 	/**
 	 * UI Flipper Animation
+	 * When user is setting alarm time using timeSlidingUpPanel, disable flip
 	 * 
 	 * @param toDisplayedChild
 	 */
 	private void flipperListView(int toDisplayedChild) {
-		if (alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild) {
-			alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
-			alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideout);
-			alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
-		} else if (alarmInfoViewSlipper.getDisplayedChild() < toDisplayedChild) {
-			alarmInfoViewSlipper.setInAnimation(activity,R.anim.slideinfromright);
-			alarmInfoViewSlipper.setOutAnimation(activity,R.anim.slideouttoleft);
-			alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+		if (!bSettingAlarmTimeDisableFlip) {
+			if (alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild) {
+				alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
+				alarmInfoViewSlipper.setOutAnimation(activity, R.anim.slideout);
+				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+			} else if (alarmInfoViewSlipper.getDisplayedChild() < toDisplayedChild) {
+				alarmInfoViewSlipper.setInAnimation(activity,R.anim.slideinfromright);
+				alarmInfoViewSlipper.setOutAnimation(activity,R.anim.slideouttoleft);
+				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
+			}
+			buttonBarSlidingUpPanel.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -630,6 +649,7 @@ public class UIMgr {
 	 */
 	public void showSnoozeView() {
 		flipperListView(4);
+		buttonBarSlidingUpPanel.setVisibility(View.INVISIBLE);
 	}
 
 	public void updateHomeAlarmText() {

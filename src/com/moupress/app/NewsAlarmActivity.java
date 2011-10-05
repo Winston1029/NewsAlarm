@@ -25,20 +25,20 @@ public class NewsAlarmActivity extends Activity {
         
         //check if the activity is launch by user or broadcast receiver
 
-            if (Const.ISDEBUG) {
-                setContentView(R.layout.main);
-            }  else {
-                setContentView(R.layout.news_alarm_ui);
-            }
-           
-            pubsub = new PubSub(getBaseContext(), this);
-            
-            if(extras != null)
-            {
-            	int alarmNo = extras.getInt(AlarmManagerMgr.AlarmNumber);
-                Toast.makeText(this, "Alarm : " + alarmNo, Toast.LENGTH_LONG).show();
-                pubsub.onSnoozed();
-            }
+        if (Const.ISDEBUG) {
+            setContentView(R.layout.main);
+        }  else {
+            setContentView(R.layout.news_alarm_ui);
+        }
+       
+        pubsub = new PubSub(getBaseContext(), this);
+        
+        if(extras != null)
+        {
+        	int alarmNo = extras.getInt(AlarmManagerMgr.AlarmNumber);
+            Toast.makeText(this, "Alarm : " + alarmNo, Toast.LENGTH_LONG).show();
+            pubsub.onSnoozed();
+        }
        
     }
     

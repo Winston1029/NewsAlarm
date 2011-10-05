@@ -1,14 +1,15 @@
 package com.moupress.app;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
-import com.moupress.app.TTS.CalendarTask;
 import com.moupress.app.alarm.AlarmManagerMgr;
 import com.moupress.app.media.StreamingMgr;
 import com.moupress.app.snoozer.SnoonzeMgr;
@@ -27,6 +28,7 @@ public class PubSub {
 	private SnoozeListener snoozeListener;
 
 	private StreamingMgr streamingMgr;
+	private String mediaURL;
 
 	private WeatherMgr weatherMgr;
 
@@ -45,11 +47,13 @@ public class PubSub {
 		}
 
 		@Override
-		public void onAlarmTimeChanged(int alarmPosition, Boolean selected,
-				int hourOfDay, int minute, int second, int millisecond) {
+		public void onAlarmTimeChanged(int alarmPosition, boolean selected,
+				int hourOfDay, int minute, int second, int millisecond, boolean[] daySelected) {
 			System.out.println("Alarm Time is changed!");
-			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute,second, millisecond);
+			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute,second, millisecond, daySelected);
 			Calendar calendar = alarmMgr.getCalendarByPosition(alarmPosition);
+			
+			dbHelper.saveAlarmSelectedDay(daySelected, alarmPosition);
 			dbHelper.saveAlarm(calendar, alarmPosition);
 			uiMgr.updateHomeAlarmText();
 
@@ -96,20 +100,42 @@ public class PubSub {
 
 		initUI();
 		initUtil();
-		initAlarmTTSMgr();
 		initSnooze();
 		initMedia();
 		initWeather();
 		initAlarmMgr();
-		//initAlarmTTSMgr();
+		initAlarmTTSMgr();
 	}
 
 	public void onSnoozed() {
 		uiMgr.showSnoozeView();
-		AudioManager mAudioManager = (AudioManager) activity.getSystemService(context.AUDIO_SERVICE);
+		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
-		streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+		boolean[] soundToPlay = uiMgr.getSoundSelected();
+		if (soundToPlay != null ) {
+			if (soundToPlay[Const.ALARMSOUND_BBC]) {
+				mediaURL = Const.BBC_WORLD_SERVICE;
+			} else if (soundToPlay[Const.ALARMSOUND_MEDIACORP_933]) {
+				mediaURL = Const.MEDIACORP_938_MMS;
+			} else {
+				mediaURL = Const.DEFAULT_RIGNTONE;
+			}
+			if (soundToPlay[Const.ALARMSOUND_REMINDER]) {
+				alarmTTSMgr.ttsPlayOrResume();
+//				new Thread( new Runnable(){
+//					public void run() {
+//			            if (alarmTTSMgr.isFinished()) {
+//			            	streamingMgr.startStreaming(mediaURL, 1000, 600);
+//			            }
+//			        }  
+//				}).start();
+			}
+			else {
+				streamingMgr.startStreaming(mediaURL, 1000, 600);
+			}
+			
+		}
 	}
 
 	private void initUtil() {
@@ -145,10 +171,8 @@ public class PubSub {
 	}
 
 	private void initMedia() {
+		mediaURL = Const.DEFAULT_RIGNTONE;
 		streamingMgr = new StreamingMgr(context);
-		//String mediaUrl = Const.BBC_WORLD_SERVICE;
-		//String mediaUrl = Const.MEDIACORP_938_MMS;
-		//streamingMgr.startStreaming(mediaUrl, 1000, 600);
 	}
 
 	private void initWeather() {
@@ -159,11 +183,14 @@ public class PubSub {
 
 	private void initAlarmMgr() {
 		Calendar[] calendars = new Calendar[3];
+		boolean[][] selectedDay = new boolean[3][7];
 		for (int i = 0; i < calendars.length; i++)
         {
 			calendars[i] = getAlarm(i);
+			selectedDay[i] = getSelectedDay(i);
         }
-		alarmMgr = new AlarmManagerMgr(this.activity, calendars);
+		
+		alarmMgr = new AlarmManagerMgr(this.activity, calendars, selectedDay);
 		
 		// alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
 		// alarmMgr.startAlarm();
@@ -176,10 +203,10 @@ public class PubSub {
 			alarmTTSMgr = new AlarmTTSMgr(context, uiMgrDebug.btnPlay,
 					uiMgrDebug.btnPause, uiMgrDebug.btnShutdown);
 		} else {
-			alarmTTSMgr = new AlarmTTSMgr(context);
+			alarmTTSMgr = new AlarmTTSMgr(context, this.activity);
 		}
-		// alarmTTSMgr.getTalker().AddMsgToSpeak("Text to speach start");
-		// alarmTTSMgr.getTalker().PlayOrResumeSpeak();
+		//alarmTTSMgr.ttsPlayOrResume();
+
 	}
 
 	private Calendar getAlarm(int alarmPosition)
@@ -199,9 +226,28 @@ public class PubSub {
         return calendar;
     }
 
+	private boolean[] getSelectedDay(int alarmPosition)
+	{
+	    String selectedDay = dbHelper.GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
+	    if(selectedDay == Const.DefString)
+	        return Const.DaySelected;
+	    
+	    String[] stringSelDay = selectedDay.split(Const.Limit);
+	    boolean[] boolSelDay  = Const.DaySelected;
+	    for (int i = 0; i < stringSelDay.length; i++)
+        {
+	        if(stringSelDay[i].equalsIgnoreCase(Const.StrDaySelected))
+	        {
+	            boolSelDay[i] = true;
+            }
+            
+        }
+	    return boolSelDay;
+	}
 	
 	public void exit() {
 		streamingMgr.interrupt();
+		alarmTTSMgr.ttsShutDown();
 	}
 
 }
