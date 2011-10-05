@@ -101,13 +101,16 @@ public class CalendarTask {
         ContentResolver contentResolver = activity.getContentResolver();
         Cursor eventCursor = contentResolver.query(builder.build(), projection, selection, null, "startDay ASC, startMinute ASC"); 
         Hashtable<String, String> eventSummary = new Hashtable<String, String>();
-        while (eventCursor.moveToNext()) {
-            int number = eventCursor.getColumnCount();
-            for (int i = 0; i < number; i++) {
-            	String colName = eventCursor.getColumnName(i);
-            	String colValue = eventCursor.getString(i);
-            	eventSummary.put(colName, colValue);
-            }
+        if (eventCursor != null && eventCursor.moveToFirst()) {
+        	do {
+        		int number = eventCursor.getColumnCount();
+                for (int i = 0; i < number; i++) {
+                	String colName = eventCursor.getColumnName(i);
+                	String colValue = eventCursor.getString(i);
+                	eventSummary.put(colName, colValue);
+                }
+        	} while  (eventCursor.moveToNext());
+        	
         }
         
         return eventSummary;

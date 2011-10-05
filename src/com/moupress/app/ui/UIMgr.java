@@ -196,7 +196,7 @@ public class UIMgr {
 	private AlarmListViewAdapter soundAdapter;
 	private String[] soundDisplayTxt = { "BBC", "933", "My Events" };
 	private int[] soundDisplayIcon = { R.drawable.radio, R.drawable.radio,R.drawable.radio };
-	private boolean[] soundSelected = { true, false, false };
+	private boolean[] soundSelected = { false, false, true };
 	private static final int BBC_OR_933 = 1;
 
 	/**

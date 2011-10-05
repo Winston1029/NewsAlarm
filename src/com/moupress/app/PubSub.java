@@ -1,10 +1,12 @@
 package com.moupress.app;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
@@ -26,6 +28,7 @@ public class PubSub {
 	private SnoozeListener snoozeListener;
 
 	private StreamingMgr streamingMgr;
+	private String mediaURL;
 
 	private WeatherMgr weatherMgr;
 
@@ -85,7 +88,7 @@ public class PubSub {
 		initMedia();
 		initWeather();
 		initAlarmMgr();
-		//initAlarmTTSMgr();
+		initAlarmTTSMgr();
 
 	}
 
@@ -111,23 +114,29 @@ public class PubSub {
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
 		boolean[] soundToPlay = uiMgr.getSoundSelected();
 		if (soundToPlay != null ) {
+			if (soundToPlay[Const.ALARMSOUND_BBC]) {
+				mediaURL = Const.BBC_WORLD_SERVICE;
+			} else if (soundToPlay[Const.ALARMSOUND_MEDIACORP_933]) {
+				mediaURL = Const.MEDIACORP_938_MMS;
+			} else {
+				mediaURL = Const.DEFAULT_RIGNTONE;
+			}
 			if (soundToPlay[Const.ALARMSOUND_REMINDER]) {
 				alarmTTSMgr.ttsPlayOrResume();
-			}
-			if (soundToPlay[Const.ALARMSOUND_BBC]) {
-				streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
-			} else if (soundToPlay[Const.ALARMSOUND_MEDIACORP_933]) {
-				streamingMgr.startStreaming(Const.MEDIACORP_938_MMS, 1000, 600);
+//				new Thread( new Runnable(){
+//					public void run() {
+//			            if (alarmTTSMgr.isFinished()) {
+//			            	streamingMgr.startStreaming(mediaURL, 1000, 600);
+//			            }
+//			        }  
+//				}).start();
 			}
 			else {
-				streamingMgr.playDefaultAlarmSound();
+				streamingMgr.startStreaming(mediaURL, 1000, 600);
 			}
+			
 		}
 	}
-
-	
-
-
 
 	private void initUtil() {
 		this.dbHelper = new DbHelper(this.activity);
@@ -162,6 +171,7 @@ public class PubSub {
 	}
 
 	private void initMedia() {
+		mediaURL = Const.DEFAULT_RIGNTONE;
 		streamingMgr = new StreamingMgr(context);
 	}
 

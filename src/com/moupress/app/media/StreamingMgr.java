@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
+import com.moupress.app.Const;
 import com.spoledge.aacplayer.AACPlayer;
 
 
@@ -29,11 +30,12 @@ public class StreamingMgr {
 
 	public void startStreaming(String mediaURL, int mediaLengthInKb, int mediaLengthInSeconds) {
 		try {
-			if (mediaURL.startsWith("mms://")) {
+			if (mediaURL.equals(Const.DEFAULT_RIGNTONE)) {
+				playDefaultAlarmSound();
+			} else if (mediaURL.startsWith("mms://")) {
 	    		aacPlayer = new AACPlayer();
 	    		aacPlayer.playAsync(mediaURL );
-			}
-			else {
+			} else {
 				audioStreamer = new StreamingMediaPlayer(context);
 				audioStreamer.startStreaming(mediaURL, mediaLengthInKb, mediaLengthInSeconds);
 			}
@@ -48,7 +50,7 @@ public class StreamingMgr {
 		if (defaultAlarmPlayer != null) defaultAlarmPlayer.stop();
 	}
 	
-	public void playDefaultAlarmSound() {
+	private void playDefaultAlarmSound() {
 		Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM); 
 		if(alert == null){
 	        alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
