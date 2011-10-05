@@ -431,7 +431,7 @@ public class UIMgr {
 						.getCurrentItem() : hours.getCurrentItem() + 12;
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
-						minutes.getCurrentItem(), 0, 0);
+						minutes.getCurrentItem(), 0, 0, daySelected);
 				//Get Weekdays selected
 				System.out.println("Days Selected" + daySelected[0]);
 				
