@@ -18,34 +18,37 @@ public class AlarmManagerMgr
     private Context mContext;
     private Calendar mCalendar = null;
     private Calendar[] lstCalendars = new Calendar[3];
+    private boolean[][] SelectedDay = new boolean[3][7];
     private AlarmManager alarmMgr = null;
     public static final String AlarmNumber = "AlarmNumber";
 
 
-    public AlarmManagerMgr(Context context, Calendar[] calendar)
+    public AlarmManagerMgr(Context context, Calendar[] calendar, boolean[][] selectedDay)
     {
         this.mContext = context;
         mCalendar = Calendar.getInstance();
         this.lstCalendars = calendar;
+        this.SelectedDay = selectedDay;
     }
-    
+
 
     public void setAlarm(int alarmPosition, Boolean selected, int hourOfDay,
-            int minute, int second, int millisecond)
+            int minute, int second, int millisecond, boolean[] daySelected)
     {
         if (alarmPosition < 0 || alarmPosition > 2)
         {
             //Toast.makeText(mContext, "The alarm is not set!", Toast.LENGTH_LONG).show();
             return;
         }
-
+        this.SelectedDay[alarmPosition] = daySelected;
+        
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mCalendar.set(Calendar.MINUTE, minute);
         mCalendar.set(Calendar.SECOND, second);
         mCalendar.set(Calendar.MILLISECOND, millisecond);
         lstCalendars[alarmPosition] = mCalendar;
-
+        
         // Check if the alarm is started. If true, send an updated pendingintent
         // No need to stop it first because the pendingintent will override.
         if (selected)

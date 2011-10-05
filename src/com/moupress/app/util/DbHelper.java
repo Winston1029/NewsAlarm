@@ -75,7 +75,27 @@ public final class DbHelper
 
 	public void SaveSnooze(int snoozeMode) {
 		Insert(Const.SNOOZE + snoozeMode, snoozeMode);
-		
 	}
+
+    public void saveAlarmSelectedDay(boolean[] daySelected, int alarmPosition)
+    {
+        StringBuilder sBuilder = new StringBuilder();
+        for (int i = 0; i < daySelected.length; i++)
+        {
+            if(daySelected[i])
+            {
+              sBuilder.append(Const.StrDaySelected);
+            }
+            else {
+              sBuilder.append(Const.StrDayNotSelected);  
+            }
+            
+            if(i < daySelected.length -1)
+                sBuilder.append(Const.Limit);
+            
+        }
+        Insert(Const.SelectedDay + Integer.toString(alarmPosition), sBuilder.toString());
+        
+    }
 
 }

@@ -32,11 +32,16 @@ public class Const {
     public static final int DefNum = -1;
     
     public static final String ALARM = "Alarm_";
+    public static final String SelectedDay = "Alarm_Selected_Day_";
     public static final String Hours = "Alarm_Hours_";
     public static final String Mins = "Alarm_Mins_";
     public static final String ISALARMSET = "IsAlarmSet_";
     public static final String SNOOZE = "Snooze_";
     public static final String GESTURE = "Gesture";
+    public static final String Limit = ";";
+    public static final boolean[] DaySelected = new boolean[]{false,false,false,false,false,false,false};
+    public static final String StrDaySelected = "T";
+    public static final String StrDayNotSelected = "F";
     //===============Calendar Event==========================
     public static final String CALENDER_ID = "_id";
     public static final String CALENDER_TITLE = "title";

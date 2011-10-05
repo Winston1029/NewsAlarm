@@ -18,7 +18,7 @@ public interface OnListViewItemChangeListener {
 	 * @param second    the second of updated alarm
 	 * @param millisecond  the millisecond of udpate alarm
 	 */
-	public void onAlarmTimeChanged(int alarmPosition, Boolean selected, int hourOfDay, int minute, int second, int millisecond );
+	public void onAlarmTimeChanged(int alarmPosition, boolean selected, int hourOfDay, int minute, int second, int millisecond, boolean[] daySelected );
 	
 	/**
 	 * Call back function when a alarm time in the list is selected/unselected

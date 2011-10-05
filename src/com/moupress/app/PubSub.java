@@ -44,11 +44,13 @@ public class PubSub {
 		}
 
 		@Override
-		public void onAlarmTimeChanged(int alarmPosition, Boolean selected,
-				int hourOfDay, int minute, int second, int millisecond) {
+		public void onAlarmTimeChanged(int alarmPosition, boolean selected,
+				int hourOfDay, int minute, int second, int millisecond, boolean[] daySelected) {
 			System.out.println("Alarm Time is changed!");
-			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute,second, millisecond);
+			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute,second, millisecond, daySelected);
 			Calendar calendar = alarmMgr.getCalendarByPosition(alarmPosition);
+			
+			dbHelper.saveAlarmSelectedDay(daySelected, alarmPosition);
 			dbHelper.saveAlarm(calendar, alarmPosition);
 			uiMgr.updateHomeAlarmText();
 
@@ -95,7 +97,6 @@ public class PubSub {
 
 		initUI();
 		initUtil();
-		initAlarmTTSMgr();
 		initSnooze();
 		initMedia();
 		initWeather();
@@ -159,11 +160,14 @@ public class PubSub {
 
 	private void initAlarmMgr() {
 		Calendar[] calendars = new Calendar[3];
+		boolean[][] selectedDay = new boolean[3][7];
 		for (int i = 0; i < calendars.length; i++)
         {
 			calendars[i] = getAlarm(i);
+			selectedDay[i] = getSelectedDay(i);
         }
-		alarmMgr = new AlarmManagerMgr(this.activity, calendars);
+		
+		alarmMgr = new AlarmManagerMgr(this.activity, calendars, selectedDay);
 		
 		// alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
 		// alarmMgr.startAlarm();
@@ -199,6 +203,24 @@ public class PubSub {
         return calendar;
     }
 
+	private boolean[] getSelectedDay(int alarmPosition)
+	{
+	    String selectedDay = dbHelper.GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
+	    if(selectedDay == Const.DefString)
+	        return Const.DaySelected;
+	    
+	    String[] stringSelDay = selectedDay.split(Const.Limit);
+	    boolean[] boolSelDay  = Const.DaySelected;
+	    for (int i = 0; i < stringSelDay.length; i++)
+        {
+	        if(stringSelDay[i].equalsIgnoreCase(Const.StrDaySelected))
+	        {
+	            boolSelDay[i] = true;
+            }
+            
+        }
+	    return boolSelDay;
+	}
 	
 	public void exit() {
 		streamingMgr.interrupt();
