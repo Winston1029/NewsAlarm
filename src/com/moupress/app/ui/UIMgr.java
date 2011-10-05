@@ -159,7 +159,9 @@ public class UIMgr {
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);
 
 		hours.setViewAdapter(new NumericWheelAdapter(activity, 0, 12));
+		hours.setCurrentItem(6);
 		minutes.setViewAdapter(new NumericWheelAdapter(activity, 0, 59, "%02d"));
+		minutes.setCurrentItem(30);
 		amOrpm.setViewAdapter(new ArrayWheelAdapter<String>(activity, AMPM));
 		
 		slideBtn =(SlideButton) activity.findViewById(R.id.slideBtn);
@@ -170,20 +172,53 @@ public class UIMgr {
 
 	    		if(direction == true)
 	    		{
-	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
-	    		daySelected[i]=true;
+		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+		    		daySelected[i]=true;
 	    		}
 	    		else
 	    		{
-	    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
-	    		daySelected[i]=false;
+		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
+		    		daySelected[i]=false;
 	    		}
-	    		
 	    	}
+
+			@Override
+			public void OnSelected(int i,  View v, int mode) {
+				
+				if(mode == 0)
+				{
+					if(daySelected[i]==true)
+					{
+						daySelected[i]= false;
+						((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
+					}
+					else
+					{
+						daySelected[i]= true;
+						((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+					}
+				}
+				else if(mode == 1)
+				{
+					daySelected[i]= true;
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+
+				}
+				else if (mode == 2)
+				{
+					daySelected[i]= false;
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
+
+				}
+				
+			}
 	    	
 	    });
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
-        slideBtn.setViewAdapter(viewAdapter);
+		slideBtn.setViewAdapter(viewAdapter);
+		NewsAlarmDigiClock weekday = (NewsAlarmDigiClock) activity.findViewById(R.id.weekday);
+		//System.out.println("Weekday "+weekday.getWeekDayRank());
+		slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
 	}
 
 	// =======================Alarm Sound UI==============================================

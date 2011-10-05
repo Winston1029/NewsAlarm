@@ -22,8 +22,7 @@ import android.widget.TextView;
 public class SlideButton extends View implements OnTouchListener{
 	
 
-	
-	private float downX,currentX;
+	private float downX,currentX=-1;
 	
 	private Bitmap slip_btn; 
 	
@@ -39,16 +38,21 @@ public class SlideButton extends View implements OnTouchListener{
 	
 	private int[] itemsPostions;
 	
-	private int censorPos = 0;
+	private float censorPos;
 	
-	private int preCensorPos = 0;
+	private float preCensorPos;
 	
-	private int slidePos = 0;
+	private int slidePos;
 	
 	private boolean isSliding = false;
 	
+	private int slideDir = 0;
+	private int preSlideDir = 0;
+	
 	/** Left and right padding value */
 	private static final int PADDING = 7;
+	
+	private int startIndex;
 	
 	
 
@@ -57,10 +61,28 @@ public class SlideButton extends View implements OnTouchListener{
 		super(context);
 		init();
 	}
+	
 	private void init() {
 		slip_btn = BitmapFactory.decodeResource(getResources(), R.drawable.slide_thumb);
 		setOnTouchListener(this);
 	}
+	
+	public OnChangeListener getOnChangeListener()
+	{
+		return chgLsn;
+	}
+	
+	public void setSlidePosition(int index)
+	{
+		startIndex = index;
+		
+		//System.out.println("CurrentX Position "+ currentX+" Index "+ index);
+		//invalidate();'
+		
+	}
+	
+	
+	
 	/**
 	 * Draws items
 	 * @param canvas the canvas for drawing
@@ -78,14 +100,22 @@ public class SlideButton extends View implements OnTouchListener{
 		
 	}
 	
+	public void iniSlipBtnPos()
+	{
+		currentX = itemsPostions[startIndex]+PADDING;
+		chgLsn.OnSelected(startIndex, (TextView)itemsLayout.getChildAt(startIndex),1);
+	}
+	
 	private void getItemsPositions()
 	{
-		itemsPostions = new int[itemsLayout.getChildCount()];
+		
 		for(int i=0;i<itemsLayout.getChildCount();i++)
 		{
-			itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft()+((View)itemsLayout.getChildAt(i)).getWidth();
+			itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft()+((View)itemsLayout.getChildAt(i)).getWidth()/2;
+			//itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft();
 			//System.out.println("Child Position "+i+" " + itemsPostions[i]);
 		}
+		
 	}
 
 	@Override
@@ -94,26 +124,33 @@ public class SlideButton extends View implements OnTouchListener{
 		//itemsLayout.draw(canvas);
 		drawItems(canvas);
 		getItemsPositions();
+		
+		//First Time Loading
+		if(currentX == -1)
+		{
+			this.iniSlipBtnPos();
+		}
+		
 		 //Matrix matrix = new Matrix();  
 		Paint paint = new Paint(); 
 		 
 		 float x;
 		 
-		 if(currentX >= this.getWidth()) 
+		 if(currentX >= this.getWidth()-slip_btn.getWidth()/2) 
 		 {
 			 x = this.getWidth()-slip_btn.getWidth();
 		 }
 		 else
 		 {
-			 x = currentX - slip_btn.getWidth();
+			 x = currentX - slip_btn.getWidth()/2;
 		 }
 			
-		 if(x<0)
+		 if(x<=0)
 		 {
-			 x = 0;  
+			 x = 0;
 		 }
 		 canvas.drawBitmap(slip_btn,x, 0, paint);
-		 censorPos = (int) currentX;
+		 //censorPos = (int) currentX;
 		 
 		 if(isSliding == true)
 		 comparePosition();
@@ -123,14 +160,31 @@ public class SlideButton extends View implements OnTouchListener{
 	
 	private void comparePosition() {
 		//System.out.println("censor position "+ censorPos);
+		if(censorPos>=preCensorPos)
+		{
+			slideDir = 1;
+		}
+		else
+		{
+			slideDir =2;
+		}
+		
+		if(preSlideDir != slideDir && preSlideDir != 0)
+		{
+			if((slideDir==1 && preCensorPos < downX)||(slideDir==2 && preCensorPos > downX))
+			downX = preCensorPos;
+		}
+		
+		System.out.println("Direction "+ slideDir + " previous Location " + preCensorPos+" Down Location "+downX);
+		
 		for(int i = 0;i<itemsPostions.length;i++)
 		{
-			if(itemsPostions[i]>=preCensorPos && itemsPostions[i]<=censorPos)
+			if(itemsPostions[i]>=preCensorPos && itemsPostions[i]<=censorPos && itemsPostions[i] >= (downX-slip_btn.getWidth()/2))
 			{
 				chgLsn.OnChanged(i,true,(TextView)itemsLayout.getChildAt(i));
 				slidePos = i;
 			}
-			 else if(itemsPostions[i]<=preCensorPos && itemsPostions[i]>=censorPos)
+			 else if(itemsPostions[i]<=preCensorPos && itemsPostions[i]>=censorPos && itemsPostions[i]<= (downX+slip_btn.getWidth()/2))
 			{
 				chgLsn.OnChanged(i,false,(TextView)itemsLayout.getChildAt(i));
 				
@@ -138,7 +192,10 @@ public class SlideButton extends View implements OnTouchListener{
 			}
 		}
 		
+		
+		
 		preCensorPos = censorPos;
+		preSlideDir = slideDir;
 	}
 	/**
 	 * Calculates control width and creates text layouts
@@ -264,22 +321,31 @@ public class SlideButton extends View implements OnTouchListener{
 			 isSliding = true;
 			 break;
 		 case MotionEvent.ACTION_DOWN:
+			 slideDir = preSlideDir = 0;
 			 downX = event.getX();
 			 currentX = downX;
-			 
 			 break;
 		 case MotionEvent.ACTION_UP:
 			 if(isSliding == true)
 			 {
-			 if(slidePos>=0)
-			 currentX= itemsPostions[slidePos]+ slip_btn.getWidth()/2;
+				 if(slidePos>=0)
+				 //currentX= itemsPostions[slidePos] + slip_btn.getWidth()/2+PADDING;
+					 currentX= itemsPostions[slidePos]+PADDING;
+				 else
+			     currentX = 0;
+				 isSliding = false;
+			 }
 			 else
-		     currentX = 0;
-			 isSliding = false;
+			 {
+				 int i = getClickLocation(event.getX());
+				 currentX=itemsPostions[i]+PADDING;
+				 chgLsn.OnSelected(i, (TextView)itemsLayout.getChildAt(i),0);
 			 }
 			 break; 
 		 default: 
+			 break;
 		 }
+		 censorPos = event.getX();
 		 invalidate();
 		return true;
 	}
@@ -288,12 +354,37 @@ public class SlideButton extends View implements OnTouchListener{
 		 chgLsn = onChgLsn; 
 	 }
 	 
+	 
+	 public int getClickLocation(float currentPos)
+	 {
+		for(int i = 0;i<viewAdapter.getItemsCount()-1;i++)
+		{
+			if(currentPos>=itemsPostions[i] && currentPos<=itemsPostions[i+1])
+			{
+				if(Math.abs(currentPos-itemsPostions[i])<=Math.abs(currentPos-itemsPostions[i+1]))
+				{
+					return i;
+				}
+				else 
+					return i +1;
+			}
+			
+		}
+		
+		if(currentPos<=itemsPostions[0])
+			return 0;
+		else if(currentPos>=itemsPostions[viewAdapter.getItemsCount()-1])
+		    return viewAdapter.getItemsCount()-1;
+		else
+		    return 0;
+	 }
+	 
 	 /**
 		 * Returns view for specified item
 		 * @param index the item index
 		 * @return item view or empty view if index is out of bounds
 		 */
-	    private View getItemView(int index) {
+	    public View getItemView(int index) {
 			if (viewAdapter == null || viewAdapter.getItemsCount() == 0) {
 				return null;
 			}
@@ -341,8 +432,9 @@ public class SlideButton extends View implements OnTouchListener{
 	        if (this.viewAdapter != null) {
 	            this.viewAdapter.registerDataSetObserver(dataObserver);
 	        }
-	        
+	       
 	        invalidateSlideButton(true);
+	        itemsPostions = new int[viewAdapter.getItemsCount()];
 		}
 		/**
 		 * Invalidates SlideButton

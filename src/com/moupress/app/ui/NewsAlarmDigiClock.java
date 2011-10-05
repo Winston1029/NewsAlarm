@@ -45,7 +45,7 @@ public class NewsAlarmDigiClock extends TextView{
         contentDisplay = a.getString(R.styleable.NewsAlarmDigiClock_content);
         a.recycle();
         initClock(context);
-        System.out.println("Non Custom Attr Constructor! "+contentDisplay);
+        //System.out.println("Non Custom Attr Constructor! "+contentDisplay);
     }
     
 
@@ -117,6 +117,15 @@ public class NewsAlarmDigiClock extends TextView{
 		 mFormat = ww;
 	 }
  }
+ 
+ public int getWeekDayRank()
+ {
+	 if(contentDisplay.equals("weekday"))
+	 {
+		 return mCalendar.get(Calendar.DAY_OF_WEEK);
+	 }
+	return 0;
+ }
 
  private class FormatChangeObserver extends ContentObserver {
      public FormatChangeObserver() {
@@ -128,5 +137,7 @@ public class NewsAlarmDigiClock extends TextView{
          setFormat();
      }
  }
+ 
+
 
 }
