@@ -3,6 +3,11 @@ package com.moupress.app.media;
 import java.io.IOException;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
+
 import com.spoledge.aacplayer.AACPlayer;
 
 
@@ -10,6 +15,7 @@ public class StreamingMgr {
 	
 	private StreamingMediaPlayer audioStreamer;
 	private AACPlayer aacPlayer;
+	private MediaPlayer defaultAlarmPlayer;
 	private StreamingNotifier notifier;
 	
 	private Context context;
@@ -39,6 +45,36 @@ public class StreamingMgr {
 	public void interrupt() {
 		if (audioStreamer != null) audioStreamer.interrupt();
 		if (aacPlayer != null) aacPlayer.stop();
+		if (defaultAlarmPlayer != null) defaultAlarmPlayer.stop();
+	}
+	
+	public void playDefaultAlarmSound() {
+		Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM); 
+		if(alert == null){
+	        alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+	        if(alert == null){
+	            alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);               
+	        }
+	    }
+		defaultAlarmPlayer = new MediaPlayer();
+		try {
+			defaultAlarmPlayer.setDataSource(context, alert);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		final AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+			defaultAlarmPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+			defaultAlarmPlayer.setLooping(true);
+			try {
+				defaultAlarmPlayer.prepare();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			defaultAlarmPlayer.start();
+		}
 	}
     
 }

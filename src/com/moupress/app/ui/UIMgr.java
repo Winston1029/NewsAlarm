@@ -194,9 +194,10 @@ public class UIMgr {
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC News", "WSJ", "Reminders" };
+	private String[] soundDisplayTxt = { "BBC", "933", "My Events" };
 	private int[] soundDisplayIcon = { R.drawable.radio, R.drawable.radio,R.drawable.radio };
-	private boolean[] soundSelected = { true, true, true };
+	private boolean[] soundSelected = { true, false, false };
+	private static final int BBC_OR_933 = 1;
 
 	/**
 	 * Initialize Alarm Sound Screen
@@ -207,6 +208,8 @@ public class UIMgr {
 		soundListView.setAdapter(soundAdapter);
 		soundListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
+	
+	public boolean[] getSoundSelected() {return soundSelected;}
 
 	// ==============Alarm Toolbar UI==============================================
 	public Button btnHome;
@@ -373,6 +376,7 @@ public class UIMgr {
 	/**
 	 * List view Item click
 	 */
+	
 	AdapterView.OnItemClickListener optionListOnItemClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
@@ -387,6 +391,10 @@ public class UIMgr {
 						snoozeSelected[position]);
 				break;
 			case R.id.soundlistview:
+				if (position <= BBC_OR_933 && soundSelected[position] == false && soundSelected[1 - position] == true) {
+					// make BBC and 993 broadcasting mutual exclusive
+					toggleSelectListItem(soundAdapter, soundSelected, 1 - position);
+				}
 				toggleSelectListItem(soundAdapter, soundSelected, position);
 				// Call back function for Alarm Sound selected/unselected
 				onListViewItemChangeListener.onAlarmSoundSelected(position,

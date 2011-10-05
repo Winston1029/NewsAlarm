@@ -83,7 +83,7 @@ public class PubSub {
 		initMedia();
 		initWeather();
 		initAlarmMgr();
-		initAlarmTTSMgr();
+		//initAlarmTTSMgr();
 
 	}
 
@@ -95,7 +95,6 @@ public class PubSub {
 
 		initUI();
 		initUtil();
-		initAlarmTTSMgr();
 		initSnooze();
 		initMedia();
 		initWeather();
@@ -108,9 +107,25 @@ public class PubSub {
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
-		//streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
-		alarmTTSMgr.ttsPlayOrResume();
+		boolean[] soundToPlay = uiMgr.getSoundSelected();
+		if (soundToPlay != null ) {
+			if (soundToPlay[Const.ALARMSOUND_REMINDER]) {
+				alarmTTSMgr.ttsPlayOrResume();
+			}
+			if (soundToPlay[Const.ALARMSOUND_BBC]) {
+				streamingMgr.startStreaming(Const.BBC_WORLD_SERVICE, 1000, 600);
+			} else if (soundToPlay[Const.ALARMSOUND_MEDIACORP_933]) {
+				streamingMgr.startStreaming(Const.MEDIACORP_938_MMS, 1000, 600);
+			}
+			else {
+				streamingMgr.playDefaultAlarmSound();
+			}
+		}
 	}
+
+	
+
+
 
 	private void initUtil() {
 		this.dbHelper = new DbHelper(this.activity);
@@ -146,9 +161,6 @@ public class PubSub {
 
 	private void initMedia() {
 		streamingMgr = new StreamingMgr(context);
-		//String mediaUrl = Const.BBC_WORLD_SERVICE;
-		//String mediaUrl = Const.MEDIACORP_938_MMS;
-		//streamingMgr.startStreaming(mediaUrl, 1000, 600);
 	}
 
 	private void initWeather() {
