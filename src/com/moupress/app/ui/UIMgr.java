@@ -156,7 +156,7 @@ public class UIMgr {
 						buttonBarSlidingUpPanel.toggle();
 					}
 				});
-bSettingAlarmTimeDisableFlip = false;
+		bSettingAlarmTimeDisableFlip = false;
 		hours = (WheelView) activity.findViewById(R.id.wheelhour);
 		minutes = (WheelView) activity.findViewById(R.id.wheelminute);
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);

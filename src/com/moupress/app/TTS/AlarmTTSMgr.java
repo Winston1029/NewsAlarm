@@ -127,5 +127,7 @@ public class AlarmTTSMgr {
         
 	}
 
+	public boolean isPlaying() {return talker.isPlaying;}
+
    
 }

@@ -123,13 +123,12 @@ public class PubSub {
 			}
 			if (soundToPlay[Const.ALARMSOUND_REMINDER]) {
 				alarmTTSMgr.ttsPlayOrResume();
-//				new Thread( new Runnable(){
-//					public void run() {
-//			            if (alarmTTSMgr.isFinished()) {
-//			            	streamingMgr.startStreaming(mediaURL, 1000, 600);
-//			            }
-//			        }  
-//				}).start();
+				new Thread( new Runnable(){
+					public void run() {
+			            while (alarmTTSMgr.isPlaying()) {}	//do nothing, keep checking
+			            streamingMgr.startStreaming(mediaURL, 1000, 600);
+			        }
+				}).start();
 			}
 			else {
 				streamingMgr.startStreaming(mediaURL, 1000, 600);
@@ -140,7 +139,6 @@ public class PubSub {
 
 	private void initUtil() {
 		this.dbHelper = new DbHelper(this.activity);
-		
 	}
 	
 	private void initUI() {
