@@ -220,6 +220,7 @@ bSettingAlarmTimeDisableFlip = false;
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
 		slideBtn.setViewAdapter(viewAdapter);
         bSettingAlarmTimeDisableFlip = false;
+        NewsAlarmDigiClock weekday = (NewsAlarmDigiClock) activity.findViewById(R.id.weekday);
 		//System.out.println("Weekday "+weekday.getWeekDayRank());
 		slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
 		bSettingAlarmTimeDisableFlip = false;
