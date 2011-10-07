@@ -12,10 +12,21 @@ public class NewsAlarmListItem {
 	
 	private boolean optionSelected;
 	
-	public NewsAlarmListItem(int optionIcon,String OptionTxt,boolean optionSelected){
+	private boolean[] weekDaysSelection;
+	
+	public NewsAlarmListItem(int optionIcon,String OptionTxt,boolean optionSelected, boolean[] weekDaysSelection){
 		setOptionIcon(optionIcon);
 		setOptionTxt(OptionTxt);
 		setOptionSelected(optionSelected);
+		setWeekDaysSelection(weekDaysSelection);
+	}
+
+	public boolean[] getWeekDaysSelection() {
+		return weekDaysSelection;
+	}
+
+	public void setWeekDaysSelection(boolean[] weekDaysSelection) {
+		this.weekDaysSelection = weekDaysSelection;
 	}
 
 	public int getOptionIcon() {

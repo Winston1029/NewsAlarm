@@ -70,7 +70,7 @@ public class UIMgr {
 	 */
 	private void initHomeUI() {
 		hsListView = (ListView) activity.findViewById(R.id.hslistview);
-		hsListAdapter = new AlarmListViewAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected);
+		hsListAdapter = new AlarmListViewAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected,R.layout.home_screen_item);
 		hsListView.setAdapter(hsListAdapter);
 		hsListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -87,7 +87,7 @@ public class UIMgr {
 	 */
 	private void initSnoozeUI() {
 		snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
-		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected);
+		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected,R.layout.home_screen_item);
 		snoozeListView.setAdapter(snoozeAdapter);
 		snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -119,7 +119,7 @@ public class UIMgr {
 	 */
 	private void initAlarmTimeUI() {
 		alarmListView = (ListView) activity.findViewById(R.id.alarmlistview);
-		alarmAdapter = new AlarmListViewAdapter(alarmDisplayTxt,alarmDisplayIcon, alarmSelected);
+		alarmAdapter = new AlarmListViewAdapter(alarmDisplayTxt,alarmDisplayIcon, alarmSelected,R.layout.alarm_list_item);
 		alarmListView.setAdapter(alarmAdapter);
 		alarmListView.setOnItemClickListener(optionListOnItemClickListener);
 
@@ -156,7 +156,7 @@ public class UIMgr {
 						buttonBarSlidingUpPanel.toggle();
 					}
 				});
-bSettingAlarmTimeDisableFlip = false;
+		bSettingAlarmTimeDisableFlip = false;
 		hours = (WheelView) activity.findViewById(R.id.wheelhour);
 		minutes = (WheelView) activity.findViewById(R.id.wheelminute);
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);
@@ -240,7 +240,7 @@ bSettingAlarmTimeDisableFlip = false;
 	 */
 	private void initAlarmSoundUI() {
 		soundListView = (ListView) activity.findViewById(R.id.soundlistview);
-		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected);
+		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected,R.layout.home_screen_item);
 		soundListView.setAdapter(soundAdapter);
 		soundListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -461,6 +461,8 @@ bSettingAlarmTimeDisableFlip = false;
 						+ ":" + String.format("%02d", minutes.getCurrentItem())
 						+ " " + (amOrpm.getCurrentItem() == 0 ? "am" : "pm"),
 						ALARM_POSITION);
+				alarmAdapter.updateWeekDaysSelection(daySelected,ALARM_POSITION);
+				
 				timeSlidingUpPanel.toggle();
 				// Call Back function on Alarm Time Change
 				int hours24 = amOrpm.getCurrentItem() == 0 ? hours
@@ -469,7 +471,7 @@ bSettingAlarmTimeDisableFlip = false;
 						alarmSelected[ALARM_POSITION], hours24,
 						minutes.getCurrentItem(), 0, 0, daySelected);
 				//Get Weekdays selected
-				System.out.println("Days Selected" + daySelected[0]);
+				
 				
 				break;
 			case R.id.timeaddcancel:
@@ -542,13 +544,21 @@ bSettingAlarmTimeDisableFlip = false;
 
 		private ArrayList<NewsAlarmListItem> optionArrayList;
 		private LayoutInflater viewInflator;
+		private int resItemId;
 
-		public AlarmListViewAdapter(String[] displayStrings, int[] displayInts,boolean[] displayChecked) {
+		public AlarmListViewAdapter(String[] displayStrings, int[] displayInts,boolean[] displayChecked, int resItemId) {
 			viewInflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			optionArrayList = new ArrayList<NewsAlarmListItem>();
 			loadArrayList(displayStrings, displayInts, displayChecked);
+			this.resItemId = resItemId;
 			// txtisplays = displayStrings;
 			// icons = displayInts;
+		}
+
+		public void updateWeekDaysSelection(boolean[] daySelected, int alarmposition) {
+			
+			optionArrayList.get(alarmposition).setWeekDaysSelection(daySelected);
+			this.notifyDataSetChanged();
 		}
 
 		public void loadArrayList(String[] displayStrings, int[] displayInts,
@@ -561,7 +571,7 @@ bSettingAlarmTimeDisableFlip = false;
 		public void addToArrayList(String displayString, int displayInt,
 				boolean displayChk) {
 
-			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk));
+			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk,daySelected));
 		}
 
 		public void updateTxtArrayList(String displayString, int position) {
@@ -590,7 +600,7 @@ bSettingAlarmTimeDisableFlip = false;
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				convertView = viewInflator.inflate(R.layout.home_screen_item,null);
+				convertView = viewInflator.inflate(resItemId,null);
 			}
 			ImageView imgView = (ImageView) convertView.findViewById(R.id.alarmitemicon);
 			imgView.setImageResource(optionArrayList.get(position).getOptionIcon());
@@ -603,7 +613,24 @@ bSettingAlarmTimeDisableFlip = false;
 			} else {
 				chkImgView.setVisibility(View.INVISIBLE);
 			}
+			if(parent.getId()==R.id.alarmlistview)
+				loadSubTextView((LinearLayout)convertView.findViewById(R.id.weekdaylist),R.layout.weekday_small,position);
 			return convertView;
+		}
+
+		private void loadSubTextView(LinearLayout linearLayout, int viewId, int position) 
+		{
+			linearLayout.removeAllViews();
+			for(int i=0;i<weekdays.length;i++)
+			{
+				TextView tv = (TextView) viewInflator.inflate(viewId, null);
+				tv.setText(weekdays[i]);
+				if(optionArrayList.get(position).getWeekDaysSelection()[i]==true)
+				tv.setTextColor(activity.getResources().getColor(R.color.white));
+				else
+				tv.setTextColor(activity.getResources().getColor(R.color.grey));
+				linearLayout.addView(tv);
+			}
 		}
 
 		public void invertSelect(int position) {
