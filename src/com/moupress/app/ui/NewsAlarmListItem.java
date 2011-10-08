@@ -14,19 +14,19 @@ public class NewsAlarmListItem {
 	
 	private boolean[] weekDaysSelection;
 	
-	public NewsAlarmListItem(int optionIcon,String OptionTxt,boolean optionSelected, boolean[] weekDaysSelection){
+	public NewsAlarmListItem(int optionIcon,String OptionTxt,boolean optionSelected, boolean[] daySelected){
 		setOptionIcon(optionIcon);
 		setOptionTxt(OptionTxt);
 		setOptionSelected(optionSelected);
-		setWeekDaysSelection(weekDaysSelection);
+		setWeekDaysSelection(daySelected);
 	}
 
 	public boolean[] getWeekDaysSelection() {
 		return weekDaysSelection;
 	}
 
-	public void setWeekDaysSelection(boolean[] weekDaysSelection) {
-		this.weekDaysSelection = weekDaysSelection;
+	public void setWeekDaysSelection(boolean[] daySelected) {
+		this.weekDaysSelection = daySelected;
 	}
 
 	public int getOptionIcon() {

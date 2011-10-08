@@ -110,7 +110,9 @@ public class UIMgr {
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
-	private boolean[] daySelected = new boolean[]{false,false,false,false,false,false,false};
+	private boolean[][] daySelected = new boolean[][]{{false,false,false,false,false,false,false},
+													 {false,false,false,false,false,false,false},
+													{false,false,false,false,false,false,false}};
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
 
@@ -171,45 +173,45 @@ public class UIMgr {
 	    slideBtn.setOnChangedListener(new OnChangeListener()
 	    {
 
-	    	public void OnChanged(int i,boolean direction,View v) {
+	    	public void OnChanged(int weekdayPos,boolean direction,View v) {
 
 	    		if(direction == true)
 	    		{
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
-		    		daySelected[i]=true;
+		    		daySelected[ALARM_POSITION][weekdayPos]=true;
 	    		}
 	    		else
 	    		{
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
-		    		daySelected[i]=false;
+		    		daySelected[ALARM_POSITION][weekdayPos]=false;
 	    		}
 	    	}
 
 			@Override
-			public void OnSelected(int i,  View v, int mode) {
+			public void OnSelected(int weekdayPos,  View v, int mode) {
 				
 				if(mode == 0)
 				{
-					if(daySelected[i]==true)
+					if(daySelected[ALARM_POSITION][weekdayPos]==true)
 					{
-						daySelected[i]= false;
+						daySelected[ALARM_POSITION][weekdayPos]= false;
 						((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 					}
 					else
 					{
-						daySelected[i]= true;
+						daySelected[ALARM_POSITION][weekdayPos]= true;
 						((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
 					}
 				}
 				else if(mode == 1)
 				{
-					daySelected[i]= true;
+					 daySelected[ALARM_POSITION][weekdayPos]= true;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
 
 				}
 				else if (mode == 2)
 				{
-					daySelected[i]= false;
+					daySelected[ALARM_POSITION][weekdayPos]= false;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 
 				}
@@ -359,12 +361,12 @@ public class UIMgr {
 		int hours, mins;
 		int nextAlarm = 0;
 		int dayIndex = 7;//max is 7
-		boolean[] daySelected = new boolean[7];
+		boolean[] daySelectedLocal = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
 			alarmSelected[i] = helper.GetBool(Const.ISALARMSET
 					+ Integer.toString(i));
-			daySelected = helper.getSelectedDay(i);
+			daySelectedLocal = helper.getSelectedDay(i);
 			
 			hours = helper.GetInt(Const.Hours + Integer.toString(i));
 			mins = helper.GetInt(Const.Mins + Integer.toString(i));
@@ -390,6 +392,7 @@ public class UIMgr {
                 + String.format("%02d", mins) + " " + this.AMPM[1];
             }
 			
+			this.daySelected[i] = daySelectedLocal;
 			if(alarmSelected[i])
 			{
     			int index =0;
@@ -399,7 +402,7 @@ public class UIMgr {
     	        {
     	            index = (t+test)%7;
     	            //to get the nearest selected day
-    	            if(daySelected[index])
+    	            if(daySelectedLocal[index])
     	            {
     	                if(t < dayIndex)
     	                {
@@ -501,7 +504,7 @@ public class UIMgr {
 						+ ":" + String.format("%02d", minutes.getCurrentItem())
 						+ " " + (amOrpm.getCurrentItem() == 0 ? "am" : "pm"),
 						ALARM_POSITION);
-				alarmAdapter.updateWeekDaysSelection(daySelected,ALARM_POSITION);
+				alarmAdapter.updateWeekDaysSelection(daySelected[ALARM_POSITION],ALARM_POSITION);
 				
 				timeSlidingUpPanel.toggle();
 				// Call Back function on Alarm Time Change
@@ -509,7 +512,7 @@ public class UIMgr {
 						.getCurrentItem() : hours.getCurrentItem() + 12;
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
-						minutes.getCurrentItem(), 0, 0, daySelected);
+						minutes.getCurrentItem(), 0, 0, daySelected[ALARM_POSITION]);
 				//Get Weekdays selected
 				
 				
@@ -604,14 +607,14 @@ public class UIMgr {
 		public void loadArrayList(String[] displayStrings, int[] displayInts,
 				boolean[] displayChecked) {
 			for (int i = 0; i < displayStrings.length; i++) {
-				addToArrayList(displayStrings[i], displayInts[i],displayChecked[i]);
+				addToArrayList(displayStrings[i], displayInts[i],displayChecked[i],daySelected[i]);
 			}
 		}
 
 		public void addToArrayList(String displayString, int displayInt,
-				boolean displayChk) {
+				boolean displayChk, boolean[] daySelected ) {
 
-			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk,daySelected));
+			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk,daySelected ));
 		}
 
 		public void updateTxtArrayList(String displayString, int position) {
