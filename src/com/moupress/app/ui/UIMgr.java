@@ -357,7 +357,6 @@ public class UIMgr {
 		DbHelper helper = new DbHelper(this.activity);
 		Calendar cal = Calendar.getInstance();
 		int hours, mins;
-//		int nextAlarmPosition = -1;
 		int nextAlarm = 0;
 		int dayIndex = 7;//max is 7
 		boolean[] daySelected = new boolean[7];
@@ -420,6 +419,12 @@ public class UIMgr {
     	                }
     	                if(t == dayIndex)
     	                {
+    	                    if(hours < cal.get(Calendar.HOUR))
+                                break;
+                            else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
+                                break;
+                            }
+    	                    
     	                    int nowAlarm = hours*60+ mins;
     	                    if(nextAlarm > nowAlarm)
     	                    {
@@ -437,40 +442,6 @@ public class UIMgr {
     	        } 
     	        
 			}
-/*			cal.setTimeInMillis(System.currentTimeMillis());
-			if (hours != Const.DefNum && mins != Const.DefNum) {
-				cal.set(Calendar.HOUR_OF_DAY, hours);
-
-				cal.set(Calendar.MINUTE, mins);
-			}
-			hours = cal.get(Calendar.HOUR);
-			mins = cal.get(Calendar.MINUTE);
-			switch (cal.get(Calendar.AM_PM)) {
-			case Calendar.AM:
-				
-				break;
-			case Calendar.PM:
-				
-				break;
-			default:
-				break;
-			}
-
-			if (alarmSelected[i]) {
-				long tmp = cal.getTimeInMillis();
-				if (tmp > System.currentTimeMillis())
-					tmp += AlarmManager.INTERVAL_DAY;
-				if (nextAlarm != 0) {
-					if (nextAlarm > tmp) {
-						nextAlarm = tmp;
-						nextAlarmPosition = i;
-					}
-				} else {
-					nextAlarm = tmp;
-					nextAlarmPosition = i;
-				}
-
-			}*/
 		}
 		if (dayIndex == 7) {
 			hsDisplayTxt[1] = "No Alarm Set";

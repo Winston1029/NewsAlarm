@@ -66,7 +66,7 @@ public final class DbHelper
         Insert(Const.Mins + Integer.toString(alarmPosition),
         		calendar.get(Calendar.MINUTE));
 
-        Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition+"\n"+ calendar.getTime(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition+"\n"+ calendar.getTime(), Toast.LENGTH_LONG).show();
 
     }
 

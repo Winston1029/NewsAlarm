@@ -35,9 +35,10 @@ public class NewsAlarmActivity extends Activity {
         
         if(extras != null)
         {
-        	int alarmNo = extras.getInt(AlarmManagerMgr.AlarmNumber);
-            Toast.makeText(this, "Alarm : " + alarmNo, Toast.LENGTH_LONG).show();
+        	int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
+            Toast.makeText(this, "Alarm : " + alarmPosition, Toast.LENGTH_LONG).show();
             pubsub.onSnoozed();
+            pubsub.afterSnooze(alarmPosition);
         }
        
     }
@@ -66,7 +67,6 @@ public class NewsAlarmActivity extends Activity {
     
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onStop();
 		System.out.println("On Pause");
 	}
@@ -76,19 +76,19 @@ public class NewsAlarmActivity extends Activity {
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		// TODO Auto-generated method stub
 		super.onNewIntent(intent);
 		
 		 Bundle extras = intent.getExtras();
 		 if(extras != null)
 		 {
+		     int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
 			 pubsub.onSnoozed();
+			 pubsub.afterSnooze(alarmPosition);
 		 }
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		System.out.println("On Resume");
 	}
