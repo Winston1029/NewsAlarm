@@ -20,7 +20,8 @@ public class AlarmTTS implements OnInitListener, OnUtteranceCompletedListener
     private int lastUtterance = -1;
     private boolean isPaused = false;
     private static final String STORE_NAME = "preferenceFile"; 
-    private HashMap<String, String> params = new HashMap<String, String>();  
+    private HashMap<String, String> params = new HashMap<String, String>();
+	public boolean isPlaying;  
     
     public AlarmTTS(Context context)
     {
@@ -42,6 +43,7 @@ public class AlarmTTS implements OnInitListener, OnUtteranceCompletedListener
     public void PlayOrResumeSpeak()  
     {  
         this.isPaused = false;
+        this.isPlaying = true;
         lastUtterance++;  
         if(lastUtterance >= loveArray.length)  
         {  
@@ -52,7 +54,7 @@ public class AlarmTTS implements OnInitListener, OnUtteranceCompletedListener
         {  
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, String.valueOf(i));  
             mTts.speak(loveArray[i], TextToSpeech.QUEUE_ADD, params);  
-        }  
+        }
     }  
     public void ShutDown()
     {
@@ -69,7 +71,8 @@ public class AlarmTTS implements OnInitListener, OnUtteranceCompletedListener
     
     public void onUtteranceCompleted(String utteranceId) {  
         Log.v(TAG, "Get completed message for the utteranceId " + utteranceId);  
-        lastUtterance = Integer.parseInt(utteranceId);  
+        lastUtterance = Integer.parseInt(utteranceId);
+        if (lastUtterance == loveArray.length - 1) this.isPlaying = false;
         if(this.isPaused)
         {
             mTts.stop();

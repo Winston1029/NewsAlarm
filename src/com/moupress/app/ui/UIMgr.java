@@ -6,8 +6,8 @@ import java.util.Calendar;
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
+import android.R.integer;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
@@ -25,12 +25,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.moupress.app.ui.SlideButton.OnChangeListener;
-import com.moupress.app.ui.SlideButton.SlideButton;
-import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
-import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
 import com.moupress.app.Const;
 import com.moupress.app.R;
+import com.moupress.app.ui.SlideButton.OnChangeListener;
+import com.moupress.app.ui.SlideButton.SlideButton;
+import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
+import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
 import com.moupress.app.util.DbHelper;
 
 public class UIMgr {
@@ -357,54 +357,94 @@ public class UIMgr {
 		DbHelper helper = new DbHelper(this.activity);
 		Calendar cal = Calendar.getInstance();
 		int hours, mins;
-		int nextAlarmPosition = -1;
-		long nextAlarm = 0;
+		int nextAlarm = 0;
+		int dayIndex = 7;//max is 7
+		boolean[] daySelected = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
 			alarmSelected[i] = helper.GetBool(Const.ISALARMSET
 					+ Integer.toString(i));
-
+			daySelected = helper.getSelectedDay(i);
+			
 			hours = helper.GetInt(Const.Hours + Integer.toString(i));
 			mins = helper.GetInt(Const.Mins + Integer.toString(i));
-			cal.setTimeInMillis(System.currentTimeMillis());
-			if (hours != Const.DefNum && mins != Const.DefNum) {
-				cal.set(Calendar.HOUR_OF_DAY, hours);
-
-				cal.set(Calendar.MINUTE, mins);
+			
+			if (hours == Const.DefNum || mins == Const.DefNum) {
+			    cal.setTimeInMillis(System.currentTimeMillis());
+                hours = cal.get(Calendar.HOUR);
+                mins = cal.get(Calendar.MINUTE);
+                //since daySelected is default to false
+                //we need also modify Current day as selected
+                //boolean[] daySelected = Const.DaySelected;
+                //daySelected[cal.get(Calendar.DAY_OF_WEEK)] = true;
+                //helper.saveAlarmSelectedDay(daySelected, i);
 			}
-			hours = cal.get(Calendar.HOUR);
-			mins = cal.get(Calendar.MINUTE);
-			switch (cal.get(Calendar.AM_PM)) {
-			case Calendar.AM:
-				alarmDisplayTxt[i] = Integer.toString(hours) + ":"
-						+ String.format("%02d", mins) + " " + this.AMPM[0];
-				break;
-			case Calendar.PM:
-				alarmDisplayTxt[i] = Integer.toString(hours) + ":"
-						+ String.format("%02d", mins) + " " + this.AMPM[1];
-				break;
-			default:
-				break;
-			}
-
-			if (alarmSelected[i]) {
-				long tmp = cal.getTimeInMillis();
-				if (tmp > System.currentTimeMillis())
-					tmp += AlarmManager.INTERVAL_DAY;
-				if (nextAlarm != 0) {
-					if (nextAlarm > tmp) {
-						nextAlarm = tmp;
-						nextAlarmPosition = i;
-					}
-				} else {
-					nextAlarm = tmp;
-					nextAlarmPosition = i;
-				}
-
+			
+			if(hours < 12)
+            {
+                alarmDisplayTxt[i] = Integer.toString(hours) + ":"
+                + String.format("%02d", mins) + " " + this.AMPM[0];
+            }
+            else {
+                alarmDisplayTxt[i] = Integer.toString(hours%12) + ":"
+                + String.format("%02d", mins) + " " + this.AMPM[1];
+            }
+			
+			if(alarmSelected[i])
+			{
+    			int index =0;
+    			cal.setTimeInMillis(System.currentTimeMillis());
+    			int test = cal.get(Calendar.DAY_OF_WEEK)-1;
+    	        for (int t = 0; t < daySelected.length; t++)
+    	        {
+    	            index = (t+test)%7;
+    	            //to get the nearest selected day
+    	            if(daySelected[index])
+    	            {
+    	                if(t < dayIndex)
+    	                {
+    	                    //need to check if the time is past if index == 0
+    	                    if( t == 0)
+    	                    {
+    	                        if(hours < cal.get(Calendar.HOUR))
+    	                            break;
+    	                        else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
+                                    break;
+                                }
+    	                    }
+    	                    hsDisplayTxt[1] = alarmDisplayTxt[i];
+    	                    nextAlarm = hours*60+ mins;
+    	                    dayIndex = t;
+    	                    break;
+    	                }
+    	                if(t == dayIndex)
+    	                {
+    	                    if(hours < cal.get(Calendar.HOUR))
+                                break;
+                            else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
+                                break;
+                            }
+    	                    
+    	                    int nowAlarm = hours*60+ mins;
+    	                    if(nextAlarm > nowAlarm)
+    	                    {
+    	                        hsDisplayTxt[1] = alarmDisplayTxt[i];
+    	                        nextAlarm = nowAlarm;
+    	                    }
+    	                    break;
+    	                }
+    	                if(t > dayIndex)
+    	                {
+    	                    break;
+    	                }
+   	                   
+    	            }
+    	        } 
+    	        
 			}
 		}
-		if (nextAlarmPosition != -1) {
-			hsDisplayTxt[1] = alarmDisplayTxt[nextAlarmPosition];
+		if (dayIndex == 7) {
+			hsDisplayTxt[1] = "No Alarm Set";
 		}
 	}
 
