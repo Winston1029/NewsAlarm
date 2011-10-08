@@ -3,6 +3,7 @@ package com.moupress.app;
 import java.io.IOException;
 import java.util.Calendar;
 
+import android.R.bool;
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
@@ -185,9 +186,14 @@ public class PubSub {
 		for (int i = 0; i < calendars.length; i++)
         {
 			calendars[i] = getAlarm(i);
-			selectedDay[i] = getSelectedDay(i);
+			selectedDay[i] = dbHelper.getSelectedDay(i);
         }
 		
+//		for (int i = 0; i < selectedDay.length; i++)
+//        {
+//	        Toast.makeText(context, Const.SelectedDay + Integer.toString(i)+" \n"+ selectedDay[i].toString(),Toast.LENGTH_LONG).show();
+//
+//        }
 		alarmMgr = new AlarmManagerMgr(this.activity, calendars, selectedDay);
 		
 		// alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
@@ -224,24 +230,23 @@ public class PubSub {
         return calendar;
     }
 
-	private boolean[] getSelectedDay(int alarmPosition)
-	{
-	    String selectedDay = dbHelper.GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
-	    if(selectedDay == Const.DefString)
-	        return Const.DaySelected;
-	    
-	    String[] stringSelDay = selectedDay.split(Const.Limit);
-	    boolean[] boolSelDay  = Const.DaySelected;
-	    for (int i = 0; i < stringSelDay.length; i++)
-        {
-	        if(stringSelDay[i].equalsIgnoreCase(Const.StrDaySelected))
-	        {
-	            boolSelDay[i] = true;
-            }
-            
-        }
-	    return boolSelDay;
-	}
+//	private boolean[] getSelectedDay(int alarmPosition)
+//	{
+//	    String selectedDay = dbHelper.GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
+//	    if(selectedDay == Const.DefString)
+//	        return Const.DaySelected;
+//	    String[] stringSelDay = selectedDay.split(Const.Limit);
+//	    boolean[] boolSelDay  = new boolean[7];
+//	    for (int i = 0; i < stringSelDay.length; i++)
+//        {
+//	        if(stringSelDay[i].equalsIgnoreCase(Const.StrDaySelected))
+//	        {
+//	            boolSelDay[i] = true;
+//            }
+//            
+//        }
+//	    return boolSelDay;
+//	}
 	
 	public void exit() {
 		streamingMgr.interrupt();

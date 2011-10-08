@@ -1,6 +1,7 @@
 package com.moupress.app.alarm;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,10 +9,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.MonthDisplayHelper;
+import android.widget.Toast;
 
-import com.moupress.app.Const;
 import com.moupress.app.NewsAlarmActivity;
-import com.moupress.app.util.DbHelper;
 
 public class AlarmManagerMgr
 {
@@ -41,13 +42,13 @@ public class AlarmManagerMgr
             return;
         }
         this.SelectedDay[alarmPosition] = daySelected;
-        
-        mCalendar.setTimeInMillis(System.currentTimeMillis());
-        mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mCalendar.set(Calendar.MINUTE, minute);
-        mCalendar.set(Calendar.SECOND, second);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
         mCalendar.set(Calendar.MILLISECOND, millisecond);
-        lstCalendars[alarmPosition] = mCalendar;
+        lstCalendars[alarmPosition] = calendar;
         
         // Check if the alarm is started. If true, send an updated pendingintent
         // No need to stop it first because the pendingintent will override.
@@ -77,27 +78,33 @@ public class AlarmManagerMgr
 
             
             // to avoid trigger immediately
-            long alarmTime = lstCalendars[alarmPosition].getTimeInMillis();
+            //long alarmTime = lstCalendars[alarmPosition].getTimeInMillis();
             //if (alarmTime < System.currentTimeMillis())
-            if(lstCalendars[alarmPosition].before(Calendar.getInstance()))
+//            if(lstCalendars[alarmPosition].before(Calendar.getInstance()))
+//            {
+//                while (alarmTime < System.currentTimeMillis())
+//                {
+//                    alarmTime += AlarmManager.INTERVAL_DAY;
+//                }
+//                //alarmTime += AlarmManager.INTERVAL_DAY;
+//                lstCalendars[alarmPosition].setTimeInMillis(alarmTime);
+//                
+//            }
+            long alarmTime = getNearestAlarmTime(alarmPosition);
+            if(alarmTime < 0)
             {
-                while (alarmTime < System.currentTimeMillis())
-                {
-                    alarmTime += AlarmManager.INTERVAL_DAY;
-                }
-                //alarmTime += AlarmManager.INTERVAL_DAY;
-                lstCalendars[alarmPosition].setTimeInMillis(alarmTime);
-                
+                Toast.makeText(mContext,"Alarm was not set" , Toast.LENGTH_LONG).show();
             }
-            StringBuilder sBuilder = new StringBuilder();
-            sBuilder.append(lstCalendars[alarmPosition].getTime());
-            sBuilder.append("\n");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            sBuilder.append(calendar.getTime());
-            //Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
-            // setup alarm && repeater
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
+           // Toast.makeText(mContext,"Alarm is set successfully." , Toast.LENGTH_LONG).show();
+            StringBuilder sBuilder = new StringBuilder();
+//            sBuilder.append(lstCalendars[alarmPosition].getTime());
+//            sBuilder.append("\n");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(alarmTime);
+            sBuilder.append(calendar.getTime());
+            Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
+            // setup alarm && repeater
             // alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
             // mCalendar.getTimeInMillis(), (10*1000), pi);
 
@@ -111,6 +118,37 @@ public class AlarmManagerMgr
         return true;
 
     }
+
+    private long getNearestAlarmTime(int alarmPosition)
+    {
+        int index=0;
+        Calendar calendar = Calendar.getInstance();
+        calendar = lstCalendars[alarmPosition];
+        //get return a strange value: Friday is 6. Hence minus 1.
+        int test = calendar.get(Calendar.DAY_OF_WEEK)-1;
+        for (int i = 0; i < this.SelectedDay[alarmPosition].length; i++)
+        {
+            index = (i+test)%7;
+            if(SelectedDay[alarmPosition][index])
+            {
+                if(calendar.getTimeInMillis() > System.currentTimeMillis())
+                {
+                    //lstCalendars[alarmPosition] = mCalendar;
+                    //startAlarm(alarmPosition);
+                    return calendar.getTimeInMillis();
+                }
+            }
+            //Every round, need add 1 day to calendar 
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }   
+        //if come to this point. The only possibility is that the alarm time is set to today with time less than now
+        if(SelectedDay[alarmPosition][test])
+        {
+            return calendar.getTimeInMillis();
+        }
+        return -1;
+    }
+
 
     public void setActivityParams(Bundle extras)
     {
