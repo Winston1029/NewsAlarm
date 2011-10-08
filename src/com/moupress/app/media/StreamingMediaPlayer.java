@@ -67,7 +67,7 @@ public class StreamingMediaPlayer {
 	    };   
 	    
 	    new Thread(r).start();
-	    Toast.makeText(context, "Streaming Started", Toast.LENGTH_SHORT).show();
+	    //Toast.makeText(context, "Streaming Started", Toast.LENGTH_SHORT).show();
     }
     
     /**  
