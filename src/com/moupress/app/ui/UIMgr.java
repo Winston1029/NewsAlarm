@@ -6,8 +6,8 @@ import java.util.Calendar;
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
+import android.R.integer;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
@@ -25,12 +25,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.moupress.app.ui.SlideButton.OnChangeListener;
-import com.moupress.app.ui.SlideButton.SlideButton;
-import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
-import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
 import com.moupress.app.Const;
 import com.moupress.app.R;
+import com.moupress.app.ui.SlideButton.OnChangeListener;
+import com.moupress.app.ui.SlideButton.SlideButton;
+import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
+import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
 import com.moupress.app.util.DbHelper;
 
 public class UIMgr {
@@ -70,7 +70,7 @@ public class UIMgr {
 	 */
 	private void initHomeUI() {
 		hsListView = (ListView) activity.findViewById(R.id.hslistview);
-		hsListAdapter = new AlarmListViewAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected);
+		hsListAdapter = new AlarmListViewAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected,R.layout.home_screen_item);
 		hsListView.setAdapter(hsListAdapter);
 		hsListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -87,7 +87,7 @@ public class UIMgr {
 	 */
 	private void initSnoozeUI() {
 		snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
-		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected);
+		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected,R.layout.home_screen_item);
 		snoozeListView.setAdapter(snoozeAdapter);
 		snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -110,7 +110,9 @@ public class UIMgr {
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
-	private boolean[] daySelected = new boolean[]{false,false,false,false,false,false,false};
+	private boolean[][] daySelected = new boolean[][]{{false,false,false,false,false,false,false},
+													 {false,false,false,false,false,false,false},
+													{false,false,false,false,false,false,false}};
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
 
@@ -119,7 +121,7 @@ public class UIMgr {
 	 */
 	private void initAlarmTimeUI() {
 		alarmListView = (ListView) activity.findViewById(R.id.alarmlistview);
-		alarmAdapter = new AlarmListViewAdapter(alarmDisplayTxt,alarmDisplayIcon, alarmSelected);
+		alarmAdapter = new AlarmListViewAdapter(alarmDisplayTxt,alarmDisplayIcon, alarmSelected,R.layout.alarm_list_item);
 		alarmListView.setAdapter(alarmAdapter);
 		alarmListView.setOnItemClickListener(optionListOnItemClickListener);
 
@@ -171,45 +173,45 @@ public class UIMgr {
 	    slideBtn.setOnChangedListener(new OnChangeListener()
 	    {
 
-	    	public void OnChanged(int i,boolean direction,View v) {
+	    	public void OnChanged(int weekdayPos,boolean direction,View v) {
 
 	    		if(direction == true)
 	    		{
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
-		    		daySelected[i]=true;
+		    		daySelected[ALARM_POSITION][weekdayPos]=true;
 	    		}
 	    		else
 	    		{
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
-		    		daySelected[i]=false;
+		    		daySelected[ALARM_POSITION][weekdayPos]=false;
 	    		}
 	    	}
 
 			@Override
-			public void OnSelected(int i,  View v, int mode) {
+			public void OnSelected(int weekdayPos,  View v, int mode) {
 				
 				if(mode == 0)
 				{
-					if(daySelected[i]==true)
+					if(daySelected[ALARM_POSITION][weekdayPos]==true)
 					{
-						daySelected[i]= false;
+						daySelected[ALARM_POSITION][weekdayPos]= false;
 						((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 					}
 					else
 					{
-						daySelected[i]= true;
+						daySelected[ALARM_POSITION][weekdayPos]= true;
 						((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
 					}
 				}
 				else if(mode == 1)
 				{
-					daySelected[i]= true;
+					 daySelected[ALARM_POSITION][weekdayPos]= true;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
 
 				}
 				else if (mode == 2)
 				{
-					daySelected[i]= false;
+					daySelected[ALARM_POSITION][weekdayPos]= false;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 
 				}
@@ -240,7 +242,7 @@ public class UIMgr {
 	 */
 	private void initAlarmSoundUI() {
 		soundListView = (ListView) activity.findViewById(R.id.soundlistview);
-		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected);
+		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected,R.layout.home_screen_item);
 		soundListView.setAdapter(soundAdapter);
 		soundListView.setOnItemClickListener(optionListOnItemClickListener);
 	}
@@ -357,54 +359,95 @@ public class UIMgr {
 		DbHelper helper = new DbHelper(this.activity);
 		Calendar cal = Calendar.getInstance();
 		int hours, mins;
-		int nextAlarmPosition = -1;
-		long nextAlarm = 0;
+		int nextAlarm = 0;
+		int dayIndex = 7;//max is 7
+		boolean[] daySelectedLocal = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
 			alarmSelected[i] = helper.GetBool(Const.ISALARMSET
 					+ Integer.toString(i));
-
+			daySelectedLocal = helper.getSelectedDay(i);
+			
 			hours = helper.GetInt(Const.Hours + Integer.toString(i));
 			mins = helper.GetInt(Const.Mins + Integer.toString(i));
-			cal.setTimeInMillis(System.currentTimeMillis());
-			if (hours != Const.DefNum && mins != Const.DefNum) {
-				cal.set(Calendar.HOUR_OF_DAY, hours);
-
-				cal.set(Calendar.MINUTE, mins);
+			
+			if (hours == Const.DefNum || mins == Const.DefNum) {
+			    cal.setTimeInMillis(System.currentTimeMillis());
+                hours = cal.get(Calendar.HOUR);
+                mins = cal.get(Calendar.MINUTE);
+                //since daySelected is default to false
+                //we need also modify Current day as selected
+                //boolean[] daySelected = Const.DaySelected;
+                //daySelected[cal.get(Calendar.DAY_OF_WEEK)] = true;
+                //helper.saveAlarmSelectedDay(daySelected, i);
 			}
-			hours = cal.get(Calendar.HOUR);
-			mins = cal.get(Calendar.MINUTE);
-			switch (cal.get(Calendar.AM_PM)) {
-			case Calendar.AM:
-				alarmDisplayTxt[i] = Integer.toString(hours) + ":"
-						+ String.format("%02d", mins) + " " + this.AMPM[0];
-				break;
-			case Calendar.PM:
-				alarmDisplayTxt[i] = Integer.toString(hours) + ":"
-						+ String.format("%02d", mins) + " " + this.AMPM[1];
-				break;
-			default:
-				break;
-			}
-
-			if (alarmSelected[i]) {
-				long tmp = cal.getTimeInMillis();
-				if (tmp > System.currentTimeMillis())
-					tmp += AlarmManager.INTERVAL_DAY;
-				if (nextAlarm != 0) {
-					if (nextAlarm > tmp) {
-						nextAlarm = tmp;
-						nextAlarmPosition = i;
-					}
-				} else {
-					nextAlarm = tmp;
-					nextAlarmPosition = i;
-				}
-
+			
+			if(hours < 12)
+            {
+                alarmDisplayTxt[i] = Integer.toString(hours) + ":"
+                + String.format("%02d", mins) + " " + this.AMPM[0];
+            }
+            else {
+                alarmDisplayTxt[i] = Integer.toString(hours%12) + ":"
+                + String.format("%02d", mins) + " " + this.AMPM[1];
+            }
+			
+			this.daySelected[i] = daySelectedLocal;
+			if(alarmSelected[i])
+			{
+    			int index =0;
+    			cal.setTimeInMillis(System.currentTimeMillis());
+    			int test = cal.get(Calendar.DAY_OF_WEEK)-1;
+    	        for (int t = 0; t < daySelected.length; t++)
+    	        {
+    	            index = (t+test)%7;
+    	            //to get the nearest selected day
+    	            if(daySelectedLocal[index])
+    	            {
+    	                if(t < dayIndex)
+    	                {
+    	                    //need to check if the time is past if index == 0
+    	                    if( t == 0)
+    	                    {
+    	                        if(hours < cal.get(Calendar.HOUR))
+    	                            break;
+    	                        else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
+                                    break;
+                                }
+    	                    }
+    	                    hsDisplayTxt[1] = alarmDisplayTxt[i];
+    	                    nextAlarm = hours*60+ mins;
+    	                    dayIndex = t;
+    	                    break;
+    	                }
+    	                if(t == dayIndex)
+    	                {
+    	                    if(hours < cal.get(Calendar.HOUR))
+                                break;
+                            else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
+                                break;
+                            }
+    	                    
+    	                    int nowAlarm = hours*60+ mins;
+    	                    if(nextAlarm > nowAlarm)
+    	                    {
+    	                        hsDisplayTxt[1] = alarmDisplayTxt[i];
+    	                        nextAlarm = nowAlarm;
+    	                    }
+    	                    break;
+    	                }
+    	                if(t > dayIndex)
+    	                {
+    	                    break;
+    	                }
+   	                   
+    	            }
+    	        } 
+    	        
 			}
 		}
-		if (nextAlarmPosition != -1) {
-			hsDisplayTxt[1] = alarmDisplayTxt[nextAlarmPosition];
+		if (dayIndex == 7) {
+			hsDisplayTxt[1] = "No Alarm Set";
 		}
 	}
 
@@ -461,15 +504,17 @@ public class UIMgr {
 						+ ":" + String.format("%02d", minutes.getCurrentItem())
 						+ " " + (amOrpm.getCurrentItem() == 0 ? "am" : "pm"),
 						ALARM_POSITION);
+				alarmAdapter.updateWeekDaysSelection(daySelected[ALARM_POSITION],ALARM_POSITION);
+				
 				timeSlidingUpPanel.toggle();
 				// Call Back function on Alarm Time Change
 				int hours24 = amOrpm.getCurrentItem() == 0 ? hours
 						.getCurrentItem() : hours.getCurrentItem() + 12;
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
-						minutes.getCurrentItem(), 0, 0, daySelected);
+						minutes.getCurrentItem(), 0, 0, daySelected[ALARM_POSITION]);
 				//Get Weekdays selected
-				System.out.println("Days Selected" + daySelected[0]);
+				
 				
 				break;
 			case R.id.timeaddcancel:
@@ -542,26 +587,34 @@ public class UIMgr {
 
 		private ArrayList<NewsAlarmListItem> optionArrayList;
 		private LayoutInflater viewInflator;
+		private int resItemId;
 
-		public AlarmListViewAdapter(String[] displayStrings, int[] displayInts,boolean[] displayChecked) {
+		public AlarmListViewAdapter(String[] displayStrings, int[] displayInts,boolean[] displayChecked, int resItemId) {
 			viewInflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			optionArrayList = new ArrayList<NewsAlarmListItem>();
 			loadArrayList(displayStrings, displayInts, displayChecked);
+			this.resItemId = resItemId;
 			// txtisplays = displayStrings;
 			// icons = displayInts;
+		}
+
+		public void updateWeekDaysSelection(boolean[] daySelected, int alarmposition) {
+			
+			optionArrayList.get(alarmposition).setWeekDaysSelection(daySelected);
+			this.notifyDataSetChanged();
 		}
 
 		public void loadArrayList(String[] displayStrings, int[] displayInts,
 				boolean[] displayChecked) {
 			for (int i = 0; i < displayStrings.length; i++) {
-				addToArrayList(displayStrings[i], displayInts[i],displayChecked[i]);
+				addToArrayList(displayStrings[i], displayInts[i],displayChecked[i],daySelected[i]);
 			}
 		}
 
 		public void addToArrayList(String displayString, int displayInt,
-				boolean displayChk) {
+				boolean displayChk, boolean[] daySelected ) {
 
-			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk));
+			optionArrayList.add(new NewsAlarmListItem(displayInt,displayString, displayChk,daySelected ));
 		}
 
 		public void updateTxtArrayList(String displayString, int position) {
@@ -590,7 +643,7 @@ public class UIMgr {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				convertView = viewInflator.inflate(R.layout.home_screen_item,null);
+				convertView = viewInflator.inflate(resItemId,null);
 			}
 			ImageView imgView = (ImageView) convertView.findViewById(R.id.alarmitemicon);
 			imgView.setImageResource(optionArrayList.get(position).getOptionIcon());
@@ -603,7 +656,24 @@ public class UIMgr {
 			} else {
 				chkImgView.setVisibility(View.INVISIBLE);
 			}
+			if(parent.getId()==R.id.alarmlistview)
+				loadSubTextView((LinearLayout)convertView.findViewById(R.id.weekdaylist),R.layout.weekday_small,position);
 			return convertView;
+		}
+
+		private void loadSubTextView(LinearLayout linearLayout, int viewId, int position) 
+		{
+			linearLayout.removeAllViews();
+			for(int i=0;i<weekdays.length;i++)
+			{
+				TextView tv = (TextView) viewInflator.inflate(viewId, null);
+				tv.setText(weekdays[i]);
+				if(optionArrayList.get(position).getWeekDaysSelection()[i]==true)
+				tv.setTextColor(activity.getResources().getColor(R.color.white));
+				else
+				tv.setTextColor(activity.getResources().getColor(R.color.grey));
+				linearLayout.addView(tv);
+			}
 		}
 
 		public void invertSelect(int position) {

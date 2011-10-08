@@ -4,6 +4,6 @@ import android.view.View;
 import android.widget.TextView;
 
 public interface OnChangeListener {
-	 abstract void OnChanged(int i, boolean direction, View textView);  
-	 abstract void OnSelected(int i,  View textView,int mode); 
+	 abstract void OnChanged(int weekdayPos, boolean direction, View textView);  
+	 abstract void OnSelected(int weekdayPos,  View textView,int mode); 
 }

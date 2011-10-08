@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.moupress.app.Const;
 
@@ -65,7 +66,7 @@ public final class DbHelper
         Insert(Const.Mins + Integer.toString(alarmPosition),
         		calendar.get(Calendar.MINUTE));
 
-        //Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition, Toast.LENGTH_LONG).show();
+        //Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition+"\n"+ calendar.getTime(), Toast.LENGTH_LONG).show();
 
     }
 
@@ -95,7 +96,24 @@ public final class DbHelper
             
         }
         Insert(Const.SelectedDay + Integer.toString(alarmPosition), sBuilder.toString());
-        
+        //Toast.makeText(mContext, Const.SelectedDay + Integer.toString(alarmPosition)+" \n"+ sBuilder.toString(),Toast.LENGTH_LONG).show();
+    }
+    public boolean[] getSelectedDay(int alarmPosition)
+    {
+        String selectedDay = GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
+        if(selectedDay == Const.DefString)
+            return Const.DaySelected;
+        String[] stringSelDay = selectedDay.split(Const.Limit);
+        boolean[] boolSelDay  = new boolean[7];
+        for (int i = 0; i < stringSelDay.length; i++)
+        {
+            if(stringSelDay[i].equalsIgnoreCase(Const.StrDaySelected))
+            {
+                boolSelDay[i] = true;
+            }
+            
+        }
+        return boolSelDay;
     }
 
 }
