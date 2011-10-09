@@ -34,6 +34,7 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 		if (isOpen) {
 			setVisibility(View.VISIBLE);
 			anim=new TranslateAnimation(0.0f, 0.0f,getHeight(),0.0f);
+			anim.setAnimationListener(popUpListener);
 		}
 		else {
 			anim=new TranslateAnimation(0.0f, 0.0f, 0.0f,getHeight());
@@ -46,6 +47,19 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 		startAnimation(anim);
 	}
 	
+	Animation.AnimationListener popUpListener=new Animation.AnimationListener() {
+		public void onAnimationEnd(Animation animation) {
+			panelSlidingListener.onSlidingUpEnd();
+		}
+		
+		public void onAnimationRepeat(Animation animation) {
+			// not needed
+		}
+		
+		public void onAnimationStart(Animation animation) {
+			
+		}
+	};
 	Animation.AnimationListener collapseListener=new Animation.AnimationListener() {
 		public void onAnimationEnd(Animation animation) {
 			setVisibility(View.GONE);
