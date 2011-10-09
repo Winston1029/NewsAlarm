@@ -77,8 +77,8 @@ public class SlideButton extends View implements OnTouchListener{
 		startIndex = index;
 		
 		//System.out.println("CurrentX Position "+ currentX+" Index "+ index);
-		//invalidate();'
-		
+		currentX = -1;
+		invalidate();
 	}
 	
 	
@@ -115,7 +115,6 @@ public class SlideButton extends View implements OnTouchListener{
 			//itemsPostions[i]= ((View)itemsLayout.getChildAt(i)).getLeft();
 			//System.out.println("Child Position "+i+" " + itemsPostions[i]);
 		}
-		
 	}
 
 	@Override
@@ -260,8 +259,9 @@ public class SlideButton extends View implements OnTouchListener{
 	/**
 	 * Builds view for measuring
 	 */
-	private void buildViewForMeasuring()
+	public void buildViewForMeasuring()
 	{
+		if(itemsLayout == null)
 		createItemsLayout();
 		itemsLayout.removeAllViews();
 		if(viewAdapter != null)
@@ -269,18 +269,32 @@ public class SlideButton extends View implements OnTouchListener{
 			int count = viewAdapter.getItemsCount();
 			for(int i = 0; i< count; i++)
 			{
-				addViewItem(i);
+				//addViewItem(i);
+			  	chgLsn.OnSelected(i, addViewItem(i), 3);
 			}
 		}
 	}
 	
+	public void reLoadViews()
+	{
+		if(viewAdapter != null)
+		{
+			int count = viewAdapter.getItemsCount();
+			for(int i = 0; i< count; i++)
+			{
+				//addViewItem(i);
+			  	chgLsn.OnSelected(i, itemsLayout.getChildAt(i), 3);
+			}
+		}
+		
+	}
 	/**
 	 * Adds view for item to items layout
 	 * @param index the item index
 	 * @param first the flag indicates if view should be first
 	 * @return true if corresponding item exists and is added
 	 */
-	private boolean addViewItem(int index) {
+	private View addViewItem(int index) {
 		View view = getItemView(index);
 		if (view != null) {
 			
@@ -290,9 +304,9 @@ public class SlideButton extends View implements OnTouchListener{
 				///{
 				//	System.out.println("Exception e "+e.toString());
 				//}
-				return true;
+				//return view;
 			}
-		return false;
+		return view;
 	}
 	
 	/**

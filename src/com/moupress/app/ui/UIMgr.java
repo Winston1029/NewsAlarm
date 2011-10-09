@@ -115,6 +115,8 @@ public class UIMgr {
 													{false,false,false,false,false,false,false}};
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
+	
+	 private NewsAlarmDigiClock weekday;
 
 	/**
 	 * Initialize Alarm Time Screen
@@ -131,7 +133,9 @@ public class UIMgr {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				ALARM_POSITION = position;
-
+				
+				//slideBtn.buildViewForMeasuring();
+				
 				buttonBarSlidingUpPanel.toggle();
 				// timeSlidingUpPanel.toggle();
 				return true;
@@ -145,11 +149,15 @@ public class UIMgr {
 		timeSlidingUpPanel = (NewsAlarmSlidingUpPanel) activity.findViewById(R.id.timeupdatepanel);
 		timeSlidingUpPanel.setOpen(false);
 
+		weekday = (NewsAlarmDigiClock) activity.findViewById(R.id.weekday);
 		timeSlidingUpPanel
 				.setPanelSlidingListener(new NewsAlarmSlidingUpPanel.PanelSlidingListener() {
 
 					@Override
 					public void onSlidingUpEnd() {
+						
+						slideBtn.reLoadViews();
+						slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
 					}
 
 					@Override
@@ -177,13 +185,15 @@ public class UIMgr {
 
 	    		if(direction == true)
 	    		{
+	    			daySelected[ALARM_POSITION][weekdayPos]=true;
+	    			if(daySelected[ALARM_POSITION][weekdayPos]==true)
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
-		    		daySelected[ALARM_POSITION][weekdayPos]=true;
 	    		}
 	    		else
 	    		{
+	    			daySelected[ALARM_POSITION][weekdayPos]=false;
+	    			if(daySelected[ALARM_POSITION][weekdayPos]==false)
 		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
-		    		daySelected[ALARM_POSITION][weekdayPos]=false;
 	    		}
 	    	}
 
@@ -205,6 +215,12 @@ public class UIMgr {
 				}
 				else if(mode == 1)
 				{
+					
+					for(int i =0 ;i< daySelected[ALARM_POSITION].length;i++)
+					{
+						if(daySelected[ALARM_POSITION][i]==true)
+							return;
+					}
 					 daySelected[ALARM_POSITION][weekdayPos]= true;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
 
@@ -214,17 +230,21 @@ public class UIMgr {
 					daySelected[ALARM_POSITION][weekdayPos]= false;
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 
+				} else if(mode ==3)
+				{
+					if( daySelected[ALARM_POSITION][weekdayPos]==true)
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+					else if (daySelected[ALARM_POSITION][weekdayPos]== false)
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 				}
-				
 			}
 	    	
 	    });
 		viewAdapter = new TextSlideButtonAdapter(weekdays, activity);
 		slideBtn.setViewAdapter(viewAdapter);
         bSettingAlarmTimeDisableFlip = false;
-        NewsAlarmDigiClock weekday = (NewsAlarmDigiClock) activity.findViewById(R.id.weekday);
-		//System.out.println("Weekday "+weekday.getWeekDayRank());
-		slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
+        
+		alarmAdapter.updateWeekDaysSelection(daySelected[ALARM_POSITION],ALARM_POSITION);
 		bSettingAlarmTimeDisableFlip = false;
 	}
 	
@@ -610,6 +630,7 @@ public class UIMgr {
 				addToArrayList(displayStrings[i], displayInts[i],displayChecked[i],daySelected[i]);
 			}
 		}
+		
 
 		public void addToArrayList(String displayString, int displayInt,
 				boolean displayChk, boolean[] daySelected ) {
