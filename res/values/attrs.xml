@@ -7,4 +7,8 @@
 		<attr name="speed" format="integer" />
 		<attr name="targetHeight" format="dimension" />
 	</declare-styleable>
+	<declare-styleable name="SlideButton">
+		<attr name="thumb" format="integer"/>
+		<attr name="mode" format="integer" /> 
+	</declare-styleable>
 </resources>

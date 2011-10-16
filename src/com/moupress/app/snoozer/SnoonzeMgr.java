@@ -14,9 +14,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
+import com.moupress.app.Const;
 import com.moupress.app.R;
+import com.moupress.app.ui.SlideButton.OnChangeListener;
+import com.moupress.app.ui.SlideButton.SlideButton;
 
 public class SnoonzeMgr {
 
@@ -27,8 +32,21 @@ public class SnoonzeMgr {
 	private Context context;
 	
 	private GestureOverlayView gestures;
+	private SlideButton dismissSlide;
 	
 	private SnoozeListener snoozeListener;
+	
+	private Boolean flipMotionDetector = false;
+	
+	private Boolean swingMotionDetector = false;
+	
+	private final int FACE_DOWN = 1;
+	private final int FACE_UP = 2;
+	
+	private int flipSide, preFlipSide;
+	
+	private Handler snoozeHandler;
+	
 	
 	public SnoonzeMgr(Context context)
 	{
@@ -55,6 +73,9 @@ public class SnoonzeMgr {
         }
 		
 		lastUpdate = System.currentTimeMillis();
+		
+		this.isDismissed = false;
+		this.isSnoozed = false;
 	}
 	
 	private void initListeners() {
@@ -71,7 +92,9 @@ public class SnoonzeMgr {
 					// We want at least some confidence in the result
 					if (prediction.score > 1.0) {
 						// Show the spell
-						snoozeListener.onSnoozed();
+						//snoozeListener.onSnoozed();
+						snoozeTriggered();
+						System.out.println("Gesture Snoozed !");
 					}
 				}
 			}};
@@ -92,21 +115,41 @@ public class SnoonzeMgr {
 					float y = values[1];
 					float z = values[2];
 					
-					float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-					long actualTime = System.currentTimeMillis();
-					
-					if(accelationSquareRoot>2)
+					if(swingMotionDetector == true)
 					{
-						if (actualTime - lastUpdate < 200) {
-							return;
+						float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+						long actualTime = System.currentTimeMillis();
+						
+						if(accelationSquareRoot>2)
+						{
+							if (actualTime - lastUpdate < 200) {
+								return;
+							}
+							lastUpdate = actualTime;
+							//snoozeListener.onSnoozed();
+							snoozeTriggered();
+							System.out.println("Swing Snoozed !");
+							isSnoozed = true;
 						}
-						lastUpdate = actualTime;
-						snoozeListener.onSnoozed();
-						isSnoozed = true;
+					}
+					
+					if(flipMotionDetector == true)
+					{
+							flipSide = (z>=0)?FACE_UP:FACE_DOWN;
+							if(preFlipSide != 0)
+							{
+								if(flipSide != preFlipSide)
+								{
+									//snoozeListener.onSnoozed();
+									snoozeTriggered();
+									System.out.println("Flip Snoozed");
+									isSnoozed = true;
+								}
+							}
+							preFlipSide = flipSide;
 					}
 				}
 			}
-			
 		};
 	}
 	
@@ -122,38 +165,106 @@ public class SnoonzeMgr {
 		gestures = (GestureOverlayView)v;
 	}
 	
-	public static final int  SENSOR_SNOOZE_TYPE = 1;
-	public static final int  GESTURE_SNOOZE_TYPE = 2;
-	public static final int SWING_SNOOZE_TYPE = 3;
+	private Runnable alarmTriggerTask = new Runnable()
+	{
+
+		@Override
+		public void run() {
+			
+			//System.out.println("Snoozed Again!");
+			Toast.makeText(context, "Snoozed", 1000);
+			snoozeListener.onSnoozedAgain();
+		}
+		
+	};
+	public void snoozeTriggered()
+	{
+		this.snoozeListener.onSnoozed();
+		this.snoozeHandler = new Handler();
+		snoozeHandler.postDelayed(alarmTriggerTask, Const.SNOOZE_DUR);
+		
+	}
+	
+	
+	public static final int  GESTURE_SNOOZE_TYPE = 0;
+	public static final int FLIP_SNOOZE_TYPE = 1;
+	public static final int  SWING_SNOOZE_TYPE = 2;
 	
 	private SensorManager sensorManager;
 	public void unRegisterListener(int snoozeType) {
 		// TODO Auto-generated method stub
-		if(snoozeType==SENSOR_SNOOZE_TYPE)
+		if(snoozeType==SWING_SNOOZE_TYPE||snoozeType==FLIP_SNOOZE_TYPE)
 		{
+			if(snoozeType == FLIP_SNOOZE_TYPE)
+				this.flipMotionDetector = false;
+			if(snoozeType == SWING_SNOOZE_TYPE)
+				this.swingMotionDetector = false;
+			
 			sensorManager.unregisterListener(sensorEventListener);
 		} else if (snoozeType == GESTURE_SNOOZE_TYPE)
 		{
+			System.out.println("Unregister Gesture Listener!");
+			gestures.removeAllOnGesturePerformedListeners();
 			gestures.removeAllOnGestureListeners();
+			gestures.removeAllOnGesturingListeners();
 		}
 	}
 	
-	private boolean isSnoozed;
+	private boolean isSnoozed,isDismissed;
 	public void registerListener(int snoozeType, SnoozeListener listener) {
 		isSnoozed = false;
+		isDismissed = false;
 		if (listener != null) {
 			snoozeListener = listener;
 		} // else use default snooze lister, which is nothing but print line
 		
-		if(snoozeType==SENSOR_SNOOZE_TYPE)
+		if(snoozeType==FLIP_SNOOZE_TYPE||snoozeType == SWING_SNOOZE_TYPE)
 		{
 			//gestures.removeAllOnGestureListeners();
+			if(snoozeType == FLIP_SNOOZE_TYPE)
+			{
+				this.flipMotionDetector = true;
+				flipSide = 0;
+				preFlipSide = 0;
+			}
+			if(snoozeType == SWING_SNOOZE_TYPE)
+				this.swingMotionDetector = true;
+			
 			sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 		}
 		else if(snoozeType == GESTURE_SNOOZE_TYPE)
 		{
+			System.out.println("Register Gesture");
 			//sensorManager.unregisterListener(snoozeSensorEventListener);
+		    this.unRegisterListener(GESTURE_SNOOZE_TYPE);
 			gestures.addOnGesturePerformedListener(gesturePerformedListener);
 		}
 	}
+
+	public void setDismissSlide(SlideButton dismissSlide) {
+		// TODO Auto-generated method stub
+		this.dismissSlide = dismissSlide;
+		this.dismissSlide.setOnChangedListener(new OnChangeListener()
+	    {
+
+	    	public void OnChanged(int weekdayPos,boolean direction,View v) {
+	    		
+	    		if(direction == true && weekdayPos == 2)
+	    		{
+	    			snoozeListener.onDismissed();
+	    			isSnoozed = false;
+	    			isDismissed = true;
+	    		}
+	    	}
+
+			@Override
+			public void OnSelected(int weekdayPos,  View v, int mode) {
+				
+				//dismissViewAdapter.testTxtSwitcher();
+			}
+	    	
+	    });
+	}
+	
+	
 }

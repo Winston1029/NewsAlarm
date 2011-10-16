@@ -44,4 +44,5 @@ public interface SlideButtonAdapter {
 	 */
 	public void unregisterDataSetObserver (DataSetObserver observer);
 
+
 }

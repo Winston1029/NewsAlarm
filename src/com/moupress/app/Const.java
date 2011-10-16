@@ -1,7 +1,8 @@
 package com.moupress.app;
 
 public class Const {
-	public final static boolean ISDEBUG = false;
+	public final static boolean ISDEBUG =  false;
+	
 
 	//==============Alarm Sound ================================
 	public static final int ALARMSOUND_BBC = 0;
@@ -14,7 +15,7 @@ public class Const {
 
 	//==============Weather================================
 	public static final String HOST_WEATHER_SERVICE = "www.google.com";
-	public static final String NON_WEATHER_MSG = "No Weather Information";
+	public static final String NON_WEATHER_MSG = "No Weather Info";
 	public static final String WEATHERINFO_SEPARATOR = ";";
 	public static final String WEATHERINFO_WINDHUMIDITY = "windhumidity";
 	public static final String WEATHERINFO_FORCAST = "focast";
@@ -24,7 +25,7 @@ public class Const {
 	public static final int INTIAL_KB_BUFFER = 160 * 10 / 8;
 
 	public static enum SCREENS {
-		HomeUI, SnoozeUI, AlarmTimeUI, AlarmSoundUI
+		HomeUI, SnoozeUI, AlarmTimeUI, AlarmSoundUI,OnSnoozedUI
 	};
 	
 	//==============DBHelper================================
@@ -39,6 +40,7 @@ public class Const {
     public static final String Hours = "Alarm_Hours_";
     public static final String Mins = "Alarm_Mins_";
     public static final String ISALARMSET = "IsAlarmSet_";
+    public static final String ALARMSOUNDE ="Alarm_Sound_";
     public static final String SNOOZE = "Snooze_";
     public static final String GESTURE = "Gesture";
     public static final String Limit = ";";
@@ -49,5 +51,11 @@ public class Const {
     public static final String CALENDER_ID = "_id";
     public static final String CALENDER_TITLE = "title";
     public static final String CALENDER_STARTDATE = "dtstart";
+    
+    //===============Slide Button============================
+    public static final int[] thumbImg = {R.drawable.slide_thumb,R.drawable.dismiss_thumb_small};
+    
+    //===============Snooze Timer ===============
+    public static final int SNOOZE_DUR = 1*60*1000;
 
 }

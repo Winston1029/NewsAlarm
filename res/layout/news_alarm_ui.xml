@@ -20,7 +20,6 @@
   				android:layout_marginTop="20dip"
   				/>
 <LinearLayout
-			
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent"
 			android:orientation="horizontal"
@@ -42,7 +41,7 @@
 <ViewFlipper android:id="@+id/optionflipper"
               android:layout_width="fill_parent" 
               android:layout_height="wrap_content"
-              android:layout_marginTop="30dip"
+              android:layout_marginTop="40dip"
               android:inAnimation="@anim/slidein"
               android:outAnimation="@anim/slideout">
 	<LinearLayout style="@style/viewsliperchild">
@@ -98,20 +97,55 @@
 	  </LinearLayout>
 	</LinearLayout>
 <LinearLayout style="@style/viewsliperchild">
-	<LinearLayout style="@style/viewsliperchild.sub">
+	<LinearLayout style="@style/viewsliperchild.sub"
+	android:background="@drawable/viewslider_snoozed_bg">
+	<LinearLayout style="@style/viewsliperchild.sub"
+				android:layout_marginLeft="10dip"
+				android:layout_marginRight="10dip"
+	>
  	  <TextView android:id="@+id/snooze"  
  	        android:text="Draw a Circle" 
  	        style="@style/alarminfotxt" 
+ 	        android:textColor="@color/white"
  	        ></TextView> 
 	<android.gesture.GestureOverlayView
 		android:id="@+id/gestures"
 		android:layout_width="fill_parent" 
-	    android:layout_height="120dip"
+	    android:layout_height="150dip"
 	     />
+	    </LinearLayout>
+<com.moupress.app.ui.SlideButton.SlideButton
+ 		android:id = "@+id/dismissSlide"  
+        android:layout_width="fill_parent"   
+        android:layout_height="40dip"
+        android:layout_marginTop="45dip"
+        android:background="@drawable/dismiss_bg"
+        android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip" 
+		newsalarm:thumb="1"
+		newsalarm:mode="0">
+</com.moupress.app.ui.SlideButton.SlideButton>
 	  </LinearLayout>
 	</LinearLayout>
 </ViewFlipper>
-
+</LinearLayout>
+<LinearLayout android:id="@+id/page_indicator_layout"
+	android:orientation="horizontal"
+	android:gravity="center_horizontal"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="55dip"
+	android:layout_alignParentBottom="true"
+	android:visibility="visible">
+	<ImageView android:id="@+id/hsselector"
+			style="@style/pageindicator"
+			android:background="@drawable/page_select"></ImageView>
+	<ImageView android:id="@+id/szselector"
+			style="@style/pageindicator"></ImageView>
+	<ImageView android:id="@+id/amselector"
+			style="@style/pageindicator"></ImageView>
+	<ImageView android:id="@+id/szselector"
+			style="@style/pageindicator"></ImageView>
 </LinearLayout>
 <com.moupress.app.ui.NewsAlarmSlidingUpPanel
    android:id="@+id/removeItemPanel"
@@ -159,6 +193,8 @@
         android:layout_height="40dip" 
         android:background="@drawable/slide_bg"
         android:layout_marginTop="7dip"
+        newsalarm:thumb="0"
+        newsalarm:mode="1"
         >
 </com.moupress.app.ui.SlideButton.SlideButton>
 <LinearLayout

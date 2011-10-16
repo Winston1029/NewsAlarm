@@ -1,14 +1,11 @@
 package com.moupress.app;
 
-import java.io.IOException;
+
 import java.util.Calendar;
 
-import android.R.bool;
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
@@ -75,8 +72,9 @@ public class PubSub {
 
 		@Override
 		public void onAlarmSoundSelected(int alarmSoundPosition,boolean selected) {
+			//System.out.println("Alarm sound selected!");
+			dbHelper.SaveAlarmSound(alarmSoundPosition, selected);
 		}
-
 	};
 	
 	public PubSub(Context context, Activity activity) {
@@ -109,11 +107,23 @@ public class PubSub {
 		initAlarmTTSMgr();
 	}
 
-	public void onSnoozed() {
+	private void registerSnoozeListener()
+	{
+		boolean[] snoozeSelected = uiMgr.getSnoozeSelected();
+		
+		for(int i =0;i<snoozeSelected.length;i++)
+		{  
+			System.out.println("Snooze Select "+snoozeSelected[i]);
+			if(snoozeSelected[i]==true)
+				snoozeMgr.registerListener(i,snoozeListener);
+		}
+	}
+	public void onSnoozePub() {
 		uiMgr.showSnoozeView();
+		registerSnoozeListener();
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
+		//mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
 		boolean[] soundToPlay = uiMgr.getSoundSelected();
 		if (soundToPlay != null ) {
 			if (soundToPlay[Const.ALARMSOUND_BBC]) {
@@ -133,12 +143,10 @@ public class PubSub {
 				}).start();
 			}
 			else {
+				System.out.println("Streaming is started!");
 				streamingMgr.startStreaming(mediaURL, 1000, 600);
 			}
-			
 		}
-		
-		
 	}
 	public void afterSnooze(int alarmPosition)
 	{
@@ -158,6 +166,15 @@ public class PubSub {
 		}
 	}
 
+	private void unregisterSnoozeListener()
+	{
+		boolean[] snoozeSelected = uiMgr.getSnoozeSelected();
+		for(int i=0;i<snoozeSelected.length;i++)
+		{
+			if(snoozeSelected[i]==true)
+			snoozeMgr.unRegisterListener(i);
+		}
+	}
 	private void initSnooze() {
 		snoozeListener = new SnoozeListener() {
 			@Override
@@ -165,13 +182,29 @@ public class PubSub {
 				System.out.println("Snoozed");
 				Toast.makeText(context, "Sleep For 5 Mins", Toast.LENGTH_SHORT).show();
 				streamingMgr.interrupt();
-				snoozeMgr.unRegisterListener(SnoonzeMgr.GESTURE_SNOOZE_TYPE);
+				unregisterSnoozeListener();
+				uiMgr.setbSettingAlarmTimeDisableFlip(false);
+				uiMgr.flipperListView(Const.SCREENS.HomeUI.ordinal());
+				
+			}
+
+			@Override
+			public void onDismissed() {
+				streamingMgr.interrupt();
+				unregisterSnoozeListener();
+				activity.finish();
+			}
+
+			@Override
+			public void onSnoozedAgain() {
+				System.out.println("Snoozed Again !");
+				onSnoozePub();
 			}
 		};
 		snoozeMgr = new SnoonzeMgr(context, snoozeListener);
 		snoozeMgr.setGestureOverlayView(uiMgr.gesturesView);
-		snoozeMgr.registerListener(SnoonzeMgr.GESTURE_SNOOZE_TYPE,
-				snoozeListener);
+		snoozeMgr.setDismissSlide(uiMgr.getDismissSlide());
+		
 		// snoozeMgr.unRegisterListener(snoozeType);
 	}
 

@@ -37,7 +37,7 @@ public class NewsAlarmActivity extends Activity {
         {
         	int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
             Toast.makeText(this, "Alarm : " + alarmPosition, Toast.LENGTH_LONG).show();
-            pubsub.onSnoozed();
+            pubsub.onSnoozePub();
             pubsub.afterSnooze(alarmPosition);
         }
        
@@ -82,7 +82,7 @@ public class NewsAlarmActivity extends Activity {
 		 if(extras != null)
 		 {
 		     int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
-			 pubsub.onSnoozed();
+			 pubsub.onSnoozePub();
 			 pubsub.afterSnooze(alarmPosition);
 		 }
 	}
