@@ -67,13 +67,17 @@ public final class DbHelper
         		calendar.get(Calendar.MINUTE));
 
         //Toast.makeText(mContext, "Saved/Updated Alarm: " + alarmPosition+"\n"+ calendar.getTime(), Toast.LENGTH_LONG).show();
-
     }
-
+    
 	public void SaveAlarmStatus(int alarmPosition, boolean selected) {
 		Insert(Const.ISALARMSET + Integer.toString(alarmPosition),selected);
 	}
-
+	
+	public void SaveAlarmSound(int alarmSoundPosition, boolean selected)
+	{
+		Insert(Const.ALARMSOUNDE + Integer.toString(alarmSoundPosition),selected);
+	}
+	
 	public void SaveSnooze(int snoozeMode) {
 		Insert(Const.SNOOZE + snoozeMode, snoozeMode);
 	}

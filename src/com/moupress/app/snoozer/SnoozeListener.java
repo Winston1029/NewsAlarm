@@ -2,5 +2,7 @@ package com.moupress.app.snoozer;
 
 public interface SnoozeListener {
 
-	void onSnoozed();
+	public void onSnoozed();
+	public void onDismissed();
+	public void onSnoozedAgain();
 }

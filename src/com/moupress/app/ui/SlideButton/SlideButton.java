@@ -2,9 +2,10 @@ package  com.moupress.app.ui.SlideButton;
 
 
 
+import com.moupress.app.Const;
 import com.moupress.app.R;
-
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,7 +22,6 @@ import android.widget.TextView;
 
 public class SlideButton extends View implements OnTouchListener{
 	
-
 	private float downX,currentX=-1;
 	
 	private Bitmap slip_btn; 
@@ -54,16 +54,29 @@ public class SlideButton extends View implements OnTouchListener{
 	
 	private int startIndex;
 	
+	private int thumb;
+	
+	private Context ctx;
+	
+	//Sliding stopped mode
+	private int mode;
+	
+	private final int ORIGINAL = 0;
+	private final int DISCRETE = 1;
+	private final int CONTINUOUS = 2;
 	
 
 	public SlideButton(Context context)
 	{
 		super(context);
-		init();
+		ctx = context;
+		//init();
 	}
 	
 	private void init() {
-		slip_btn = BitmapFactory.decodeResource(getResources(), R.drawable.slide_thumb);
+		///slip_btn = BitmapFactory.decodeResource(getResources(), R.drawable.slide_thumb);
+		slip_btn = BitmapFactory.decodeResource(getResources(), Const.thumbImg[thumb]);
+		
 		setOnTouchListener(this);
 	}
 	
@@ -101,9 +114,20 @@ public class SlideButton extends View implements OnTouchListener{
 	}
 	
 	public void iniSlipBtnPos()
-	{
-		currentX = itemsPostions[startIndex]+PADDING;
-		chgLsn.OnSelected(startIndex, (TextView)itemsLayout.getChildAt(startIndex),1);
+	{	
+		if(startIndex > 0)
+		{
+			if(itemsPostions!=null && itemsLayout.getChildCount()>startIndex)
+			{
+				currentX = itemsPostions[startIndex]+PADDING;
+				if(chgLsn != null)
+				chgLsn.OnSelected(startIndex, (TextView)itemsLayout.getChildAt(startIndex),1);
+			}
+		}
+		else
+		{
+			currentX = 0;
+		}
 	}
 	
 	private void getItemsPositions()
@@ -148,7 +172,8 @@ public class SlideButton extends View implements OnTouchListener{
 		 {
 			 x = 0;
 		 }
-		 canvas.drawBitmap(slip_btn,x, 0, paint);
+		 canvas.drawBitmap(slip_btn,x, 1, paint);
+
 		 //censorPos = (int) currentX;
 		 
 		 if(isSliding == true)
@@ -174,24 +199,24 @@ public class SlideButton extends View implements OnTouchListener{
 			downX = preCensorPos;
 		}
 		
-		System.out.println("Direction "+ slideDir + " previous Location " + preCensorPos+" Down Location "+downX);
+		//System.out.println("Direction "+ slideDir + " previous Location " + preCensorPos+" Down Location "+downX);
 		
 		for(int i = 0;i<itemsPostions.length;i++)
 		{
 			if(itemsPostions[i]>=preCensorPos && itemsPostions[i]<=censorPos && itemsPostions[i] >= (downX-slip_btn.getWidth()/2))
 			{
+				if(chgLsn != null)
 				chgLsn.OnChanged(i,true,(TextView)itemsLayout.getChildAt(i));
 				slidePos = i;
 			}
 			 else if(itemsPostions[i]<=preCensorPos && itemsPostions[i]>=censorPos && itemsPostions[i]<= (downX+slip_btn.getWidth()/2))
 			{
+				 if(chgLsn != null)
 				chgLsn.OnChanged(i,false,(TextView)itemsLayout.getChildAt(i));
 				
 				slidePos = i-1;
 			}
 		}
-		
-		
 		
 		preCensorPos = censorPos;
 		preSlideDir = slideDir;
@@ -270,6 +295,7 @@ public class SlideButton extends View implements OnTouchListener{
 			for(int i = 0; i< count; i++)
 			{
 				//addViewItem(i);
+				if(chgLsn != null)
 			  	chgLsn.OnSelected(i, addViewItem(i), 3);
 			}
 		}
@@ -283,6 +309,7 @@ public class SlideButton extends View implements OnTouchListener{
 			for(int i = 0; i< count; i++)
 			{
 				//addViewItem(i);
+				if(chgLsn != null)
 			  	chgLsn.OnSelected(i, itemsLayout.getChildAt(i), 3);
 			}
 		}
@@ -322,9 +349,14 @@ public class SlideButton extends View implements OnTouchListener{
 	
 	public SlideButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		//System.out.println("Slide Button Constructor");
+		ctx= context;
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SlideButton);
+		thumb = a.getInt(R.styleable.SlideButton_thumb,0);
+		mode = a.getInt(R.styleable.SlideButton_mode, 0);
+		//System.out.println("Slide Button Constructor ");
 		init();
 	}
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		
@@ -340,21 +372,30 @@ public class SlideButton extends View implements OnTouchListener{
 			 currentX = downX;
 			 break;
 		 case MotionEvent.ACTION_UP:
-			 if(isSliding == true)
+			 
+			 if(mode == this.DISCRETE)
 			 {
-				 if(slidePos>=0)
-				 //currentX= itemsPostions[slidePos] + slip_btn.getWidth()/2+PADDING;
-					 currentX= itemsPostions[slidePos]+PADDING;
+				 if(isSliding == true)
+				 {
+					 if(slidePos>=0)
+					 //currentX= itemsPostions[slidePos] + slip_btn.getWidth()/2+PADDING;
+						 currentX= itemsPostions[slidePos]+PADDING;
+					 else
+				     currentX = 0;
+					 isSliding = false;
+				 }
 				 else
-			     currentX = 0;
-				 isSliding = false;
+				 {
+					 int i = getClickLocation(event.getX());
+					 currentX=itemsPostions[i]+PADDING;
+					 
+					 if(chgLsn != null)
+					 chgLsn.OnSelected(i, (TextView)itemsLayout.getChildAt(i),0);
+				 }
 			 }
-			 else
-			 {
-				 int i = getClickLocation(event.getX());
-				 currentX=itemsPostions[i]+PADDING;
-				 chgLsn.OnSelected(i, (TextView)itemsLayout.getChildAt(i),0);
-			 }
+			 else if(mode == this.ORIGINAL)
+				 currentX = 0;
+			 
 			 break; 
 		 default: 
 			 break;

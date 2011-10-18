@@ -30,6 +30,14 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
+        public static final int mode=0x7f010004;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
         public static final int speed=0x7f010001;
         /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -41,6 +49,14 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int targetHeight=0x7f010002;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int thumb=0x7f010003;
     }
     public static final class color {
         public static final int black=0x7f060002;
@@ -64,105 +80,118 @@ containing a value of this type.
         public static final int checkbtn=0x7f020009;
         public static final int clock=0x7f02000a;
         public static final int disc=0x7f02000b;
-        public static final int home_btn_selector=0x7f02000c;
-        public static final int icon=0x7f02000d;
-        public static final int menu_bar=0x7f02000e;
-        public static final int radio=0x7f02000f;
-        public static final int slide_bg=0x7f020010;
-        public static final int slide_thumb=0x7f020011;
-        public static final int snooze_btn_selector=0x7f020012;
-        public static final int snooze_setting=0x7f020013;
-        public static final int snooze_setting_pressed=0x7f020014;
-        public static final int sound_btn_selector=0x7f020015;
-        public static final int viewslider_bg=0x7f020016;
-        public static final int wheel_bg=0x7f020017;
-        public static final int world=0x7f020018;
+        public static final int dismiss_bg=0x7f02000c;
+        public static final int dismiss_slide_bg=0x7f02000d;
+        public static final int dismiss_thumb_small=0x7f02000e;
+        public static final int home_btn_selector=0x7f02000f;
+        public static final int icon=0x7f020010;
+        public static final int menu_bar=0x7f020011;
+        public static final int page_select=0x7f020012;
+        public static final int page_unselect=0x7f020013;
+        public static final int radio=0x7f020014;
+        public static final int slide_bg=0x7f020015;
+        public static final int slide_thumb=0x7f020016;
+        public static final int snooze_btn_selector=0x7f020017;
+        public static final int snooze_setting=0x7f020018;
+        public static final int snooze_setting_pressed=0x7f020019;
+        public static final int sound_btn_selector=0x7f02001a;
+        public static final int viewslider_bg=0x7f02001b;
+        public static final int viewslider_snoozed_bg=0x7f02001c;
+        public static final int wheel_bg=0x7f02001d;
+        public static final int world=0x7f02001e;
     }
     public static final class id {
-        public static final int Button01=0x7f090008;
-        public static final int Button02=0x7f090009;
-        public static final int TextView=0x7f090006;
-        public static final int alarmbtn=0x7f090040;
+        public static final int Button01=0x7f090009;
+        public static final int Button02=0x7f09000a;
+        public static final int TextView=0x7f090007;
+        public static final int alarmbtn=0x7f090046;
         public static final int alarmitemicon=0x7f090000;
         public static final int alarmitemtxt=0x7f090001;
-        public static final int alarmlistview=0x7f09003a;
-        public static final int btnPause=0x7f09000e;
-        public static final int btnShutdown=0x7f09000c;
-        public static final int btnStart=0x7f09000d;
-        public static final int btnselector=0x7f09004b;
-        public static final int button_play=0x7f090013;
-        public static final int button_stream=0x7f090011;
+        public static final int alarmlistview=0x7f09003b;
+        public static final int amselector=0x7f090042;
+        public static final int btnPause=0x7f09000f;
+        public static final int btnShutdown=0x7f09000d;
+        public static final int btnStart=0x7f09000e;
+        public static final int btnselector=0x7f090051;
+        public static final int button_play=0x7f090014;
+        public static final int button_stream=0x7f090012;
         public static final int checked=0x7f090003;
-        public static final int close_button=0x7f090017;
-        public static final int condition=0x7f090019;
-        public static final int current_condition=0x7f090018;
-        public static final int current_temp=0x7f09001d;
-        public static final int current_temp_alt=0x7f09001e;
-        public static final int date=0x7f090036;
-        public static final int digitalclock=0x7f090034;
-        public static final int forecast_1=0x7f090022;
-        public static final int forecast_2=0x7f090027;
-        public static final int forecast_3=0x7f09002c;
-        public static final int forecast_condition_1=0x7f090024;
-        public static final int forecast_condition_2=0x7f090029;
-        public static final int forecast_condition_3=0x7f09002e;
-        public static final int forecast_day_1=0x7f090023;
-        public static final int forecast_day_2=0x7f090028;
-        public static final int forecast_day_3=0x7f09002d;
-        public static final int forecast_high_temp_1=0x7f090025;
-        public static final int forecast_high_temp_2=0x7f09002a;
-        public static final int forecast_high_temp_3=0x7f09002f;
-        public static final int forecast_low_temp_1=0x7f090026;
-        public static final int forecast_low_temp_2=0x7f09002b;
-        public static final int forecast_low_temp_3=0x7f090030;
-        public static final int forecasts=0x7f090021;
-        public static final int gestures=0x7f090032;
-        public static final int high_temp=0x7f09001f;
-        public static final int homebtn=0x7f09003e;
-        public static final int hslistview=0x7f090038;
-        public static final int humidity=0x7f09001b;
-        public static final int linearLayout1=0x7f09000f;
-        public static final int linearLayout2=0x7f090014;
-        public static final int linearLayout3=0x7f090004;
-        public static final int linearLayout4=0x7f090005;
-        public static final int linearLayout5=0x7f090007;
-        public static final int linearLayout6=0x7f09000b;
-        public static final int location=0x7f090015;
-        public static final int low_temp=0x7f090020;
-        public static final int mainContainer=0x7f090033;
-        public static final int optionflipper=0x7f090037;
-        public static final int progress_bar=0x7f090012;
-        public static final int refresh_button=0x7f090031;
-        public static final int removeItemPanel=0x7f09003d;
-        public static final int slideBtn=0x7f090043;
-        public static final int snooze=0x7f09003c;
-        public static final int snoozebtn=0x7f09003f;
-        public static final int snoozelistview=0x7f090039;
-        public static final int soundbtn=0x7f090041;
-        public static final int soundlistview=0x7f09003b;
-        public static final int temp=0x7f09001c;
-        public static final int testBtnLayout=0x7f09000a;
-        public static final int text_streamed=0x7f090010;
-        public static final int timeaddcancel=0x7f090048;
-        public static final int timeaddok=0x7f090047;
-        public static final int timeupdatepanel=0x7f090042;
-        public static final int update_time=0x7f090016;
-        public static final int weekday=0x7f090035;
+        public static final int close_button=0x7f090018;
+        public static final int condition=0x7f09001a;
+        public static final int current_condition=0x7f090019;
+        public static final int current_temp=0x7f09001e;
+        public static final int current_temp_alt=0x7f09001f;
+        public static final int date=0x7f090037;
+        public static final int digitalclock=0x7f090035;
+        public static final int dismissSlide=0x7f09003e;
+        public static final int forecast_1=0x7f090023;
+        public static final int forecast_2=0x7f090028;
+        public static final int forecast_3=0x7f09002d;
+        public static final int forecast_condition_1=0x7f090025;
+        public static final int forecast_condition_2=0x7f09002a;
+        public static final int forecast_condition_3=0x7f09002f;
+        public static final int forecast_day_1=0x7f090024;
+        public static final int forecast_day_2=0x7f090029;
+        public static final int forecast_day_3=0x7f09002e;
+        public static final int forecast_high_temp_1=0x7f090026;
+        public static final int forecast_high_temp_2=0x7f09002b;
+        public static final int forecast_high_temp_3=0x7f090030;
+        public static final int forecast_low_temp_1=0x7f090027;
+        public static final int forecast_low_temp_2=0x7f09002c;
+        public static final int forecast_low_temp_3=0x7f090031;
+        public static final int forecasts=0x7f090022;
+        public static final int gestures=0x7f090033;
+        public static final int high_temp=0x7f090020;
+        public static final int homebtn=0x7f090044;
+        public static final int hslistview=0x7f090039;
+        public static final int hsselector=0x7f090040;
+        public static final int humidity=0x7f09001c;
+        public static final int linearLayout1=0x7f090010;
+        public static final int linearLayout2=0x7f090015;
+        public static final int linearLayout3=0x7f090005;
+        public static final int linearLayout4=0x7f090006;
+        public static final int linearLayout5=0x7f090008;
+        public static final int linearLayout6=0x7f09000c;
+        public static final int location=0x7f090016;
+        public static final int low_temp=0x7f090021;
+        public static final int mainContainer=0x7f090034;
+        public static final int optionflipper=0x7f090038;
+        public static final int page_indicator_layout=0x7f09003f;
+        public static final int progress_bar=0x7f090013;
+        public static final int refresh_button=0x7f090032;
+        public static final int removeItemPanel=0x7f090043;
+        public static final int slideBtn=0x7f090049;
+        public static final int snooze=0x7f09003d;
+        public static final int snoozebtn=0x7f090045;
+        public static final int snoozelistview=0x7f09003a;
+        public static final int soundbtn=0x7f090047;
+        public static final int soundlistview=0x7f09003c;
+        public static final int szselector=0x7f090041;
+        public static final int temp=0x7f09001d;
+        public static final int testBtnLayout=0x7f09000b;
+        public static final int text_streamed=0x7f090011;
+        public static final int timeaddcancel=0x7f09004e;
+        public static final int timeaddok=0x7f09004d;
+        public static final int timeupdatepanel=0x7f090048;
+        public static final int update_time=0x7f090017;
+        public static final int weekday=0x7f090036;
         public static final int weekdaylist=0x7f090002;
-        public static final int wheelhour=0x7f090044;
-        public static final int wheelminute=0x7f090045;
-        public static final int wheelsecond=0x7f090046;
-        public static final int wind=0x7f09001a;
-        public static final int wkday=0x7f090049;
-        public static final int wkdaysmall=0x7f09004a;
+        public static final int weekdayswitcher=0x7f090004;
+        public static final int wheelhour=0x7f09004a;
+        public static final int wheelminute=0x7f09004b;
+        public static final int wheelsecond=0x7f09004c;
+        public static final int wind=0x7f09001b;
+        public static final int wkday=0x7f09004f;
+        public static final int wkdaysmall=0x7f090050;
     }
     public static final class layout {
         public static final int alarm_list_item=0x7f030000;
-        public static final int home_screen_item=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int news_alarm_ui=0x7f030003;
-        public static final int weekday=0x7f030004;
-        public static final int weekday_small=0x7f030005;
+        public static final int dismisstextswitcher=0x7f030001;
+        public static final int home_screen_item=0x7f030002;
+        public static final int main=0x7f030003;
+        public static final int news_alarm_ui=0x7f030004;
+        public static final int weekday=0x7f030005;
+        public static final int weekday_small=0x7f030006;
     }
     public static final class raw {
         public static final int spells=0x7f050000;
@@ -182,6 +211,7 @@ containing a value of this type.
         public static final int optionbtn=0x7f080005;
         public static final int optionlayout=0x7f080000;
         public static final int optiontxtview=0x7f080003;
+        public static final int pageindicator=0x7f08000b;
         public static final int timewheel=0x7f08000a;
         public static final int viewsliperchild=0x7f080006;
         public static final int viewsliperchild_sub=0x7f080007;
@@ -214,6 +244,49 @@ containing a value of this type.
           @attr name android:content
         */
         public static final int NewsAlarmDigiClock_content = 0;
+        /** Attributes that can be used with a SlideButton.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SlideButton_mode com.moupress.app:mode}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlideButton_thumb com.moupress.app:thumb}</code></td><td></td></tr>
+           </table>
+           @see #SlideButton_mode
+           @see #SlideButton_thumb
+         */
+        public static final int[] SlideButton = {
+            0x7f010003, 0x7f010004
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.moupress.app.R.attr#mode}
+          attribute's value can be found in the {@link #SlideButton} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:mode
+        */
+        public static final int SlideButton_mode = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.moupress.app.R.attr#thumb}
+          attribute's value can be found in the {@link #SlideButton} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:thumb
+        */
+        public static final int SlideButton_thumb = 0;
         /** Attributes that can be used with a SlidingPanel.
            <p>Includes the following attributes:</p>
            <table>

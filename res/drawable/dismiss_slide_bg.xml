@@ -1,0 +1,39 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!--<item>-->
+<!--		<shape android:shape="rectangle">-->
+<!--			<gradient-->
+<!--				android:startColor="#BBB"-->
+<!--				android:centerColor="#DDD"-->
+<!--				android:endColor="#BBB"-->
+<!--				android:angle="180" />-->
+<!--				-->
+<!--		</shape>-->
+<!--	</item>-->
+<!--<item android:left="1dp" android:right="1dp" android:top="4dp" android:bottom="4dp">-->
+	<item >
+		<shape android:shape="rectangle"
+		     android:bottomRightRadius="7dip" android:bottomLeftRadius="7dip" 
+             android:topLeftRadius="7dip" android:topRightRadius="7dip">
+			<gradient
+				android:startColor="#EEE"
+				android:centerColor="#AAA"
+				android:endColor="#BBB"
+				android:angle="90" />
+		<corners android:bottomRightRadius="7dip" android:bottomLeftRadius="7dip" 
+     	android:topLeftRadius="7dip" android:topRightRadius="7dip"/> 
+		</shape>
+		<corners android:bottomRightRadius="7dip" android:bottomLeftRadius="7dip" 
+        android:topLeftRadius="7dip" android:topRightRadius="7dip"/> 
+	</item>
+		<item android:left="1dp" android:right="1dp" android:top="6dp" android:bottom="1dp">
+		<shape android:shape="rectangle">
+			<gradient
+				android:startColor="#DDD"
+				android:centerColor="#FFF"
+				android:endColor="#EEE"
+				android:angle="180" />
+		</shape>
+		<corners android:bottomRightRadius="7dip" android:bottomLeftRadius="7dip" 
+        android:topLeftRadius="1dip" android:topRightRadius="1dip"/> 
+	</item>
+</layer-list>

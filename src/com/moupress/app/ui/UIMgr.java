@@ -6,15 +6,16 @@ import java.util.Calendar;
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
@@ -42,6 +43,7 @@ public class UIMgr {
 		initAlarmSettings();
 		initUI();
 		initSoonzeControls();
+		initDismissControls();
 	}
 
 	/**
@@ -82,6 +84,11 @@ public class UIMgr {
 	private int[] snoozeDisplayIcon = { R.drawable.disc, R.drawable.disc,R.drawable.disc };
 	private boolean[] snoozeSelected = { true, true, true };
 
+	public boolean[] getSnoozeSelected() {
+		return snoozeSelected;
+	}
+
+
 	/**
 	 * Initialize snooze screen
 	 */
@@ -107,6 +114,11 @@ public class UIMgr {
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
+
+	public void setbSettingAlarmTimeDisableFlip(boolean bSettingAlarmTimeDisableFlip) {
+		this.bSettingAlarmTimeDisableFlip = bSettingAlarmTimeDisableFlip;
+	}
+
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
@@ -261,6 +273,11 @@ public class UIMgr {
 	 * Initialize Alarm Sound Screen
 	 */
 	private void initAlarmSoundUI() {
+		DbHelper dbHelper = new DbHelper(activity);
+		for(int i=0;i<soundDisplayTxt.length;i++)
+		{
+			soundSelected[i] = dbHelper.GetBool(Const.ALARMSOUNDE + Integer.toString(i));
+		}
 		soundListView = (ListView) activity.findViewById(R.id.soundlistview);
 		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected,R.layout.home_screen_item);
 		soundListView.setAdapter(soundAdapter);
@@ -275,6 +292,7 @@ public class UIMgr {
 	public Button btnAlarm;
 	public Button btnSound;
 	private NewsAlarmSlidingUpPanel buttonBarSlidingUpPanel;
+	private LinearLayout indicatorLayout;
 
 	/**
 	 * Initialize Toolbar UI
@@ -291,6 +309,8 @@ public class UIMgr {
 
 		btnSound = (Button) activity.findViewById(R.id.soundbtn);
 		btnSound.setOnClickListener(toolbarButtonListener);
+		
+		indicatorLayout = (LinearLayout)activity.findViewById(R.id.page_indicator_layout);
 
 		buttonBarSlidingUpPanel = (NewsAlarmSlidingUpPanel) activity.findViewById(R.id.removeItemPanel);
 		buttonBarSlidingUpPanel.setOpen(true);
@@ -309,6 +329,7 @@ public class UIMgr {
 				});
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
+		
 	}
 	
 	//================Main Container==========================================
@@ -354,6 +375,10 @@ public class UIMgr {
 //                               flipperListView(0);
 //                           else
                                flipperListView(toDisplayChildId + 1);
+                           
+                           //Test Snoozed View
+//                           if(toDisplayChildId ==3)
+//                        	   showSnoozeView();
                        }
                        XEnd = XStart = 0;
                        return true;
@@ -541,7 +566,6 @@ public class UIMgr {
 				timeSlidingUpPanel.toggle();
 				break;
 			}
-			;
 		}
 
 	};
@@ -708,7 +732,8 @@ public class UIMgr {
 	 * 
 	 * @param toDisplayedChild
 	 */
-	private void flipperListView(int toDisplayedChild) {
+	public void flipperListView(final int toDisplayedChild) {
+		final int currentChild = alarmInfoViewSlipper.getDisplayedChild();
 		if (!bSettingAlarmTimeDisableFlip) {
 			if (alarmInfoViewSlipper.getDisplayedChild() > toDisplayedChild) {
 				alarmInfoViewSlipper.setInAnimation(activity, R.anim.slidein);
@@ -720,12 +745,72 @@ public class UIMgr {
 				alarmInfoViewSlipper.setDisplayedChild(toDisplayedChild);
 			}
 			buttonBarSlidingUpPanel.setVisibility(View.VISIBLE);
+			this.indicatorLayout.setVisibility(View.VISIBLE);
+			//if((alarmInfoViewSlipper.getInAnimation())!=null)
+			alarmInfoViewSlipper.getInAnimation().setAnimationListener(new AnimationListener(){
+
+				@Override
+				public void onAnimationEnd(Animation arg0) {
+					// TODO Auto-generated method stub
+					System.out.println("In Animation End!!");
+					selectPageIndicator(toDisplayedChild);
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onAnimationStart(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}});
+			
+			//if((alarmInfoViewSlipper.getOutAnimation()!=null))
+			alarmInfoViewSlipper.getOutAnimation().setAnimationListener(new AnimationListener(){
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onAnimationStart(Animation animation) {
+					// TODO Auto-generated method stub
+					System.out.println("Out Animation Start!!");
+					unSelectPageIndicator(currentChild);
+				}});
 		}
 	}
 	
+	private void selectPageIndicator(int pageNo)
+	{
+		if(pageNo >= 0 && pageNo <this.indicatorLayout.getChildCount())
+		{
+			((ImageView)this.indicatorLayout.getChildAt(pageNo)).setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.page_select));
+		}
+	}
+	
+	private void unSelectPageIndicator(int pageNo)
+	{
+		if(pageNo >=0 && pageNo < this.indicatorLayout.getChildCount())
+		{
+			((ImageView)this.indicatorLayout.getChildAt(pageNo)).setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.page_unselect));
+		}
+	}
 	
 	private void initSoonzeControls() {
 		gesturesView = (GestureOverlayView) activity.findViewById(R.id.gestures);
+		
 	}
 	// =============================Consumed from otherClasses=============================================
 	public void registerListViewItemChangeListener(OnListViewItemChangeListener onListViewItemChangeListener) {
@@ -736,12 +821,38 @@ public class UIMgr {
 		hsListAdapter.updateTxtArrayList(displayString, 0);
 	}
 
-	/**
-	 * temp solution
-	 */
+	//==============================OnSnoozed View ============================
+	//private SlideButtonAdapter dismissViewAdapter;
+	private SlideButtonAdapter dismissViewAdapter;
+	private SlideButton dismissSlide;
+	
+	public SlideButton getDismissSlide() {
+		return dismissSlide;
+	}
+
+	
+	private String[] dismiss = {"   ","DISMISS"," "};
+	
+	private void initDismissControls()
+	{
+		dismissSlide = (SlideButton)activity.findViewById(R.id.dismissSlide);
+		dismissViewAdapter = new TextSlideButtonAdapter(dismiss, activity);
+		dismissSlide.setViewAdapter(dismissViewAdapter);
+		
+		dismissSlide.setSlidePosition(-1);
+	}
+	
 	public void showSnoozeView() {
-		flipperListView(4);
+
+		//initDismissControls();
+		
+		flipperListView(Const.SCREENS.OnSnoozedUI.ordinal());
+		
+		//dismissViewAdapter.testTxtSwitcher();
 		buttonBarSlidingUpPanel.setVisibility(View.INVISIBLE);
+		this.indicatorLayout.setVisibility(View.INVISIBLE);
+		//llMainContainer.setOnTouchListener(null);
+		bSettingAlarmTimeDisableFlip = true;
 	}
 
 	public void updateHomeAlarmText() {
