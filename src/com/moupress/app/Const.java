@@ -56,6 +56,6 @@ public class Const {
     public static final int[] thumbImg = {R.drawable.slide_thumb,R.drawable.dismiss_thumb_small};
     
     //===============Snooze Timer ===============
-    public static final int SNOOZE_DUR = 5*60*1000;
+    public static final int SNOOZE_DUR = 1*60*1000;
 
 }

@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +34,7 @@ public class WeatherMgr implements Runnable {
 	private static final String DEFAULT_LOCATION = "Singapore";
 	
 	private Context context;
+	private Handler updateHandler;
 
 	private NetworkConnection nc;
 		
@@ -86,28 +88,29 @@ public class WeatherMgr implements Runnable {
 		if(nc.checkInternetConnection()==true)
 		try {
 			weather.query(location, Locale.getDefault());
+			updateHandler.sendEmptyMessage(0);
 		} catch (WeatherException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public Hashtable<String, String> getCurrentWeather() {
-		weather = new GoogleWeather();
-		
-		boolean autoLocation = true;
-		Location location = null;
-		if (autoLocation) {
-			location = queryLocation();
-		} else {
-			location = new Location(DEFAULT_LOCATION);
-		}
-		
-		if(nc.checkInternetConnection()==true)
-		try {
-			weather.query(location, Locale.getDefault());
-		} catch (WeatherException e) {
-			e.printStackTrace();
-		}
+//		weather = new GoogleWeather();
+//		
+//		boolean autoLocation = true;
+//		Location location = null;
+//		if (autoLocation) {
+//			location = queryLocation();
+//		} else {
+//			location = new Location(DEFAULT_LOCATION);
+//		}
+//		
+//		if(nc.checkInternetConnection()==true)
+//		try {
+//			weather.query(location, Locale.getDefault());
+//		} catch (WeatherException e) {
+//			e.printStackTrace();
+//		}
 		
 		Hashtable<String, String> weatherDetail = new Hashtable<String, String>();
 		String sCondition;
@@ -158,4 +161,9 @@ public class WeatherMgr implements Runnable {
 		WeatherCondition currentCondition = weather.getConditions().get(0);
         return currentCondition.getHumidityText() + Const.WEATHERINFO_SEPARATOR + currentCondition.getWindText();
     }
+
+	public void setWeatherUpdateHandler(Handler h) {
+		// TODO Auto-generated method stub
+		updateHandler = h;
+	}
 }

@@ -6,6 +6,8 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.Toast;
 
 import com.moupress.app.TTS.AlarmTTSMgr;
@@ -82,13 +84,19 @@ public class PubSub {
 		this.activity = activity;
 		
 		initUI();
-
+		System.out.println("UI is initialized!");
 		initUtil();
+		System.out.println("Utilization is initialized!");
 		initSnooze();
+		System.out.println("Snooze is initialized!");
 		initMedia();
+		System.out.println("Media is initialized!");
 		initWeather();
+		System.out.println("Weather is initialized!");
 		initAlarmMgr();
+		System.out.println("Alarm is initialized!");
 		initAlarmTTSMgr();
+		System.out.println("AlarmTTS is initialized!");
 
 	}
 
@@ -215,8 +223,19 @@ public class PubSub {
 
 	private void initWeather() {
 		weatherMgr = new WeatherMgr(context);
-		String weatherConditionText = weatherMgr.getCurrentWeather().get(Const.WEATHERINFO_CURRENT);
-		uiMgr.updateHomeWeatherText(weatherConditionText);
+		Handler h = new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub
+				super.handleMessage(msg);
+				String weatherConditionText = weatherMgr.getCurrentWeather().get(Const.WEATHERINFO_CURRENT);
+				uiMgr.updateHomeWeatherText(weatherConditionText);
+			}
+		};
+		weatherMgr.setWeatherUpdateHandler(h);
+		new Thread(weatherMgr).start();
 	}
 
 	private void initAlarmMgr() {
