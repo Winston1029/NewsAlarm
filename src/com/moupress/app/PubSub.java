@@ -44,7 +44,7 @@ public class PubSub {
 	private OnListViewItemChangeListener onListViewItemChangeListener = new OnListViewItemChangeListener() {
 		@Override
 		public void onSnoozeModeSelected(int snoozeMode, boolean selected) {
-			dbHelper.SaveSnooze(snoozeMode);
+			dbHelper.SaveSnooze(snoozeMode,selected);
 		}
 
 		@Override

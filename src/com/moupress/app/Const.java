@@ -41,7 +41,7 @@ public class Const {
     public static final String Mins = "Alarm_Mins_";
     public static final String ISALARMSET = "IsAlarmSet_";
     public static final String ALARMSOUNDE ="Alarm_Sound_";
-    public static final String SNOOZE = "Snooze_";
+    public static final String SNOOZEMODE = "Snooze_";
     public static final String GESTURE = "Gesture";
     public static final String Limit = ";";
     public static final boolean[] DaySelected = new boolean[]{false,false,false,false,false,false,false};
