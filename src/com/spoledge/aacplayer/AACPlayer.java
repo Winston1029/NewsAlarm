@@ -65,7 +65,9 @@ public class AACPlayer {
     	this.decodeBufferCapacityMs	= DEFAULT_DECODE_BUFFER_CAPACITY_MS;
     }
 
-
+    public boolean isPlaying() {
+    	return !stopped;
+    }
 
     /**
      * Plays a stream asynchronously.

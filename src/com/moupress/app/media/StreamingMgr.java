@@ -1,12 +1,12 @@
 package com.moupress.app.media;
 
 import java.io.IOException;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 
 import com.moupress.app.Const;
 import com.spoledge.aacplayer.AACPlayer;
@@ -21,6 +21,9 @@ public class StreamingMgr {
 	
 	private Context context;
 	
+	private CountDownTimer streamDownCountTimer;
+	private static final long TIMERSTREAMINGDELAY = 60 * 2 * 1000;
+	
 	public boolean bIsPlaying;
 	
 	public StreamingMgr(Context context) {
@@ -29,15 +32,44 @@ public class StreamingMgr {
 	}
 
 	public void startStreaming(String mediaURL, int mediaLengthInKb, int mediaLengthInSeconds) {
+		
 		try {
 			if (mediaURL.equals(Const.DEFAULT_RIGNTONE)) {
 				playDefaultAlarmSound();
-			} else if (mediaURL.startsWith("mms://")) {
-	    		aacPlayer = new AACPlayer();
-	    		aacPlayer.playAsync(mediaURL );
 			} else {
-				audioStreamer = new StreamingMediaPlayer(context);
-				audioStreamer.startStreaming(mediaURL, mediaLengthInKb, mediaLengthInSeconds);
+				streamDownCountTimer = new CountDownTimer(TIMERSTREAMINGDELAY, TIMERSTREAMINGDELAY) {
+
+					@Override
+					public void onFinish() {
+						System.out.println("Time Up!");
+						//streaming too slow, switch to default ringtone
+						boolean isStreamingDelayed = false;
+						if ((audioStreamer != null && !audioStreamer.isPlaying())
+								|| (aacPlayer != null && !aacPlayer.isPlaying())) {
+							isStreamingDelayed = true;
+						}
+						if (isStreamingDelayed){
+							playDefaultAlarmSound();
+						}
+						
+					}
+
+					@Override
+					public void onTick(long arg0) {
+						System.out.println("1 minutes");
+					}
+					
+				}.start();
+				
+				
+				if (mediaURL.startsWith("mms://")) {
+		    		aacPlayer = new AACPlayer();
+		    		aacPlayer.playAsync(mediaURL );
+				} else {
+					audioStreamer = new StreamingMediaPlayer(context);
+					audioStreamer.startStreaming(mediaURL, mediaLengthInKb, mediaLengthInSeconds);
+					//audioStreamer.interrupt();
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,5 +110,5 @@ public class StreamingMgr {
 			defaultAlarmPlayer.start();
 		}
 	}
-    
+
 }

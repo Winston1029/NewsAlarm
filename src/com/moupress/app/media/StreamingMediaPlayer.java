@@ -283,7 +283,7 @@ public class StreamingMediaPlayer {
 	
 	public MediaPlayer getMediaPlayer() {return mediaPlayer;}
 
-	public boolean isPlaying() {return mediaPlayer.isPlaying();}
+	public boolean isPlaying() {return (mediaPlayer!=null) && mediaPlayer.isPlaying();}
 
 	public void pause() {mediaPlayer.pause();}
 
