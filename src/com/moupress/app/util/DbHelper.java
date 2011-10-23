@@ -78,8 +78,8 @@ public final class DbHelper
 		Insert(Const.ALARMSOUNDE + Integer.toString(alarmSoundPosition),selected);
 	}
 	
-	public void SaveSnooze(int snoozeMode) {
-		Insert(Const.SNOOZE + snoozeMode, snoozeMode);
+	public void SaveSnooze(int snoozeMode,boolean selected) {
+		Insert(Const.SNOOZEMODE + snoozeMode, selected);
 	}
 
     public void saveAlarmSelectedDay(boolean[] daySelected, int alarmPosition)

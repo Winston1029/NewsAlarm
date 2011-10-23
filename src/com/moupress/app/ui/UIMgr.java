@@ -61,7 +61,7 @@ public class UIMgr {
 	// =======================Home UI==============================================
 	public ListView hsListView;
 	private AlarmListViewAdapter hsListAdapter;
-	private String[] hsDisplayTxt = { "Rain  10C", "No Alarm Set", "Gesture" };
+	private String[] hsDisplayTxt = { "No Weather Info", "No Alarm Set", "Gesture" };
 	private int[] hsDisplayIcon = { R.drawable.world, R.drawable.clock,
 			R.drawable.disc };
 	private boolean[] hsSelected = { false, false, false };
@@ -93,6 +93,11 @@ public class UIMgr {
 	 * Initialize snooze screen
 	 */
 	private void initSnoozeUI() {
+		DbHelper dbHelper = new DbHelper(activity);
+		for(int i=0;i<snoozeDisplayTxt.length;i++)
+		{
+			snoozeSelected[i] = dbHelper.GetBool(Const.SNOOZEMODE + Integer.toString(i));
+		}
 		snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
 		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected,R.layout.home_screen_item);
 		snoozeListView.setAdapter(snoozeAdapter);
