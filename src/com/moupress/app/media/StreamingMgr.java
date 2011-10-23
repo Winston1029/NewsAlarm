@@ -1,5 +1,6 @@
 package com.moupress.app.media;
 
+import java.io.File;
 import java.io.IOException;
 import android.content.Context;
 import android.media.AudioManager;
@@ -80,6 +81,27 @@ public class StreamingMgr {
 		if (audioStreamer != null) audioStreamer.interrupt();
 		if (aacPlayer != null) aacPlayer.stop();
 		if (defaultAlarmPlayer != null) defaultAlarmPlayer.stop();
+	}
+	
+	public void exitApp() {
+		if (audioStreamer != null) {
+			audioStreamer.interrupt();
+			audioStreamer.release();
+			File dir = context.getCacheDir();
+			if (dir != null && dir.isDirectory()) {
+				String[] children = dir.list();
+				for (int i = 0; i < children.length; i++) {
+		            new File(dir, children[i]).delete();
+		        }
+			}
+		}
+		if (aacPlayer != null) {
+			aacPlayer.stop();
+		}
+		if (defaultAlarmPlayer != null) {
+			defaultAlarmPlayer.stop();
+			defaultAlarmPlayer.release();
+		}
 	}
 	
 	private void playDefaultAlarmSound() {

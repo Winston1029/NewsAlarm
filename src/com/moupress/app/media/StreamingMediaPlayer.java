@@ -282,6 +282,8 @@ public class StreamingMediaPlayer {
 	public void interrupt() {isInterrupted = true;}
 	
 	public MediaPlayer getMediaPlayer() {return mediaPlayer;}
+	
+	public void release() {if (mediaPlayer != null) mediaPlayer.release();}
 
 	public boolean isPlaying() {return (mediaPlayer!=null) && mediaPlayer.isPlaying();}
 
