@@ -78,6 +78,7 @@ public class StreamingMgr {
 	}
 
 	public void interrupt() {
+		if (streamDownCountTimer != null) streamDownCountTimer.cancel();
 		if (audioStreamer != null) audioStreamer.interrupt();
 		if (aacPlayer != null) aacPlayer.stop();
 		if (defaultAlarmPlayer != null) defaultAlarmPlayer.stop();
