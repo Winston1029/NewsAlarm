@@ -39,6 +39,8 @@ public class NewsAlarmActivity extends Activity {
             Toast.makeText(this, "Alarm : " + alarmPosition, Toast.LENGTH_LONG).show();
             pubsub.onSnoozePub();
             pubsub.afterSnooze(alarmPosition);
+        } else {
+        	this.startService(new Intent(this, NewsAlarmService.class));
         }
        
     }
@@ -64,16 +66,6 @@ public class NewsAlarmActivity extends Activity {
 	    return;
     }
 
-    
-	@Override
-	protected void onPause() {
-		super.onStop();
-		System.out.println("On Pause");
-	}
-	
-	
-	
-
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
@@ -87,9 +79,4 @@ public class NewsAlarmActivity extends Activity {
 		 }
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		System.out.println("On Resume");
-	}
 }

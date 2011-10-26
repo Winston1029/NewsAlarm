@@ -10,10 +10,6 @@ import android.widget.Toast;
 
 public class AlarmReceiver extends BroadcastReceiver
 {
-	public AlarmReceiver()
-	{
-		System.out.println("Alarm Receiver is created! ");
-	}
     @Override
     public void onReceive(Context context, Intent intent)
     {
@@ -30,10 +26,6 @@ public class AlarmReceiver extends BroadcastReceiver
             alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             context.startActivity(alarmIntent);
             return;
-        }
-        else
-        {
-            //Create the default settings for alarm
         }
     }
 }
