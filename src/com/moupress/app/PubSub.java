@@ -4,6 +4,7 @@ package com.moupress.app;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.moupress.app.weather.WeatherMgr;
 public class PubSub {
 	private Activity activity;
 	private Context context;
+	private Service service;
 
 	private SnoonzeMgr snoozeMgr;
 	private SnoozeListener snoozeListener;
@@ -84,23 +86,20 @@ public class PubSub {
 		this.activity = activity;
 		
 		initUI();
-		System.out.println("UI is initialized!");
 		initUtil();
-		System.out.println("Utilization is initialized!");
 		initSnooze();
-		System.out.println("Snooze is initialized!");
 		initMedia();
-		System.out.println("Media is initialized!");
 		initWeather();
-		System.out.println("Weather is initialized!");
 		initAlarmMgr();
-		System.out.println("Alarm is initialized!");
 		initAlarmTTSMgr();
-		System.out.println("AlarmTTS is initialized!");
-
 	}
 
-	
+	public PubSub(Context context, Service service)
+	{
+		this.context = context;
+		this.service = service;
+		initAlarmMgr();
+	}
 
 	public PubSub(Context context, Activity activity, boolean snoozed) {
 		this.context = context;
