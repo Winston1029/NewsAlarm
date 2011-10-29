@@ -126,7 +126,7 @@ public class WeatherMgr implements Runnable {
 		}
 		
 		weatherDetail.put(Const.WEATHERINFO_CURRENT, sCondition);
-		Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(context, "Weather Loaded successfully", Toast.LENGTH_SHORT).show();
 		return weatherDetail;
 	}
 	

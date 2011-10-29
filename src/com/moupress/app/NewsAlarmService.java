@@ -9,6 +9,7 @@ import android.widget.Toast;
 public class NewsAlarmService extends Service {
 
 	private static final String TAG = "NewsAlarmService";
+	private PubSub pubsub;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -18,8 +19,9 @@ public class NewsAlarmService extends Service {
 	@Override
 	public void onCreate() {
 		Toast.makeText(this, "NewsAlarm Service Created", Toast.LENGTH_SHORT).show();
+		System.out.println("Service is created!");
+		pubsub = new PubSub(getBaseContext(), this);
 		Log.d(TAG, "onCreate");
-		
 	}
 
 	@Override
@@ -31,7 +33,7 @@ public class NewsAlarmService extends Service {
 	
 	@Override
 	public void onStart(Intent intent, int startid) {
-		//Toast.makeText(this, "NewsAlarm Service Started", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "NewsAlarm Service Started", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onStart");
 	}
 

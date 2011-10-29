@@ -42,7 +42,6 @@ public class NewsAlarmActivity extends Activity {
         } else {
         	this.startService(new Intent(this, NewsAlarmService.class));
         }
-       
     }
     
 //    @Override

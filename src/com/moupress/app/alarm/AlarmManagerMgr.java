@@ -25,7 +25,14 @@ public class AlarmManagerMgr
         this.lstCalendars = calendar;
         this.SelectedDay = selectedDay;
     }
-
+    
+    public void loadAlarms()
+    {
+    	for(int i=0;i<lstCalendars.length;i++)
+    	{
+    		this.startAlarm(i);
+    	}
+    }
 
     public void setAlarm(int alarmPosition, Boolean selected, int hourOfDay,
             int minute, int second, int millisecond, boolean[] daySelected)
@@ -69,9 +76,10 @@ public class AlarmManagerMgr
             long alarmTime = getNearestAlarmTime(alarmPosition);
             if(alarmTime < 0)
             {
-                Toast.makeText(mContext,"Alarm was not set" , Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext,"Alarm was not set" , Toast.LENGTH_LONG).show();
                 return false;
             }
+            
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification
@@ -79,7 +87,7 @@ public class AlarmManagerMgr
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(alarmTime);
             sBuilder.append(calendar.getTime());
-            Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
             // setup alarm && repeater
             // alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), (10*1000), pi);
 

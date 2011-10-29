@@ -2,7 +2,6 @@ package com.moupress.app;
 
 
 import java.util.Calendar;
-
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -59,7 +58,6 @@ public class PubSub {
 			dbHelper.saveAlarmSelectedDay(daySelected, alarmPosition);
 			dbHelper.saveAlarm(calendar, alarmPosition);
 			uiMgr.updateHomeAlarmText();
-
 		}
 
 		@Override
@@ -86,11 +84,11 @@ public class PubSub {
 		this.activity = activity;
 		
 		initUI();
-		initUtil();
+		initUtil(activity);
 		initSnooze();
 		initMedia();
 		initWeather();
-		initAlarmMgr();
+		initAlarmMgr(activity);
 		initAlarmTTSMgr();
 	}
 
@@ -98,7 +96,8 @@ public class PubSub {
 	{
 		this.context = context;
 		this.service = service;
-		initAlarmMgr();
+		initUtil(service);
+		initAlarmMgr(service);
 	}
 
 	public PubSub(Context context, Activity activity, boolean snoozed) {
@@ -106,11 +105,11 @@ public class PubSub {
 		this.activity = activity;
 
 		initUI();
-		initUtil();
+		initUtil(activity);
 		initSnooze();
 		initMedia();
 		initWeather();
-		initAlarmMgr();
+		initAlarmMgr(this.activity);
 		initAlarmTTSMgr();
 	}
 
@@ -159,8 +158,8 @@ public class PubSub {
 	{
 	    alarmMgr.startAlarm(alarmPosition);
 	}
-	private void initUtil() {
-		this.dbHelper = new DbHelper(this.activity);
+	private void initUtil(Context ctx) {
+		this.dbHelper = new DbHelper(ctx);
 	}
 	
 	private void initUI() {
@@ -237,7 +236,7 @@ public class PubSub {
 		new Thread(weatherMgr).start();
 	}
 
-	private void initAlarmMgr() {
+	private void initAlarmMgr(Context ctx) {
 		Calendar[] calendars = new Calendar[3];
 		boolean[][] selectedDay = new boolean[3][7];
 		for (int i = 0; i < calendars.length; i++)
@@ -245,8 +244,8 @@ public class PubSub {
 			calendars[i] = getAlarm(i);
 			selectedDay[i] = dbHelper.getSelectedDay(i);
         }
-		alarmMgr = new AlarmManagerMgr(this.activity, calendars, selectedDay);
-		
+		alarmMgr = new AlarmManagerMgr(ctx, calendars, selectedDay);
+		alarmMgr.loadAlarms();
 		// alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
 	}
 	
@@ -259,7 +258,6 @@ public class PubSub {
 			alarmTTSMgr = new AlarmTTSMgr(context, this.activity);
 		}
 		//alarmTTSMgr.ttsPlayOrResume();
-
 	}
 
 	private Calendar getAlarm(int alarmPosition)
