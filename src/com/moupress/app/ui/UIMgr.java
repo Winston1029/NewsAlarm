@@ -485,9 +485,9 @@ public class UIMgr {
     	                if(t == dayIndex)
     	                {
     	                    if(hours < cal.get(Calendar.HOUR))
-                                break;
+                                continue;
                             else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
-                                break;
+                                continue;
                             }
     	                    
     	                    int nowAlarm = hours*60+ mins;
