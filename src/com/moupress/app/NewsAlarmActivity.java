@@ -29,7 +29,6 @@ public class NewsAlarmActivity extends Activity {
 	     //win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 	     win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 	     //win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
         
         //check if the activity is launch by user or broadcast receiver
 

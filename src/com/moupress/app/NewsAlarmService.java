@@ -26,14 +26,14 @@ public class NewsAlarmService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Toast.makeText(this, "NewsAlarm Service Stopped", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "NewsAlarm Service Stopped", Toast.LENGTH_SHORT).show();
 		startService(new Intent(this, NewsAlarmService.class));
 		Log.d(TAG, "onDestroy");
 	}
 	
 	@Override
 	public void onStart(Intent intent, int startid) {
-		Toast.makeText(this, "NewsAlarm Service Started", Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, "NewsAlarm Service Started", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onStart");
 	}
 

@@ -84,7 +84,7 @@ public class UIMgr {
 	private AlarmListViewAdapter snoozeAdapter;
 	private String[] snoozeDisplayTxt = { "Gesture", "Flip", "Swing" };
 	private int[] snoozeDisplayIcon = { R.drawable.disc, R.drawable.disc,R.drawable.disc };
-	private boolean[] snoozeSelected = { true, true, true };
+	private boolean[] snoozeSelected = { true, true, false };
 
 	public boolean[] getSnoozeSelected() {
 		return snoozeSelected;
@@ -117,7 +117,7 @@ public class UIMgr {
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
 	private int[] alarmDisplayIcon = { R.drawable.clock, R.drawable.clock,R.drawable.clock };
-	private boolean[] alarmSelected = { false, false, false };
+	private boolean[] alarmSelected = { true, true, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
@@ -129,13 +129,12 @@ public class UIMgr {
 	private NewsAlarmSlidingUpPanel timeSlidingUpPanel;
 	
 	private static final String[] weekdays = new String[]{"S","M","T","W","T","F","S"};
-	private boolean[][] daySelected = new boolean[][]{{false,false,false,false,false,false,false},
-													 {false,false,false,false,false,false,false},
-													{false,false,false,false,false,false,false}};
+	private boolean[][] daySelected = new boolean[][]{{false,true,true,true,true,true,false},
+													 {false,true,true,true,true,true,false},
+													 {true,false,false,false,false,false,true}};
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
-	
-	 private NewsAlarmDigiClock weekday;
+	private NewsAlarmDigiClock weekday;
 
 	/**
 	 * Initialize Alarm Time Screen
@@ -155,7 +154,8 @@ public class UIMgr {
 				
 				//slideBtn.buildViewForMeasuring();
 				
-				buttonBarSlidingUpPanel.toggle();
+				if(buttonBarSlidingUpPanel.getOpen())
+					buttonBarSlidingUpPanel.toggle();
 				// timeSlidingUpPanel.toggle();
 				return true;
 			}
@@ -190,7 +190,7 @@ public class UIMgr {
 		minutes = (WheelView) activity.findViewById(R.id.wheelminute);
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);
 
-		hours.setViewAdapter(new NumericWheelAdapter(activity, 0, 12));
+		hours.setViewAdapter(new NumericWheelAdapter(activity, 1, 12));
 		hours.setCurrentItem(6);
 		minutes.setViewAdapter(new NumericWheelAdapter(activity, 0, 59, "%02d"));
 		minutes.setCurrentItem(30);
@@ -271,9 +271,9 @@ public class UIMgr {
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC", "933", "My Events" };
+	private String[] soundDisplayTxt = { "BBC", "933", "My Schedule" };
 	private int[] soundDisplayIcon = { R.drawable.radio, R.drawable.radio,R.drawable.radio };
-	private boolean[] soundSelected = { false, false, true };
+	private boolean[] soundSelected = { true, true, false };
 	private static final int BBC_OR_933 = 1;
 
 	/**
@@ -336,7 +336,6 @@ public class UIMgr {
 				});
 
 		alarmInfoViewSlipper = (ViewFlipper) activity.findViewById(R.id.optionflipper);
-		
 	}
 	
 	//================Main Container==========================================
@@ -434,7 +433,7 @@ public class UIMgr {
                 //helper.saveAlarmSelectedDay(daySelected, i);
 			}
 			
-			if(hours < 12)
+			if(hours < 13&&hours>0)
             {
                 alarmDisplayTxt[i] = Integer.toString(hours) + ":"
                 + String.format("%02d", mins) + " " + this.AMPM[0];
@@ -492,7 +491,6 @@ public class UIMgr {
     	                {
     	                    break;
     	                }
-   	                   
     	            }
     	        } 
     	        
@@ -566,8 +564,6 @@ public class UIMgr {
 						alarmSelected[ALARM_POSITION], hours24,
 						minutes.getCurrentItem(), 0, 0, daySelected[ALARM_POSITION]);
 				//Get Weekdays selected
-				
-				
 				break;
 			case R.id.timeaddcancel:
 				timeSlidingUpPanel.toggle();
@@ -761,7 +757,7 @@ public class UIMgr {
 					// TODO Auto-generated method stub
 					System.out.println("In Animation End!!");
 					selectPageIndicator(toDisplayedChild);
-					if(alarmInfoViewSlipper.getDisplayedChild()==Const.SCREENS.AlarmTimeUI.ordinal())
+					if(toDisplayedChild==Const.SCREENS.AlarmTimeUI.ordinal())
 					{
 						Toast toast = Toast.makeText(activity, "Long Press to change Alarm Time", Toast.LENGTH_LONG);
 						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL,0, -80);
@@ -788,7 +784,6 @@ public class UIMgr {
 				@Override
 				public void onAnimationEnd(Animation animation) {
 					// TODO Auto-generated method stub
-					
 				}
 
 				@Override
@@ -802,8 +797,43 @@ public class UIMgr {
 					// TODO Auto-generated method stub
 					System.out.println("Out Animation Start!!");
 					unSelectPageIndicator(currentChild);
+					if(currentChild==Const.SCREENS.SnoozeUI.ordinal())
+					{
+						System.out.println("Snooze Screen is shown");
+						if(!setDefaultSelection(snoozeSelected))
+						{
+							//snoozeSelected[0] = true;
+							toggleSelectListItem(snoozeAdapter, snoozeSelected, 0);
+							// Call back function for Snooze Mode selected/unselected
+							onListViewItemChangeListener.onSnoozeModeSelected(0,snoozeSelected[0]);
+							
+							Toast.makeText(activity, "No Snooze Mode Selected, Use Gesture by Default", Toast.LENGTH_SHORT).show();
+						}
+							
+					}
+					else if (currentChild==Const.SCREENS.AlarmSoundUI.ordinal())
+					{
+						if(!setDefaultSelection(soundSelected))
+						{
+							Toast.makeText(activity, "No Alarm Sound Selected, Use Default Sound", Toast.LENGTH_SHORT).show();
+						}
+					}
 				}});
 		}
+	}
+	
+	private boolean setDefaultSelection(boolean[] selected)
+	{
+		boolean set = false;
+		for(int i=0;i<selected.length;i++)
+		{
+			if(selected[i]==true)
+			{
+				set = true;
+				return true;
+			}
+		}
+		return set;
 	}
 	
 	private void selectPageIndicator(int pageNo)
@@ -824,7 +854,6 @@ public class UIMgr {
 	
 	private void initSoonzeControls() {
 		gesturesView = (GestureOverlayView) activity.findViewById(R.id.gestures);
-		
 	}
 	// =============================Consumed from otherClasses=============================================
 	public void registerListViewItemChangeListener(OnListViewItemChangeListener onListViewItemChangeListener) {

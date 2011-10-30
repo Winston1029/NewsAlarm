@@ -15,7 +15,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.View;
-
 import com.moupress.app.R;
 import com.moupress.app.ui.SlideButton.OnChangeListener;
 import com.moupress.app.ui.SlideButton.SlideButton;

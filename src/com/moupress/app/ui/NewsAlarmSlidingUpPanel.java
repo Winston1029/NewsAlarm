@@ -90,4 +90,9 @@ public class NewsAlarmSlidingUpPanel extends LinearLayout{
 		// TODO Auto-generated method stub
 		this.isOpen = open;
 	}
+	
+	public boolean getOpen()
+	{
+		return this.isOpen;
+	}
 }
