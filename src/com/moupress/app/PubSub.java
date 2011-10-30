@@ -167,7 +167,7 @@ public class PubSub {
 		if (Const.ISDEBUG) {
 			uiMgrDebug = new UIMgrDebug(activity);
 		} else {
-			uiMgr = new UIMgr(activity);
+			uiMgr = new UIMgr(activity,context);
 			uiMgr.registerListViewItemChangeListener(this.onListViewItemChangeListener);
 		}
 	}
@@ -191,7 +191,7 @@ public class PubSub {
 				unregisterSnoozeListener();
 				uiMgr.setbSettingAlarmTimeDisableFlip(false);
 				uiMgr.flipperListView(Const.SCREENS.HomeUI.ordinal());
-				
+				alarmMgr.snoozeAlarm(Const.SNOOZE_DUR);
 			}
 
 			@Override

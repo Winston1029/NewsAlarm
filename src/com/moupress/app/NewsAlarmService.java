@@ -18,7 +18,7 @@ public class NewsAlarmService extends Service {
 	
 	@Override
 	public void onCreate() {
-		Toast.makeText(this, "NewsAlarm Service Created", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "NewsAlarm Service Created", Toast.LENGTH_SHORT).show();
 		System.out.println("Service is created!");
 		pubsub = new PubSub(getBaseContext(), this);
 		Log.d(TAG, "onCreate");

@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 
@@ -22,6 +24,12 @@ public class NewsAlarmActivity extends Activity {
         Intent mainIntent = this.getIntent();
         Bundle extras = mainIntent.getExtras();
         
+         Window win = this.getWindow();
+	     win.addFlags( WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+	     //win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+	     win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+	     //win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         
         //check if the activity is launch by user or broadcast receiver
 
@@ -74,8 +82,9 @@ public class NewsAlarmActivity extends Activity {
 		 {
 		     int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
 			 pubsub.onSnoozePub();
+			 
+			 if(alarmPosition != Const.SNOOZE_ALARM)
 			 pubsub.afterSnooze(alarmPosition);
 		 }
 	}
-
 }

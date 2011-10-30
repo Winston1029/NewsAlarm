@@ -2,6 +2,8 @@ package com.moupress.app.alarm;
 
 import java.util.Calendar;
 
+import com.moupress.app.Const;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -58,6 +60,20 @@ public class AlarmManagerMgr
             startAlarm(alarmPosition);
             return;
         }
+    }
+    
+    public void snoozeAlarm(int snoozeDuration)
+    {
+    	 alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
+
+         Intent intent = new Intent(mContext, AlarmReceiver.class);
+         Bundle bundle = new Bundle();
+         bundle.putInt(AlarmManagerMgr.AlarmNumber, Const.SNOOZE_ALARM);
+         intent.putExtras(bundle);
+         PendingIntent pi = PendingIntent.getBroadcast(mContext,
+                 Const.SNOOZE_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+         
+         alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ snoozeDuration, pi);
     }
 
     public boolean startAlarm(int alarmPosition)

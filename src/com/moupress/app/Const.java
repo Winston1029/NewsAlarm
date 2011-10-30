@@ -35,6 +35,7 @@ public class Const {
     public static final Boolean DefBool = false;
     public static final int DefNum = -1;
     
+    //==================DB Helper==========================
     public static final String ALARM = "Alarm_";
     public static final String SelectedDay = "Alarm_Selected_Day_";
     public static final String Hours = "Alarm_Hours_";
@@ -47,6 +48,7 @@ public class Const {
     public static final boolean[] DaySelected = new boolean[]{false,false,false,false,false,false,false};
     public static final String StrDaySelected = "T";
     public static final String StrDayNotSelected = "F";
+    
     //===============Calendar Event==========================
     public static final String CALENDER_ID = "_id";
     public static final String CALENDER_TITLE = "title";
@@ -56,6 +58,8 @@ public class Const {
     public static final int[] thumbImg = {R.drawable.slide_thumb,R.drawable.dismiss_thumb_small};
     
     //===============Snooze Timer ===============
-    public static final int SNOOZE_DUR = 1*60*1000;
-
+    public static final int SNOOZE_DUR = 5*60*1000;
+    
+    //===============Alarm Type==================
+    public static final int SNOOZE_ALARM = -1;
 }

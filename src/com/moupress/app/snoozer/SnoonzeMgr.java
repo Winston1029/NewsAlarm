@@ -14,11 +14,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
 import android.view.View;
-import android.widget.Toast;
 
-import com.moupress.app.Const;
 import com.moupress.app.R;
 import com.moupress.app.ui.SlideButton.OnChangeListener;
 import com.moupress.app.ui.SlideButton.SlideButton;
@@ -45,8 +42,7 @@ public class SnoonzeMgr {
 	
 	private int flipSide, preFlipSide;
 	
-	private Handler snoozeHandler;
-	
+//	private Handler snoozeHandler;
 	
 	public SnoonzeMgr(Context context)
 	{
@@ -165,23 +161,23 @@ public class SnoonzeMgr {
 		gestures = (GestureOverlayView)v;
 	}
 	
-	private Runnable alarmTriggerTask = new Runnable()
-	{
-
-		@Override
-		public void run() {
-			
-			//System.out.println("Snoozed Again!");
-			Toast.makeText(context, "Snoozed", 1000);
-			snoozeListener.onSnoozedAgain();
-		}
-		
-	};
+//	private Runnable alarmTriggerTask = new Runnable()
+//	{
+//
+//		@Override
+//		public void run() {
+//			
+//			//System.out.println("Snoozed Again!");
+//			Toast.makeText(context, "Snoozed", 1000);
+//			snoozeListener.onSnoozedAgain();
+//		}
+//		
+//	};
 	public void snoozeTriggered()
 	{
 		this.snoozeListener.onSnoozed();
-		this.snoozeHandler = new Handler();
-		snoozeHandler.postDelayed(alarmTriggerTask, Const.SNOOZE_DUR);
+		//this.snoozeHandler = new Handler();
+		//snoozeHandler.postDelayed(alarmTriggerTask, Const.SNOOZE_DUR);
 		
 	}
 	
@@ -262,9 +258,6 @@ public class SnoonzeMgr {
 				
 				//dismissViewAdapter.testTxtSwitcher();
 			}
-	    	
 	    });
 	}
-	
-	
 }

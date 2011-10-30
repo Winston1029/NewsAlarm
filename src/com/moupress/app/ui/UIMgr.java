@@ -2,13 +2,13 @@ package com.moupress.app.ui;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
-
 import com.moupress.app.Const;
 import com.moupress.app.R;
 import com.moupress.app.ui.SlideButton.OnChangeListener;
@@ -37,9 +37,11 @@ import com.moupress.app.util.DbHelper;
 public class UIMgr {
 
 	Activity activity;
+	Context context;
 
-	public UIMgr(Activity activity) {
+	public UIMgr(Activity activity,Context ctx) {
 		this.activity = activity;
+		this.context = ctx;
 		initAlarmSettings();
 		initUI();
 		initSoonzeControls();
@@ -759,6 +761,13 @@ public class UIMgr {
 					// TODO Auto-generated method stub
 					System.out.println("In Animation End!!");
 					selectPageIndicator(toDisplayedChild);
+					if(alarmInfoViewSlipper.getDisplayedChild()==Const.SCREENS.AlarmTimeUI.ordinal())
+					{
+						Toast toast = Toast.makeText(activity, "Long Press to change Alarm Time", Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL,0, -80);
+						toast.show();
+						System.out.println("Child ID " + alarmInfoViewSlipper.getDisplayedChild());
+					}
 				}
 
 				@Override
