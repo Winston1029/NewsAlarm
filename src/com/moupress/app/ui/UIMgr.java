@@ -433,6 +433,7 @@ public class UIMgr {
                 //helper.saveAlarmSelectedDay(daySelected, i);
 			}
 			
+			//Convert Hours12 to Hours24
 			if(hours==0)
 			{
 				alarmDisplayTxt[i] = Integer.toString(hours+12) + ":"
@@ -471,9 +472,9 @@ public class UIMgr {
     	                    if( t == 0)
     	                    {
     	                        if(hours < cal.get(Calendar.HOUR))
-    	                            break;
+    	                            continue;
     	                        else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
-                                    break;
+                                    continue;
                                 }
     	                    }
     	                    hsDisplayTxt[1] = alarmDisplayTxt[i];
@@ -503,7 +504,6 @@ public class UIMgr {
     	                }
     	            }
     	        } 
-    	        
 			}
 		}
 		if (dayIndex == 7) {
@@ -783,7 +783,7 @@ public class UIMgr {
 					if(toDisplayedChild==Const.SCREENS.AlarmTimeUI.ordinal())
 					{
 						Toast toast = Toast.makeText(activity, "Long Press to change Alarm Time", Toast.LENGTH_LONG);
-						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL,0, -80);
+						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL,0, -160);
 						toast.show();
 						System.out.println("Child ID " + alarmInfoViewSlipper.getDisplayedChild());
 					}
