@@ -41,6 +41,7 @@ public class AlarmManagerMgr
             //Toast.makeText(mContext, "The alarm is not set!", Toast.LENGTH_LONG).show();
             return;
         }
+        //System.out.println("Alarm hour is "+ hourOfDay);
         this.SelectedDay[alarmPosition] = daySelected;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

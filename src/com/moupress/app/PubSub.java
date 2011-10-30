@@ -51,12 +51,14 @@ public class PubSub {
 		@Override
 		public void onAlarmTimeChanged(int alarmPosition, boolean selected,
 				int hourOfDay, int minute, int second, int millisecond, boolean[] daySelected) {
-			System.out.println("Alarm Time is changed!");
+			System.out.println("Alarm Time is changed! " + hourOfDay);
 			alarmMgr.setAlarm(alarmPosition, selected, hourOfDay, minute,second, millisecond, daySelected);
 			Calendar calendar = alarmMgr.getCalendarByPosition(alarmPosition);
 			
+			//System.out.println("Hours of the day Before Save" + calendar.get(Calendar.HOUR_OF_DAY));
 			dbHelper.saveAlarmSelectedDay(daySelected, alarmPosition);
 			dbHelper.saveAlarm(calendar, alarmPosition);
+			//System.out.println("Hours of the day After Save"+ dbHelper.GetInt(Const.Hours + Integer.toString(alarmPosition)));
 			uiMgr.updateHomeAlarmText();
 		}
 

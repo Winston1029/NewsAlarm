@@ -191,7 +191,7 @@ public class UIMgr {
 		amOrpm = (WheelView) activity.findViewById(R.id.wheelsecond);
 
 		hours.setViewAdapter(new NumericWheelAdapter(activity, 1, 12));
-		hours.setCurrentItem(6);
+		hours.setCurrentItem(5);
 		minutes.setViewAdapter(new NumericWheelAdapter(activity, 0, 59, "%02d"));
 		minutes.setCurrentItem(30);
 		amOrpm.setViewAdapter(new ArrayWheelAdapter<String>(activity, AMPM));
@@ -433,7 +433,17 @@ public class UIMgr {
                 //helper.saveAlarmSelectedDay(daySelected, i);
 			}
 			
-			if(hours < 13&&hours>0)
+			if(hours==0)
+			{
+				alarmDisplayTxt[i] = Integer.toString(hours+12) + ":"
+                + String.format("%02d", mins) + " " + this.AMPM[0];
+			}
+			else if(hours ==12)
+			{
+				 alarmDisplayTxt[i] = Integer.toString(hours) + ":"
+	                + String.format("%02d", mins) + " " + this.AMPM[1];
+			}
+			else if(hours<12)
             {
                 alarmDisplayTxt[i] = Integer.toString(hours) + ":"
                 + String.format("%02d", mins) + " " + this.AMPM[0];
@@ -550,16 +560,29 @@ public class UIMgr {
 
 			switch (v.getId()) {
 			case R.id.timeaddok:
-				alarmAdapter.updateTxtArrayList("" + hours.getCurrentItem()
+				alarmAdapter.updateTxtArrayList("" + (hours.getCurrentItem()+1)
 						+ ":" + String.format("%02d", minutes.getCurrentItem())
 						+ " " + (amOrpm.getCurrentItem() == 0 ? "am" : "pm"),
 						ALARM_POSITION);
+				//System.out.println("Current Hour is "+hours.getCurrentItem());
 				alarmAdapter.updateWeekDaysSelection(daySelected[ALARM_POSITION],ALARM_POSITION);
-				
 				timeSlidingUpPanel.toggle();
 				// Call Back function on Alarm Time Change
-				int hours24 = amOrpm.getCurrentItem() == 0 ? hours
-						.getCurrentItem() : hours.getCurrentItem() + 12;
+				int hours24;
+				 //amOrpm.getCurrentItem() == 0  (hours.getCurrentItem()+1) : (hours.getCurrentItem() + 13);
+				if(amOrpm.getCurrentItem()==0)
+				{
+					hours24 = hours.getCurrentItem()+1;
+					if(hours24==12)
+						hours24=0;
+				}
+				else
+				{
+					hours24 = hours.getCurrentItem()+13;
+					if(hours24==24)
+						hours24=12;
+				}
+				
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
 						minutes.getCurrentItem(), 0, 0, daySelected[ALARM_POSITION]);
