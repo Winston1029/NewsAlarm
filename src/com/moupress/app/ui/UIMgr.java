@@ -412,6 +412,7 @@ public class UIMgr {
 		int hours, mins;
 		int nextAlarm = 0;
 		int dayIndex = 7;//max is 7
+		hsDisplayTxt[1] = "No Alarm Set";
 		boolean[] daySelectedLocal = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
@@ -424,7 +425,7 @@ public class UIMgr {
 			
 			if (hours == Const.DefNum || mins == Const.DefNum) {
 			    cal.setTimeInMillis(System.currentTimeMillis());
-                hours = cal.get(Calendar.HOUR);
+                hours = cal.get(Calendar.HOUR_OF_DAY);
                 mins = cal.get(Calendar.MINUTE);
                 //since daySelected is default to false
                 //we need also modify Current day as selected
@@ -433,7 +434,7 @@ public class UIMgr {
                 //helper.saveAlarmSelectedDay(daySelected, i);
 			}
 			
-			//Convert Hours12 to Hours24
+			//Convert Hours24 to Hours12
 			if(hours==0)
 			{
 				alarmDisplayTxt[i] = Integer.toString(hours+12) + ":"
@@ -458,9 +459,10 @@ public class UIMgr {
 			if(alarmSelected[i])
 			{
     			int index =0;
+    			boolean isCurrentDayLessThanNow = false;
     			cal.setTimeInMillis(System.currentTimeMillis());
     			int test = cal.get(Calendar.DAY_OF_WEEK)-1;
-    	        for (int t = 0; t < daySelected.length; t++)
+    	        for (int t = 0; t < daySelectedLocal.length; t++)
     	        {
     	            index = (t+test)%7;
     	            //to get the nearest selected day
@@ -471,10 +473,11 @@ public class UIMgr {
     	                    //need to check if the time is past if index == 0
     	                    if( t == 0)
     	                    {
-    	                        if(hours < cal.get(Calendar.HOUR))
+    	                        if((hours < cal.get(Calendar.HOUR_OF_DAY))
+    	                                ||(hours == cal.get(Calendar.HOUR_OF_DAY)&&mins <= cal.get(Calendar.MINUTE)))
+    	                        {
+    	                            isCurrentDayLessThanNow = true;
     	                            continue;
-    	                        else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
-                                    continue;
                                 }
     	                    }
     	                    hsDisplayTxt[1] = alarmDisplayTxt[i];
@@ -484,12 +487,13 @@ public class UIMgr {
     	                }
     	                if(t == dayIndex)
     	                {
-    	                    if(hours < cal.get(Calendar.HOUR))
-                                continue;
-                            else if(hours == cal.get(Calendar.HOUR)&&mins <= cal.get(Calendar.MINUTE)) {
-                                continue;
-                            }
-    	                    
+    	                    if(t== 0) {
+        	                    if(hours < cal.get(Calendar.HOUR_OF_DAY))
+        	                        continue;
+                                else if(hours == cal.get(Calendar.HOUR_OF_DAY)&&mins <= cal.get(Calendar.MINUTE)) {
+                                    continue;
+                                }
+    	                    }
     	                    int nowAlarm = hours*60+ mins;
     	                    if(nextAlarm > nowAlarm)
     	                    {
@@ -503,11 +507,33 @@ public class UIMgr {
     	                    break;
     	                }
     	            }
-    	        } 
+    	            //if special condition
+    	            if(dayIndex == 7)
+    	            {
+    	                if(isCurrentDayLessThanNow)
+    	                {
+                            if(nextAlarm > 0)
+                            {
+                                if(nextAlarm > hours*60+ mins)
+                                {
+                                    hsDisplayTxt[1] = alarmDisplayTxt[i];
+                                    nextAlarm = hours*60+ mins; 
+                                }
+                              
+                            }
+                            else {//nextAlarm == 0
+                                hsDisplayTxt[1] = alarmDisplayTxt[i];
+                                nextAlarm = hours*60+ mins; 
+                            }
+    	                }
+    	                
+    	            }
+    	        }
+    	        
 			}
 		}
 		if (dayIndex == 7) {
-			hsDisplayTxt[1] = "No Alarm Set";
+			
 		}
 	}
 
