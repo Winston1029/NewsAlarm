@@ -74,9 +74,27 @@ public class UIMgr {
 	 */
 	private void initHomeUI() {
 		hsListView = (ListView) activity.findViewById(R.id.hslistview);
+		
 		hsListAdapter = new AlarmListViewAdapter(hsDisplayTxt, hsDisplayIcon, hsSelected,R.layout.home_screen_item);
 		hsListView.setAdapter(hsListAdapter);
 		hsListView.setOnItemClickListener(optionListOnItemClickListener);
+		//setSnoozeMode();
+	}
+
+	private void setSnoozeMode() {
+		// TODO Auto-generated method stub
+		for(int i=0;i<snoozeSelected.length;i++)
+		{
+			if(snoozeSelected[i]==true)
+			{
+				hsDisplayTxt[2]=snoozeDisplayTxt[i];
+			    //hsListAdapter.notifyDataSetChanged();
+			    System.out.println("snoozeReseted! " + hsDisplayTxt[2]);
+			    hsListAdapter.updateSnoozeModeSelection(hsDisplayTxt[2], 2);
+			    return;
+			}
+		}
+		
 	}
 
 	// =======================Snooze UI==============================================
@@ -104,6 +122,7 @@ public class UIMgr {
 		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected,R.layout.home_screen_item);
 		snoozeListView.setAdapter(snoozeAdapter);
 		snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
+		setSnoozeMode();
 	}
 
 	// =======================Alarm Time UI==============================================
@@ -206,7 +225,7 @@ public class UIMgr {
 	    		{
 	    			daySelected[ALARM_POSITION][weekdayPos]=true;
 	    			if(daySelected[ALARM_POSITION][weekdayPos]==true)
-		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+		    		((TextView)v).setTextColor(activity.getResources().getColor(R.color.orange_red));
 	    		}
 	    		else
 	    		{
@@ -229,7 +248,7 @@ public class UIMgr {
 					else
 					{
 						daySelected[ALARM_POSITION][weekdayPos]= true;
-						((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+						((TextView)v).setTextColor(activity.getResources().getColor(R.color.orange_red));
 					}
 				}
 				else if(mode == 1)
@@ -241,7 +260,7 @@ public class UIMgr {
 							return;
 					}
 					 daySelected[ALARM_POSITION][weekdayPos]= true;
-					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.orange_red));
 
 				}
 				else if (mode == 2)
@@ -252,7 +271,7 @@ public class UIMgr {
 				} else if(mode ==3)
 				{
 					if( daySelected[ALARM_POSITION][weekdayPos]==true)
-					((TextView)v).setTextColor(activity.getResources().getColor(R.color.royal_blue));
+					((TextView)v).setTextColor(activity.getResources().getColor(R.color.orange_red));
 					else if (daySelected[ALARM_POSITION][weekdayPos]== false)
 					((TextView)v).setTextColor(activity.getResources().getColor(R.color.black));
 				}
@@ -271,9 +290,9 @@ public class UIMgr {
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC News", "933", "My Calendar Events" };
+	private String[] soundDisplayTxt = { "BBC News", "933", "My Calendar" };
 	private int[] soundDisplayIcon = { R.drawable.radio_bbc, R.drawable.music,R.drawable.calendar };
-	private boolean[] soundSelected = { true, true, false };
+	private boolean[] soundSelected = { true, false, false };
 	private static final int BBC_OR_933 = 1;
 
 	/**
@@ -552,6 +571,7 @@ public class UIMgr {
 			case R.id.snoozelistview:
 				toggleSelectListItem(snoozeAdapter, snoozeSelected, position);
 				// Call back function for Snooze Mode selected/unselected
+				setSnoozeMode();
 				onListViewItemChangeListener.onSnoozeModeSelected(position,
 						snoozeSelected[position]);
 				break;
@@ -559,9 +579,12 @@ public class UIMgr {
 				if (position <= BBC_OR_933 && soundSelected[position] == false && soundSelected[1 - position] == true) {
 					// make BBC and 993 broadcasting mutual exclusive
 					toggleSelectListItem(soundAdapter, soundSelected, 1 - position);
+					onListViewItemChangeListener.onAlarmSoundSelected(1-position,
+							soundSelected[1-position]);
 				}
 				toggleSelectListItem(soundAdapter, soundSelected, position);
 				// Call back function for Alarm Sound selected/unselected
+				//System.out.println("Sound Selected "+soundSelected[0]+" "+soundSelected[1]);
 				onListViewItemChangeListener.onAlarmSoundSelected(position,
 						soundSelected[position]);
 				break;
@@ -699,6 +722,12 @@ public class UIMgr {
 			optionArrayList.get(alarmposition).setWeekDaysSelection(daySelected);
 			this.notifyDataSetChanged();
 		}
+		
+		public void updateSnoozeModeSelection(String displayTxt, int alarmPosition)
+		{
+			optionArrayList.get(alarmPosition).setOptionTxt(displayTxt);
+			this.notifyDataSetChanged();
+		}
 
 		public void loadArrayList(String[] displayStrings, int[] displayInts,
 				boolean[] displayChecked) {
@@ -746,11 +775,19 @@ public class UIMgr {
 			imgView.setImageResource(optionArrayList.get(position).getOptionIcon());
 			TextView textView = (TextView) convertView.findViewById(R.id.alarmitemtxt);
 			textView.setText(optionArrayList.get(position).getOptionTxt());
+//			if(parent.getId()==R.id.hslistview)
+//			System.out.println("It is called!");
 			ImageView chkImgView = (ImageView) convertView.findViewById(R.id.checked);
-			chkImgView.setImageResource(R.drawable.checkbtn);
+			//chkImgView.setImageResource(R.drawable.checkbtn);
 			if (optionArrayList.get(position).isOptionSelected()) {
-				chkImgView.setVisibility(View.VISIBLE);
+				chkImgView.setImageResource(R.drawable.checkbtn);
+				//chkImgView.setVisibility(View.VISIBLE);
 			} else {
+				chkImgView.setImageResource(R.drawable.uncheckbtn);
+				//chkImgView.setVisibility(View.INVISIBLE);
+			}
+			if(parent.getId()==R.id.hslistview)
+			{
 				chkImgView.setVisibility(View.INVISIBLE);
 			}
 			if(parent.getId()==R.id.alarmlistview)

@@ -102,10 +102,11 @@ containing a value of this type.
         public static final int snooze_setting_pressed_2=0x7f02001f;
         public static final int sound_btn_selector=0x7f020020;
         public static final int swing=0x7f020021;
-        public static final int viewslider_bg=0x7f020022;
-        public static final int viewslider_snoozed_bg=0x7f020023;
-        public static final int wheather=0x7f020024;
-        public static final int wheel_bg=0x7f020025;
+        public static final int uncheckbtn=0x7f020022;
+        public static final int viewslider_bg=0x7f020023;
+        public static final int viewslider_snoozed_bg=0x7f020024;
+        public static final int wheather=0x7f020025;
+        public static final int wheel_bg=0x7f020026;
     }
     public static final class id {
         public static final int Button01=0x7f090009;
