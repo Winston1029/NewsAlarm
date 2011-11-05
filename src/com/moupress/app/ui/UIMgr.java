@@ -116,7 +116,9 @@ public class UIMgr {
 		DbHelper dbHelper = new DbHelper(activity);
 		for(int i=0;i<snoozeDisplayTxt.length;i++)
 		{
-			snoozeSelected[i] = dbHelper.GetBool(Const.SNOOZEMODE + Integer.toString(i));
+			Boolean selected = dbHelper.GetBool(Const.SNOOZEMODE + Integer.toString(i));
+			if(selected != null)
+			snoozeSelected[i] = selected;
 		}
 		snoozeListView = (ListView) activity.findViewById(R.id.snoozelistview);
 		snoozeAdapter = new AlarmListViewAdapter(snoozeDisplayTxt,snoozeDisplayIcon, snoozeSelected,R.layout.home_screen_item);
@@ -237,7 +239,7 @@ public class UIMgr {
 
 			@Override
 			public void OnSelected(int weekdayPos,  View v, int mode) {
-				
+				//System.out.println("Alarm Position "+ALARM_POSITION);
 				if(mode == 0)
 				{
 					if(daySelected[ALARM_POSITION][weekdayPos]==true)
@@ -302,7 +304,9 @@ public class UIMgr {
 		DbHelper dbHelper = new DbHelper(activity);
 		for(int i=0;i<soundDisplayTxt.length;i++)
 		{
-			soundSelected[i] = dbHelper.GetBool(Const.ALARMSOUNDE + Integer.toString(i));
+			Boolean selected = dbHelper.GetBool(Const.ALARMSOUNDE + Integer.toString(i));
+			if(selected != null)
+			soundSelected[i] = selected;
 		}
 		soundListView = (ListView) activity.findViewById(R.id.soundlistview);
 		soundAdapter = new AlarmListViewAdapter(soundDisplayTxt,soundDisplayIcon, soundSelected,R.layout.home_screen_item);
@@ -435,9 +439,15 @@ public class UIMgr {
 		boolean[] daySelectedLocal = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
-			alarmSelected[i] = helper.GetBool(Const.ISALARMSET
+			Boolean Selected = helper.GetBool(Const.ISALARMSET
 					+ Integer.toString(i));
-			daySelectedLocal = helper.getSelectedDay(i);
+			if(Selected != null)
+			alarmSelected[i] = Selected;
+			
+			boolean[] selectedArray = helper.getSelectedDay(i);
+			
+			if(selectedArray != null)
+			daySelectedLocal = selectedArray;
 			
 			hours = helper.GetInt(Const.Hours + Integer.toString(i));
 			mins = helper.GetInt(Const.Mins + Integer.toString(i));
@@ -631,7 +641,6 @@ public class UIMgr {
 					if(hours24==24)
 						hours24=12;
 				}
-				
 				onListViewItemChangeListener.onAlarmTimeChanged(ALARM_POSITION,
 						alarmSelected[ALARM_POSITION], hours24,
 						minutes.getCurrentItem(), 0, 0, daySelected[ALARM_POSITION]);
