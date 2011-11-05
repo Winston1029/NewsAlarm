@@ -64,8 +64,8 @@ public class UIMgr {
 	public ListView hsListView;
 	private AlarmListViewAdapter hsListAdapter;
 	private String[] hsDisplayTxt = { "No Weather Info", "No Alarm Set", "Gesture" };
-	private int[] hsDisplayIcon = { R.drawable.world, R.drawable.clock,
-			R.drawable.disc };
+	private int[] hsDisplayIcon = { R.drawable.wheather, R.drawable.alarm,
+			R.drawable.snooze };
 	private boolean[] hsSelected = { false, false, false };
 	
 
@@ -83,7 +83,7 @@ public class UIMgr {
 	public ListView snoozeListView;
 	private AlarmListViewAdapter snoozeAdapter;
 	private String[] snoozeDisplayTxt = { "Gesture", "Flip", "Swing" };
-	private int[] snoozeDisplayIcon = { R.drawable.disc, R.drawable.disc,R.drawable.disc };
+	private int[] snoozeDisplayIcon = { R.drawable.gesture, R.drawable.flip,R.drawable.swing };
 	private boolean[] snoozeSelected = { true, true, false };
 
 	public boolean[] getSnoozeSelected() {
@@ -116,7 +116,7 @@ public class UIMgr {
 	private Button btnUpdateTimeCancel;
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
-	private int[] alarmDisplayIcon = { R.drawable.clock, R.drawable.clock,R.drawable.clock };
+	private int[] alarmDisplayIcon = { R.drawable.alarm_time, R.drawable.alarm_time,R.drawable.alarm_time };
 	private boolean[] alarmSelected = { true, true, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
@@ -271,8 +271,8 @@ public class UIMgr {
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC", "933", "My Schedule" };
-	private int[] soundDisplayIcon = { R.drawable.radio, R.drawable.radio,R.drawable.radio };
+	private String[] soundDisplayTxt = { "BBC News", "933", "My Calendar Events" };
+	private int[] soundDisplayIcon = { R.drawable.radio_bbc, R.drawable.music,R.drawable.calendar };
 	private boolean[] soundSelected = { true, true, false };
 	private static final int BBC_OR_933 = 1;
 
