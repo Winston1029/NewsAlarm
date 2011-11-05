@@ -131,7 +131,7 @@ public class PubSub {
 		registerSnoozeListener();
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		//mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, AudioManager.FLAG_SHOW_UI);
 		boolean[] soundToPlay = uiMgr.getSoundSelected();
 		if (soundToPlay != null ) {
 			if (soundToPlay[Const.ALARMSOUND_BBC]) {
