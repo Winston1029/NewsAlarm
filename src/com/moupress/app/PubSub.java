@@ -266,9 +266,9 @@ public class PubSub {
     {
         Calendar calendar = Calendar.getInstance();
         int hours = dbHelper.GetInt(Const.Hours
-                + Integer.toString(alarmPosition));
+                + Integer.toString(alarmPosition),Const.defAlarmDisplayHours[alarmPosition]);
         int mins = dbHelper.GetInt(Const.Mins
-                + Integer.toString(alarmPosition));
+                + Integer.toString(alarmPosition), Const.defAlarmDisplayMins[alarmPosition]);
         calendar.setTimeInMillis(System.currentTimeMillis());
         if(hours == Const.DefNum|| mins == Const.DefNum)
         {

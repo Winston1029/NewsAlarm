@@ -43,17 +43,19 @@ public final class DbHelper
         return SP.getString(key, Const.DefString);
     }
     
-    public int GetInt(String key)
+    public int GetInt(String key,int defNum)
     {
-        return SP.getInt(key, Const.DefNum);
+        //return SP.getInt(key, Const.DefNum);
+    	return SP.getInt(key, defNum);
     }
     public long GetLong(String key)
     {
         return SP.getLong(key, Const.DefNum);
     }
-    public Boolean GetBool(String key)
+    public Boolean GetBool(String key, boolean defBool)
     {
-        return SP.getBoolean(key, Const.DefBool);
+    	// return SP.getBoolean(key,Const.DefBool);
+        return SP.getBoolean(key, defBool);
     }
     
     public void saveAlarm(Calendar calendar,int alarmPosition)
@@ -106,7 +108,7 @@ public final class DbHelper
     {
         String selectedDay = GetString(Const.SelectedDay+  Integer.toString(alarmPosition));
         if(selectedDay == Const.DefString)
-            return Const.DaySelected;
+            return Const.DaySelected[alarmPosition];
         String[] stringSelDay = selectedDay.split(Const.Limit);
         boolean[] boolSelDay  = new boolean[7];
         for (int i = 0; i < stringSelDay.length; i++)
@@ -115,7 +117,6 @@ public final class DbHelper
             {
                 boolSelDay[i] = true;
             }
-            
         }
         return boolSelDay;
     }

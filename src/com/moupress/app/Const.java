@@ -34,6 +34,8 @@ public class Const {
     public static final String  DefString = "";
     public static final Boolean DefBool = false;
     public static final int DefNum = -1;
+    public static int[] defAlarmDisplayHours = {8,9,10};
+	public static int[] defAlarmDisplayMins = {0,0,0};
     
     //==================DB Helper==========================
     public static final String ALARM = "Alarm_";
@@ -45,7 +47,9 @@ public class Const {
     public static final String SNOOZEMODE = "Snooze_";
     public static final String GESTURE = "Gesture";
     public static final String Limit = ";";
-    public static final boolean[] DaySelected = new boolean[]{false,false,false,false,false,false,false};
+    public static final boolean[][] DaySelected = new boolean[][]{{false,true,true,true,true,true,false},
+		 															{false,true,true,true,true,true,false},
+		 															{true,false,false,false,false,false,true}};
     public static final String StrDaySelected = "T";
     public static final String StrDayNotSelected = "F";
     

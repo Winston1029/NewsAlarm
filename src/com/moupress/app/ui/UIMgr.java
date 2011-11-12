@@ -94,7 +94,6 @@ public class UIMgr {
 			    return;
 			}
 		}
-		
 	}
 
 	// =======================Snooze UI==============================================
@@ -116,7 +115,7 @@ public class UIMgr {
 		DbHelper dbHelper = new DbHelper(activity);
 		for(int i=0;i<snoozeDisplayTxt.length;i++)
 		{
-			Boolean selected = dbHelper.GetBool(Const.SNOOZEMODE + Integer.toString(i));
+			Boolean selected = dbHelper.GetBool(Const.SNOOZEMODE + Integer.toString(i),snoozeSelected[i]);
 			if(selected != null)
 			snoozeSelected[i] = selected;
 		}
@@ -138,7 +137,7 @@ public class UIMgr {
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
 	private int[] alarmDisplayIcon = { R.drawable.alarm_time, R.drawable.alarm_time,R.drawable.alarm_time };
-	private boolean[] alarmSelected = { true, true, false };
+	private boolean[] alarmSelected = { true, false, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
@@ -195,7 +194,6 @@ public class UIMgr {
 
 					@Override
 					public void onSlidingUpEnd() {
-						
 						slideBtn.reLoadViews();
 						slideBtn.setSlidePosition(weekday.getWeekDayRank()-1);
 					}
@@ -304,7 +302,8 @@ public class UIMgr {
 		DbHelper dbHelper = new DbHelper(activity);
 		for(int i=0;i<soundDisplayTxt.length;i++)
 		{
-			Boolean selected = dbHelper.GetBool(Const.ALARMSOUNDE + Integer.toString(i));
+			Boolean selected = dbHelper.GetBool(Const.ALARMSOUNDE + Integer.toString(i),soundSelected[i]);
+			//System.out.println("Value of Selected "+ selected);
 			if(selected != null)
 			soundSelected[i] = selected;
 		}
@@ -439,8 +438,7 @@ public class UIMgr {
 		boolean[] daySelectedLocal = new boolean[7];
 		// alarm Time
 		for (int i = 0; i < alarmDisplayTxt.length; i++) {
-			Boolean Selected = helper.GetBool(Const.ISALARMSET
-					+ Integer.toString(i));
+			Boolean Selected = helper.GetBool(Const.ISALARMSET+ Integer.toString(i),alarmSelected[i]);
 			if(Selected != null)
 			alarmSelected[i] = Selected;
 			
@@ -449,8 +447,8 @@ public class UIMgr {
 			if(selectedArray != null)
 			daySelectedLocal = selectedArray;
 			
-			hours = helper.GetInt(Const.Hours + Integer.toString(i));
-			mins = helper.GetInt(Const.Mins + Integer.toString(i));
+			hours = helper.GetInt(Const.Hours + Integer.toString(i),Const.defAlarmDisplayHours[i]);
+			mins = helper.GetInt(Const.Mins + Integer.toString(i),Const.defAlarmDisplayMins[i]);
 			
 			if (hours == Const.DefNum || mins == Const.DefNum) {
 			    cal.setTimeInMillis(System.currentTimeMillis());
