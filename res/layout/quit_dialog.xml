@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android=-->
+<!--			android:layout_height="fill_parent"-->
+<!--			android:orientation="vertical"-->
+<!--			android:layout_width="fill_parent">-->
+			
+ <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+ 			android:id="@+id/sharingapps"
+	 	android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+	 	android:background="@android:color/white"
+	 	></ListView>
+<!--<LinearLayout -->
+<!--	android:id="@+id/twitter"-->
+<!--	style="@style/socialnetwork"-->
+<!--	android:clickable="true"-->
+<!--	>-->
+<!--<ImageView-->
+<!--	android:id="@+id/twittericon"-->
+<!--	style="@style/dialogicon"-->
+<!--	android:src="@drawable/tweet"-->
+<!--/>-->
+<!--<TextView -->
+<!--    android:id="@+id/twittertxt"-->
+<!--    style="@style/optiontxtview.dialog"-->
+<!--    android:text="Tweet">-->
+<!--</TextView>-->
+<!--</LinearLayout>-->
+<!--<LinearLayout -->
+<!--	style="@style/socialnetwork"-->
+<!--	android:id="@+id/facebook">-->
+<!--<ImageView-->
+<!--	android:id="@+id/twittericon"-->
+<!--	style="@style/dialogicon"-->
+<!--	android:src="@drawable/facebook"-->
+<!--/>-->
+<!--<TextView -->
+<!--    android:id="@+id/twittertxt"-->
+<!--    style="@style/optiontxtview.dialog"-->
+<!--    android:text="Facebook">-->
+<!--</TextView>-->
+<!--</LinearLayout>-->
+<!--</LinearLayout>-->

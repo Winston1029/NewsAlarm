@@ -3,9 +3,8 @@ package com.moupress.app;
 import com.moupress.app.alarm.AlarmManagerMgr;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -53,22 +52,7 @@ public class NewsAlarmActivity extends Activity {
     
 //    @Override
     public void onBackPressed() {
-    	// Warning message when Back Button is Pressed
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("Are you sure you want to exit?")
-    	       .setCancelable(false)
-    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	        	   pubsub.exit();
-    	        	   NewsAlarmActivity.this.finish();
-    	           }
-    	       })
-    	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	                dialog.cancel();
-    	           }
-    	       });
-    	builder.create().show();
+    	pubsub.showExitDialog();
 	    return;
     }
 
@@ -77,6 +61,7 @@ public class NewsAlarmActivity extends Activity {
 		super.onNewIntent(intent);
 		
 		 Bundle extras = intent.getExtras();
+		 final Uri uri = intent.getData();
 		 if(extras != null)
 		 {
 		     int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
@@ -85,5 +70,15 @@ public class NewsAlarmActivity extends Activity {
 			 if(alarmPosition != Const.SNOOZE_ALARM)
 			 pubsub.afterSnooze(alarmPosition);
 		 }
+		 else if (uri != null && uri.getScheme().equals(Const.OAUTH_CALLBACK_SCHEME)) {
+				
+				System.out.println("Callback received : " + uri);
+				System.out.println( "Retrieving Access Token");
+				
+				//new RetrieveAccessTokenTask(this,consumer,provider,prefs).execute(uri);
+				pubsub.retrieveTwitterToken(uri);
+				//finish();	
+			}
+		 
 	}
 }

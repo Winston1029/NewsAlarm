@@ -1,11 +1,13 @@
 package com.moupress.app;
 
 
+import java.net.URI;
 import java.util.Calendar;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
@@ -15,9 +17,11 @@ import com.moupress.app.alarm.AlarmManagerMgr;
 import com.moupress.app.media.StreamingMgr;
 import com.moupress.app.snoozer.SnoonzeMgr;
 import com.moupress.app.snoozer.SnoozeListener;
+import com.moupress.app.twitter.TwitterInit;
 import com.moupress.app.ui.OnListViewItemChangeListener;
 import com.moupress.app.ui.UIMgr;
 import com.moupress.app.ui.UIMgrDebug;
+import com.moupress.app.ui.uiControlInterface.OnExitDialogListener;
 import com.moupress.app.util.DbHelper;
 import com.moupress.app.weather.WeatherMgr;
 
@@ -41,6 +45,8 @@ public class PubSub {
 	private UIMgrDebug uiMgrDebug;
 	
 	private DbHelper dbHelper;
+	
+	private TwitterInit twitter;
 
 	private OnListViewItemChangeListener onListViewItemChangeListener = new OnListViewItemChangeListener() {
 		@Override
@@ -81,6 +87,7 @@ public class PubSub {
 		}
 	};
 	
+	
 	public PubSub(Context context, Activity activity) {
 		this.context = context;
 		this.activity = activity;
@@ -92,6 +99,12 @@ public class PubSub {
 		initWeather();
 		initAlarmMgr(activity);
 		initAlarmTTSMgr();
+		initTwitter();
+	}
+
+	private void initTwitter() {
+		// TODO Auto-generated method stub
+		twitter = new TwitterInit(activity, context);
 	}
 
 	public PubSub(Context context, Service service)
@@ -171,6 +184,7 @@ public class PubSub {
 		} else {
 			uiMgr = new UIMgr(activity,context);
 			uiMgr.registerListViewItemChangeListener(this.onListViewItemChangeListener);
+			uiMgr.registerExitDialogFinishListener(this.onExitDialogListener);
 		}
 	}
 
@@ -282,6 +296,45 @@ public class PubSub {
 	public void exit() {
 		streamingMgr.interrupt();
 		alarmTTSMgr.ttsShutDown();
+	}
+	
+	
+//====================Exit Dialog =====================
+	private OnExitDialogListener onExitDialogListener = new OnExitDialogListener()
+	{
+
+		@Override
+		public void onExitDialogFinish(boolean exit) {
+			// TODO Auto-generated method stub
+			if(exit)
+			{
+				exit();
+				activity.finish();
+			}
+		}
+
+		@Override
+		public void onFacebookSelected() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTwitterSelected() {
+			// TODO Auto-generated method stub
+			System.out.println("Twitter is selected !");
+			twitter.checkAuthentation();
+		}
+		
+	};
+	public void showExitDialog()
+	{
+		uiMgr.showExitDialog();
+	}
+
+	public void retrieveTwitterToken(Uri uri) {
+		// TODO Auto-generated method stub
+		twitter.retrieveToken(uri);
 	}
 
 }

@@ -66,4 +66,22 @@ public class Const {
     
     //===============Alarm Type==================
     public static final int SNOOZE_ALARM = -1;
+    
+    //===============Exit Dialog=================
+    public static final String DIALOG_TITLE  = "Share this Application";
+    public static final String DIALOG_QUIT = "Quit";
+    public static final String DIALOG_CANCEL = "Cancel"; 
+    
+    //Twitter
+    public static final String CONSUMER_KEY = "g6dQOeQIPrT7eXpSE7FGQ";
+	public static final String CONSUMER_SECRET= "8MUOI1ShvCyj1IlUWQDlFEfFzSOjNQIugClDGLLUop4";
+	
+	public static final String REQUEST_URL = "http://api.twitter.com/oauth/request_token";
+	public static final String ACCESS_URL = "http://api.twitter.com/oauth/access_token";
+	public static final String AUTHORIZE_URL = "http://api.twitter.com/oauth/authorize";
+	
+	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow-twitter";
+	public static final String	OAUTH_CALLBACK_HOST		= "callback";
+	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+
 }

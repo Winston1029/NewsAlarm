@@ -6,7 +6,9 @@ import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.gesture.GestureOverlayView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -32,6 +35,7 @@ import com.moupress.app.ui.SlideButton.OnChangeListener;
 import com.moupress.app.ui.SlideButton.SlideButton;
 import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
 import com.moupress.app.ui.SlideButton.TextSlideButtonAdapter;
+import com.moupress.app.ui.uiControlInterface.OnExitDialogListener;
 import com.moupress.app.util.DbHelper;
 
 public class UIMgr {
@@ -994,6 +998,97 @@ public class UIMgr {
 	public void updateHomeAlarmText() {
 		initAlarmSettings();
 		hsListAdapter.updateTxtArrayList(hsDisplayTxt[1], 1);
+	}
+	
+	
+	//=======================Exit Dialog===================================//
+	private OnExitDialogListener onExitDialogListener;
+	private int[] image = {R.drawable.tweet,R.drawable.facebook};
+	private String[] socialNetowrks = {"Tweet","Facebook"};
+
+	public void showExitDialog() {
+		// TODO Auto-generated method stub
+		LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    	ListView ls = (ListView) inflater.inflate(R.layout.quit_dialog, (ViewGroup) activity.findViewById(R.id.sharingapps));
+       	ExitDialogListAdapter exitDialogListAdapter = new ExitDialogListAdapter();
+    	ls.setAdapter(exitDialogListAdapter);
+    	ls.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				
+				if(position == 0)
+					onExitDialogListener.onTwitterSelected();
+				else if (position == 1)
+					onExitDialogListener.onFacebookSelected();
+				
+			}});
+    	
+    	builder.setView(ls);
+    	
+    	builder.setMessage(Const.DIALOG_TITLE)
+    	       .setCancelable(false)
+    	       .setPositiveButton(Const.DIALOG_QUIT, new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	        	   onExitDialogListener.onExitDialogFinish(true);
+    	           }
+    	       })
+    	       .setNegativeButton(Const.DIALOG_CANCEL, new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	                dialog.cancel();
+    	           }
+    	       });
+    	builder.create().show();
+    	
+	}
+
+	public void registerExitDialogFinishListener(
+			OnExitDialogListener onExitDialogListener) {
+		// TODO Auto-generated method stub
+		this.onExitDialogListener = onExitDialogListener;
+	}
+	
+	private class ExitDialogListAdapter extends BaseAdapter{
+		private LayoutInflater viewInflator;
+		
+		public ExitDialogListAdapter()
+		{
+			viewInflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return socialNetowrks.length;
+		}
+
+		@Override
+		public Object getItem(int pos) {
+			// TODO Auto-generated method stub
+			return socialNetowrks[pos];
+		}
+
+		@Override
+		public long getItemId(int pos) {
+			// TODO Auto-generated method stub
+			return pos;
+		}
+
+		@Override
+		public View getView(int pos, View convertView, ViewGroup parent) {
+
+			if (convertView == null) {
+				convertView = viewInflator.inflate(R.layout.dialog_list_item,null);
+			}
+			ImageView imgV = (ImageView) convertView.findViewById(R.id.socialnetworkicon);
+			imgV.setImageResource(image[pos]);
+			TextView txtV = (TextView) convertView.findViewById(R.id.socialnetowrktxt);
+			txtV.setText(socialNetowrks[pos]);
+			
+			return convertView;
+		}
 	}
 
 }
