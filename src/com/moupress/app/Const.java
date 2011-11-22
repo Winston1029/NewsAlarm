@@ -70,7 +70,15 @@ public class Const {
     //===============Exit Dialog=================
     public static final String DIALOG_TITLE  = "Share this Application";
     public static final String DIALOG_QUIT = "Quit";
-    public static final String DIALOG_CANCEL = "Cancel"; 
+    public static final String DIALOG_CANCEL = "Cancel";
+    public static final String TWITTER_TITLE = "Twitter";
+    public static final String TWITTER_BUTTON = "Tweet";
+    
+    public static final String FACEBOOK_TITLE = "Facebook";
+    public static final String FACEBOOK_BUTTON = "Post";
+    
+    //SharedNetwork
+    public static enum SHARED_METHODS {Twitter,Facebook};
     
     //Twitter
     public static final String CONSUMER_KEY = "g6dQOeQIPrT7eXpSE7FGQ";
@@ -83,5 +91,7 @@ public class Const {
 	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow-twitter";
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+	
+	public static final String SHARED_MSG = "Find really cool android apps! Check it out https://market.android.com/details?id=com.moupress.app&feature=search_result#?t=W251bGwsMSwxLDEsImNvbS5tb3VwcmVzcy5hcHAiXQ..";
 
 }

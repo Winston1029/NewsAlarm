@@ -85,7 +85,7 @@ public class SnoonzeMgr {
 				if (predictions.size() > 0) {
 					Prediction prediction = predictions.get(0);
 					// We want at least some confidence in the result
-					if (prediction.score > 1.0) {
+					if (prediction.score > 0.5) {
 						// Show the spell
 						//snoozeListener.onSnoozed();
 						snoozeTriggered();

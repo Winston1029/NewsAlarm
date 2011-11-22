@@ -16,6 +16,17 @@ public class NewsAlarmService extends Service {
 		return null;
 	}
 	
+	
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		// TODO Auto-generated method stub
+		 super.onStartCommand(intent, flags, startId);
+		 return START_STICKY;
+	}
+
+
+
 	@Override
 	public void onCreate() {
 		//Toast.makeText(this, "NewsAlarm Service Created", Toast.LENGTH_SHORT).show();
@@ -27,7 +38,7 @@ public class NewsAlarmService extends Service {
 	@Override
 	public void onDestroy() {
 		//Toast.makeText(this, "NewsAlarm Service Stopped", Toast.LENGTH_SHORT).show();
-		startService(new Intent(this, NewsAlarmService.class));
+		//startService(new Intent(this, NewsAlarmService.class));
 		Log.d(TAG, "onDestroy");
 	}
 	
