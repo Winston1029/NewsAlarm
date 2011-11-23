@@ -23,6 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 import com.moupress.app.Const;
 import com.moupress.app.R;
+import com.moupress.app.Const.SHARED_METHODS;
 import com.moupress.app.ui.SlideButton.OnChangeListener;
 import com.moupress.app.ui.SlideButton.SlideButton;
 import com.moupress.app.ui.SlideButton.SlideButtonAdapter;
@@ -702,7 +704,7 @@ public class UIMgr {
 			flipperListView(Const.SCREENS.AlarmTimeUI.ordinal());
 			break;
 		case 2:
-			flipperListView(Const.SCREENS.AlarmSoundUI.ordinal());
+			flipperListView(Const.SCREENS.SnoozeUI.ordinal());
 			break;
 		}
 	}
@@ -1005,6 +1007,7 @@ public class UIMgr {
 	private OnExitDialogListener onExitDialogListener;
 	private int[] image = {R.drawable.tweet,R.drawable.facebook};
 	private String[] socialNetowrks = {"Tweet","Facebook"};
+	private AlertDialog alertDialog;
 
 	public void showExitDialog() {
 		// TODO Auto-generated method stub
@@ -1020,9 +1023,14 @@ public class UIMgr {
 					long id) {
 				
 				if(position == 0)
+				{
+					alertDialog.dismiss();
 					onExitDialogListener.onTwitterSelected();
+				}
 				else if (position == 1)
+				{
 					onExitDialogListener.onFacebookSelected();
+				}
 				
 			}});
     	
@@ -1040,8 +1048,32 @@ public class UIMgr {
     	                dialog.cancel();
     	           }
     	       });
-    	builder.create().show();
+    	alertDialog = builder.create();
+    	alertDialog.show();
     	
+	}
+	
+	public void showSharedMsgDialogBox(String title,String ButtonTxt,final SHARED_METHODS method)
+	{
+		LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    	final EditText editText = new EditText(context);
+    	editText.setText(Const.SHARED_MSG);
+    	builder.setView(editText);
+    	builder.setMessage(title)
+	       .setCancelable(false)
+	       .setPositiveButton(ButtonTxt, new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	        	   //onExitDialogListener.onExitDialogFinish(true);
+	        	   onExitDialogListener.onSharedMsgSend(method,editText.getText().toString());
+	           }
+	       })
+	       .setNegativeButton(Const.DIALOG_CANCEL, new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	                dialog.cancel();
+	           }
+	       });
+    	builder.create().show();
 	}
 
 	public void registerExitDialogFinishListener(

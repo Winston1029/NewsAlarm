@@ -159,6 +159,7 @@
   <Button
  	android:id="@+id/homebtn"
  	style="@style/optionbtn"
+ 	android:gravity="center"
  	android:background="@drawable/home_btn_selector"
  	></Button>
  	<Button

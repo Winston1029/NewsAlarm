@@ -62,6 +62,7 @@ containing a value of this type.
         public static final int black=0x7f060002;
         public static final int blue=0x7f060000;
         public static final int grey=0x7f060006;
+        public static final int light_green=0x7f060007;
         public static final int orange_red=0x7f060004;
         public static final int royal_blue=0x7f060003;
         public static final int snow=0x7f060005;
@@ -70,11 +71,11 @@ containing a value of this type.
     public static final class drawable {
         public static final int alarm=0x7f020000;
         public static final int alarm_btn_selector=0x7f020001;
-        public static final int alarm_clock_btn_2=0x7f020002;
+        public static final int alarm_clock_btn_3=0x7f020002;
         public static final int alarm_clock_btn_pressed_2=0x7f020003;
-        public static final int alarm_home_2=0x7f020004;
+        public static final int alarm_home_3=0x7f020004;
         public static final int alarm_home_pressed_2=0x7f020005;
-        public static final int alarm_sound_2=0x7f020006;
+        public static final int alarm_sound_3=0x7f020006;
         public static final int alarm_sound_pressed_2=0x7f020007;
         public static final int alarm_time=0x7f020008;
         public static final int button_pause=0x7f020009;
@@ -99,7 +100,7 @@ containing a value of this type.
         public static final int slide_thumb=0x7f02001c;
         public static final int snooze=0x7f02001d;
         public static final int snooze_btn_selector=0x7f02001e;
-        public static final int snooze_setting_2=0x7f02001f;
+        public static final int snooze_setting_3=0x7f02001f;
         public static final int snooze_setting_pressed_2=0x7f020020;
         public static final int sound_btn_selector=0x7f020021;
         public static final int swing=0x7f020022;
@@ -217,14 +218,15 @@ containing a value of this type.
     }
     public static final class style {
         public static final int alarminfotxt=0x7f080007;
-        public static final int alertDialogCustom=0x7f08000f;
-        public static final int ccWindowTitleBackground=0x7f08000b;
+        public static final int alertDialogCustom=0x7f080010;
+        public static final int applicationbar=0x7f080009;
+        public static final int ccWindowTitleBackground=0x7f08000c;
         public static final int dialogicon=0x7f080005;
         public static final int digiclock=0x7f080001;
         public static final int digiclock_small=0x7f080002;
         /**  	<item name="android:windowTitleBackgroundStyle">@style/ccWindowTitleBackground</item> 
          */
-        public static final int newsAlarmTitleBar=0x7f08000c;
+        public static final int newsAlarmTitleBar=0x7f08000d;
         public static final int optionbtn=0x7f080008;
         public static final int optionlayout=0x7f080000;
         /** 	<item name="android:shadowColor">#000000</item>
@@ -234,11 +236,11 @@ containing a value of this type.
          */
         public static final int optiontxtview=0x7f080003;
         public static final int optiontxtview_dialog=0x7f080004;
-        public static final int pageindicator=0x7f08000e;
+        public static final int pageindicator=0x7f08000f;
         public static final int socialnetwork=0x7f080006;
-        public static final int timewheel=0x7f08000d;
-        public static final int viewsliperchild=0x7f080009;
-        public static final int viewsliperchild_sub=0x7f08000a;
+        public static final int timewheel=0x7f08000e;
+        public static final int viewsliperchild=0x7f08000a;
+        public static final int viewsliperchild_sub=0x7f08000b;
     }
     public static final class styleable {
         /** Attributes that can be used with a NewsAlarmDigiClock.

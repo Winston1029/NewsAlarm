@@ -1,7 +1,6 @@
 package com.moupress.app;
 
 
-import java.net.URI;
 import java.util.Calendar;
 import android.app.Activity;
 import android.app.Service;
@@ -315,17 +314,31 @@ public class PubSub {
 
 		@Override
 		public void onFacebookSelected() {
-			// TODO Auto-generated method stub
+			System.out.println("Facebook is selected !");
 			
+			uiMgr.showSharedMsgDialogBox(Const.FACEBOOK_TITLE, Const.FACEBOOK_BUTTON, Const.SHARED_METHODS.Facebook);
 		}
 
 		@Override
 		public void onTwitterSelected() {
-			// TODO Auto-generated method stub
 			System.out.println("Twitter is selected !");
-			twitter.checkAuthentation();
+			//twitter.checkAuthentation();
+			uiMgr.showSharedMsgDialogBox(Const.TWITTER_TITLE, Const.TWITTER_BUTTON,Const.SHARED_METHODS.Twitter);
 		}
-		
+
+		@Override
+		public void onSharedMsgSend(Const.SHARED_METHODS method,String msg) {
+			
+			if(method == Const.SHARED_METHODS.Twitter)
+			{
+				twitter.setMessage(msg);
+				twitter.checkAuthentation();
+			}
+			else if(method == Const.SHARED_METHODS.Facebook)
+			{
+				
+			}
+		}
 	};
 	public void showExitDialog()
 	{

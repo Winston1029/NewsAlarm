@@ -1,7 +1,5 @@
 package com.moupress.app.twitter;
 
-import java.net.URI;
-import java.util.Date;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -31,6 +29,7 @@ public class TwitterInit {
 	private Context context;
     private OAuthConsumer consumer; 
     private OAuthProvider provider;
+    private String msgSend;
     
 	private final Handler mTwitterHandler = new Handler();
 	
@@ -68,8 +67,16 @@ public class TwitterInit {
     	}
 	}
 	
+	public void setMessage(String msg)
+	{
+		this.msgSend = msg;
+	}
+	
 	private String getTweetMsg() {
-		return "Find really cool android apps! Check it out https://market.android.com/details?id=com.moupress.app&feature=search_result#?t=W251bGwsMSwxLDEsImNvbS5tb3VwcmVzcy5hcHAiXQ..";
+		if(msgSend.length()>0)
+		return msgSend;
+		else
+		return Const.SHARED_MSG;
 	}	
 	
 	public void sendTweet() {
