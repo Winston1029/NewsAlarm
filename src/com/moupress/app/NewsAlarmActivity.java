@@ -81,4 +81,9 @@ public class NewsAlarmActivity extends Activity {
 			}
 		 
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		pubsub.onActivityResult(requestCode, resultCode, data);
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -16,12 +17,13 @@ import com.moupress.app.alarm.AlarmManagerMgr;
 import com.moupress.app.media.StreamingMgr;
 import com.moupress.app.snoozer.SnoonzeMgr;
 import com.moupress.app.snoozer.SnoozeListener;
-import com.moupress.app.twitter.TwitterInit;
 import com.moupress.app.ui.OnListViewItemChangeListener;
 import com.moupress.app.ui.UIMgr;
 import com.moupress.app.ui.UIMgrDebug;
 import com.moupress.app.ui.uiControlInterface.OnExitDialogListener;
 import com.moupress.app.util.DbHelper;
+import com.moupress.app.util.facebook.FacebookUtil;
+import com.moupress.app.util.twitter.TwitterInit;
 import com.moupress.app.weather.WeatherMgr;
 
 public class PubSub {
@@ -46,6 +48,7 @@ public class PubSub {
 	private DbHelper dbHelper;
 	
 	private TwitterInit twitter;
+	private FacebookUtil facebook;
 
 	private OnListViewItemChangeListener onListViewItemChangeListener = new OnListViewItemChangeListener() {
 		@Override
@@ -98,12 +101,12 @@ public class PubSub {
 		initWeather();
 		initAlarmMgr(activity);
 		initAlarmTTSMgr();
-		initTwitter();
+		initSharing();
 	}
 
-	private void initTwitter() {
-		// TODO Auto-generated method stub
+	private void initSharing() {
 		twitter = new TwitterInit(activity, context);
+		facebook = new FacebookUtil(activity, context);
 	}
 
 	public PubSub(Context context, Service service)
@@ -336,7 +339,7 @@ public class PubSub {
 			}
 			else if(method == Const.SHARED_METHODS.Facebook)
 			{
-				
+				facebook.PostMessage(msg);
 			}
 		}
 	};
@@ -348,6 +351,10 @@ public class PubSub {
 	public void retrieveTwitterToken(Uri uri) {
 		// TODO Auto-generated method stub
 		twitter.retrieveToken(uri);
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		facebook.onComplete(requestCode, resultCode, data);
 	}
 
 }

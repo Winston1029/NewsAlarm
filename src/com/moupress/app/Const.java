@@ -92,6 +92,6 @@ public class Const {
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 	
-	public static final String SHARED_MSG = "Find really cool android apps! Check it out https://market.android.com/details?id=com.moupress.app&feature=search_result#?t=W251bGwsMSwxLDEsImNvbS5tb3VwcmVzcy5hcHAiXQ..";
+	public static final String SHARED_MSG = "Find really cool android apps! Check it out https://market.android.com/details?id=com.moupress.app";
 
 }
