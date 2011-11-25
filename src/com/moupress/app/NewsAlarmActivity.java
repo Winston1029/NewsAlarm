@@ -1,6 +1,7 @@
 package com.moupress.app;
 
 import com.moupress.app.alarm.AlarmManagerMgr;
+import com.moupress.app.util.FlurryUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -85,5 +86,17 @@ public class NewsAlarmActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		pubsub.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryUtil.onStart(this);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryUtil.onStop(this);
 	}
 }
