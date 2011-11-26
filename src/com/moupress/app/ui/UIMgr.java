@@ -1024,7 +1024,7 @@ public class UIMgr {
 				
 				if(position == 0)
 				{
-					alertDialog.dismiss();
+					//alertDialog.dismiss();
 					onExitDialogListener.onTwitterSelected();
 				}
 				else if (position == 1)
