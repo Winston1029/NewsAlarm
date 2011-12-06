@@ -35,3 +35,5 @@ UI Alarm page, add check box and edit button, because many users are not aware l
 Further enhancement
 Sync alarm among users
 Allow user to add their own stations
+
+add some text here to test git on mac
