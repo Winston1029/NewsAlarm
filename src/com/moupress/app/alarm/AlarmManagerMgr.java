@@ -87,7 +87,7 @@ public class AlarmManagerMgr
             PendingIntent pi = PendingIntent.getBroadcast(mContext,
                     alarmPosition, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            long alarmTime = getNearestAlarmTime(alarmPosition);
+            long alarmTime = getNextAlarmByPos(alarmPosition);
             if(alarmTime < 0)
             {
                 //Toast.makeText(mContext,"Alarm was not set" , Toast.LENGTH_LONG).show();
@@ -97,10 +97,10 @@ public class AlarmManagerMgr
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification
-            StringBuilder sBuilder = new StringBuilder();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(alarmTime);
-            sBuilder.append(calendar.getTime());
+//            StringBuilder sBuilder = new StringBuilder();
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTimeInMillis(alarmTime);
+//            sBuilder.append(calendar.getTime());
             //Toast.makeText(mContext, sBuilder.toString(), Toast.LENGTH_LONG).show();
             // setup alarm && repeater
             // alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), (10*1000), pi);
@@ -114,47 +114,61 @@ public class AlarmManagerMgr
         return true;
 
     }
-
-    private long getNearestAlarmTime(int alarmPosition)
-    {
-        int index=0;
-        Calendar calendar = Calendar.getInstance();
-        calendar = lstCalendars[alarmPosition];
-        //get return a strange value: Friday is 6. Hence minus 1.
-        int test = calendar.get(Calendar.DAY_OF_WEEK)-1;
-        
-        for (int i = 0; i < this.SelectedDay[alarmPosition].length; i++)
-        {
-            index = (i+test)%7;
-            if(SelectedDay[alarmPosition][index])
-            {
-                if(calendar.getTimeInMillis() > System.currentTimeMillis())
-                {
-                    return calendar.getTimeInMillis();
-                }
-            }
-            //Every round, need add 1 day to calendar 
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }   
-        //if come to this point. The only possibility is that the alarm time is set to today with time less than now
-        if(SelectedDay[alarmPosition][test])
-        {
-            return calendar.getTimeInMillis();
-        }
-        return -1;
+    
+    private long getNextAlarmByPos(int alarmPosition) {
+    	// loop through 7 days to check when is the next alarm being set @alarmPosition
+    	int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+    	Calendar calendar = lstCalendars[alarmPosition];
+    	for (int i = 0; i < 7; i++) {
+    		int j = (dayOfWeek + i) % 7;
+    		if (SelectedDay[alarmPosition][j] && calendar.getTimeInMillis() > System.currentTimeMillis()) {
+    			return calendar.getTimeInMillis();
+    		}
+    		calendar.add(Calendar.DAY_OF_MONTH, 1);
+    	}
+    	return -1;
     }
 
-    public boolean isActivityStarted()
-    {
-        // to check if activity exists
-        Intent intent = new Intent();
-        intent.setClassName("com.moupress.app", "NewsAlarmActivity");
-        if (mContext.getPackageManager().resolveActivity(intent, 0) == null)
-        {
-            return false;
-        }
-        return true;
-    }
+//    private long getNearestAlarmTime(int alarmPosition)
+//    {
+//        int index=0;
+//        Calendar calendar = Calendar.getInstance();
+//        calendar = lstCalendars[alarmPosition];
+//        //get return a strange value: Friday is 6. Hence minus 1.
+//        int test = calendar.get(Calendar.DAY_OF_WEEK)-1;
+//        
+//        for (int i = 0; i < this.SelectedDay[alarmPosition].length; i++)
+//        {
+//            index = (i+test)%7;
+//            if(SelectedDay[alarmPosition][index])
+//            {
+//                if(calendar.getTimeInMillis() > System.currentTimeMillis())
+//                {
+//                    return calendar.getTimeInMillis();
+//                }
+//            }
+//            //Every round, need add 1 day to calendar 
+//            calendar.add(Calendar.DAY_OF_MONTH, 1);
+//        }   
+//        //if come to this point. The only possibility is that the alarm time is set to today with time less than now
+//        if(SelectedDay[alarmPosition][test])
+//        {
+//            return calendar.getTimeInMillis();
+//        }
+//        return -1;
+//    }
+
+//    public boolean isActivityStarted()
+//    {
+//        // to check if activity exists
+//        Intent intent = new Intent();
+//        intent.setClassName("com.moupress.app", "NewsAlarmActivity");
+//        if (mContext.getPackageManager().resolveActivity(intent, 0) == null)
+//        {
+//            return false;
+//        }
+//        return true;
+//    }
 
     public boolean cancelAlarm(int alarmPosition)
     {

@@ -30,16 +30,10 @@ public class NewsAlarmActivity extends Activity {
 	     win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 	     //win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         
-        //check if the activity is launch by user or broadcast receiver
-
-        if (Const.ISDEBUG) {
-            setContentView(R.layout.main);
-        }  else {
-            setContentView(R.layout.news_alarm_ui);
-        }
-       
+        setContentView(R.layout.news_alarm_ui);
         pubsub = new PubSub(getBaseContext(), this);
         
+      //check if the activity is launch by user or broadcast receiver
         if(extras != null)
         {
         	int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
@@ -51,7 +45,7 @@ public class NewsAlarmActivity extends Activity {
         }
     }
     
-//    @Override
+    @Override
     public void onBackPressed() {
     	pubsub.showExitDialog();
 	    return;
@@ -73,8 +67,8 @@ public class NewsAlarmActivity extends Activity {
 		 }
 		 else if (uri != null && uri.getScheme().equals(Const.OAUTH_CALLBACK_SCHEME)) {
 				
-				System.out.println("Callback received : " + uri);
-				System.out.println( "Retrieving Access Token");
+				//System.out.println("Callback received : " + uri);
+				//System.out.println( "Retrieving Access Token");
 				
 				//new RetrieveAccessTokenTask(this,consumer,provider,prefs).execute(uri);
 				pubsub.retrieveTwitterToken(uri);

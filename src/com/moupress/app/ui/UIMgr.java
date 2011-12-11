@@ -70,8 +70,7 @@ public class UIMgr {
 	public ListView hsListView;
 	private AlarmListViewAdapter hsListAdapter;
 	private String[] hsDisplayTxt = { "No Weather Info", "No Alarm Set", "Gesture" };
-	private int[] hsDisplayIcon = { R.drawable.wheather, R.drawable.alarm,
-			R.drawable.snooze };
+	private int[] hsDisplayIcon = { R.drawable.wheather, R.drawable.alarm, R.drawable.snooze };
 	private boolean[] hsSelected = { false, false, false };
 	
 
@@ -85,21 +84,6 @@ public class UIMgr {
 		hsListView.setAdapter(hsListAdapter);
 		hsListView.setOnItemClickListener(optionListOnItemClickListener);
 		//setSnoozeMode();
-	}
-
-	private void setSnoozeMode() {
-		// TODO Auto-generated method stub
-		for(int i=0;i<snoozeSelected.length;i++)
-		{
-			if(snoozeSelected[i]==true)
-			{
-				hsDisplayTxt[2]=snoozeDisplayTxt[i];
-			    //hsListAdapter.notifyDataSetChanged();
-			    System.out.println("snoozeReseted! " + hsDisplayTxt[2]);
-			    hsListAdapter.updateSnoozeModeSelection(hsDisplayTxt[2], 2);
-			    return;
-			}
-		}
 	}
 
 	// =======================Snooze UI==============================================
@@ -131,6 +115,20 @@ public class UIMgr {
 		snoozeListView.setOnItemClickListener(optionListOnItemClickListener);
 		setSnoozeMode();
 	}
+	
+	private void setSnoozeMode() {
+		for(int i=0;i<snoozeSelected.length;i++)
+		{
+			if(snoozeSelected[i]==true)
+			{
+				hsDisplayTxt[2]=snoozeDisplayTxt[i];
+			    //hsListAdapter.notifyDataSetChanged();
+			    System.out.println("snoozeReseted! " + hsDisplayTxt[2]);
+			    hsListAdapter.updateSnoozeModeSelection(hsDisplayTxt[2], 2);
+			    return;
+			}
+		}
+	}
 
 	// =======================Alarm Time UI==============================================
 	public ListView alarmListView;
@@ -143,7 +141,7 @@ public class UIMgr {
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
 	private int[] alarmDisplayIcon = { R.drawable.alarm_time, R.drawable.alarm_time,R.drawable.alarm_time };
-	private boolean[] alarmSelected = { true, false, false };
+	private boolean[] alarmSelected = { false, false, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
@@ -450,8 +448,7 @@ public class UIMgr {
 			
 			boolean[] selectedArray = helper.getSelectedDay(i);
 			
-			if(selectedArray != null)
-			daySelectedLocal = selectedArray;
+			if(selectedArray != null) daySelectedLocal = selectedArray;
 			
 			hours = helper.GetInt(Const.Hours + Integer.toString(i),Const.defAlarmDisplayHours[i]);
 			mins = helper.GetInt(Const.Mins + Integer.toString(i),Const.defAlarmDisplayMins[i]);
@@ -1040,7 +1037,7 @@ public class UIMgr {
     	       .setCancelable(false)
     	       .setPositiveButton(Const.DIALOG_QUIT, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
-    	        	   onExitDialogListener.onExitDialogFinish(true);
+    	        	   onExitDialogListener.onExitDialogFinish();
     	           }
     	       })
     	       .setNegativeButton(Const.DIALOG_CANCEL, new DialogInterface.OnClickListener() {

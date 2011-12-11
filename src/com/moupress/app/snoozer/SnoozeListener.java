@@ -4,5 +4,4 @@ public interface SnoozeListener {
 
 	public void onSnoozed();
 	public void onDismissed();
-	public void onSnoozedAgain();
 }

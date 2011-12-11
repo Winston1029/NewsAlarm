@@ -19,7 +19,6 @@ import com.moupress.app.snoozer.SnoonzeMgr;
 import com.moupress.app.snoozer.SnoozeListener;
 import com.moupress.app.ui.OnListViewItemChangeListener;
 import com.moupress.app.ui.UIMgr;
-import com.moupress.app.ui.UIMgrDebug;
 import com.moupress.app.ui.uiControlInterface.OnExitDialogListener;
 import com.moupress.app.util.DbHelper;
 import com.moupress.app.util.facebook.FacebookUtil;
@@ -43,7 +42,6 @@ public class PubSub {
 	private AlarmTTSMgr alarmTTSMgr;
 
 	private UIMgr uiMgr;
-	private UIMgrDebug uiMgrDebug;
 	
 	private DbHelper dbHelper;
 	
@@ -117,18 +115,18 @@ public class PubSub {
 		initAlarmMgr(service);
 	}
 
-	public PubSub(Context context, Activity activity, boolean snoozed) {
-		this.context = context;
-		this.activity = activity;
-
-		initUI();
-		initUtil(activity);
-		initSnooze();
-		initMedia();
-		initWeather();
-		initAlarmMgr(this.activity);
-		initAlarmTTSMgr();
-	}
+//	public PubSub(Context context, Activity activity, boolean snoozed) {
+//		this.context = context;
+//		this.activity = activity;
+//
+//		initUI();
+//		initUtil(activity);
+//		initSnooze();
+//		initMedia();
+//		initWeather();
+//		initAlarmMgr(this.activity);
+//		initAlarmTTSMgr();
+//	}
 
 	private void registerSnoozeListener()
 	{
@@ -161,12 +159,11 @@ public class PubSub {
 				new Thread( new Runnable(){
 					public void run() {
 			            while (alarmTTSMgr.isPlaying()) {}	//do nothing, keep checking
-			            //streamingMgr.startStreaming(mediaURL, 1000, 600);
 			        }
 				}).start();
 			}
 			else {
-				System.out.println("Streaming is started!");
+				//System.out.println("Streaming is started!");
 				streamingMgr.startStreaming(mediaURL, 1000, 600);
 			}
 		}
@@ -180,14 +177,9 @@ public class PubSub {
 	}
 	
 	private void initUI() {
-
-		if (Const.ISDEBUG) {
-			uiMgrDebug = new UIMgrDebug(activity);
-		} else {
-			uiMgr = new UIMgr(activity,context);
-			uiMgr.registerListViewItemChangeListener(this.onListViewItemChangeListener);
-			uiMgr.registerExitDialogFinishListener(this.onExitDialogListener);
-		}
+		uiMgr = new UIMgr(activity,context);
+		uiMgr.registerListViewItemChangeListener(this.onListViewItemChangeListener);
+		uiMgr.registerExitDialogFinishListener(this.onExitDialogListener);
 	}
 
 	private void unregisterSnoozeListener()
@@ -219,17 +211,11 @@ public class PubSub {
 				activity.finish();
 			}
 
-			@Override
-			public void onSnoozedAgain() {
-				System.out.println("Snoozed Again !");
-				onSnoozePub();
-			}
 		};
 		snoozeMgr = new SnoonzeMgr(context, snoozeListener);
 		snoozeMgr.setGestureOverlayView(uiMgr.gesturesView);
 		snoozeMgr.setDismissSlide(uiMgr.getDismissSlide());
 		
-		// snoozeMgr.unRegisterListener(snoozeType);
 	}
 
 	private void initMedia() {
@@ -244,7 +230,6 @@ public class PubSub {
 
 			@Override
 			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
 				super.handleMessage(msg);
 				String weatherConditionText = weatherMgr.getCurrentWeather().get(Const.WEATHERINFO_CURRENT);
 				uiMgr.updateHomeWeatherText(weatherConditionText);
@@ -269,13 +254,7 @@ public class PubSub {
 	
        
 	private void initAlarmTTSMgr() {
-		if (Const.ISDEBUG) {
-			alarmTTSMgr = new AlarmTTSMgr(context, uiMgrDebug.btnPlay,
-					uiMgrDebug.btnPause, uiMgrDebug.btnShutdown);
-		} else {
-			alarmTTSMgr = new AlarmTTSMgr(context, this.activity);
-		}
-		//alarmTTSMgr.ttsPlayOrResume();
+		alarmTTSMgr = new AlarmTTSMgr(context, this.activity);
 	}
 
 	private Calendar getAlarm(int alarmPosition)
@@ -306,13 +285,9 @@ public class PubSub {
 	{
 
 		@Override
-		public void onExitDialogFinish(boolean exit) {
-			// TODO Auto-generated method stub
-			if(exit)
-			{
-				exit();
-				activity.finish();
-			}
+		public void onExitDialogFinish() {
+			exit();
+			activity.finish();
 		}
 
 		@Override
