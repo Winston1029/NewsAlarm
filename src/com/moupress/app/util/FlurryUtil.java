@@ -1,5 +1,8 @@
 package com.moupress.app.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 
 import com.flurry.android.FlurryAgent;
@@ -17,5 +20,11 @@ public class FlurryUtil {
 	
 	public static void onStop(Context context) {
 		FlurryAgent.onEndSession(context);
+	}
+	
+	public static void logEvent(String eventKey, String param) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put(eventKey, param);
+		FlurryAgent.logEvent(eventKey, map);
 	}
 }

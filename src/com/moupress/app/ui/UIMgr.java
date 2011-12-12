@@ -432,6 +432,14 @@ public class UIMgr {
 	/**
 	 * Initialize Display alarm time text
 	 */
+	private void initAlarmSettings(int dummy) {
+		hsDisplayTxt[1] = "No Alarm Set";
+		
+		DbHelper helper = new DbHelper(this.activity);
+		for (int i = 0; i < alarmDisplayTxt.length; i++) {
+			
+		}
+	}
 	private void initAlarmSettings() {
 		DbHelper helper = new DbHelper(this.activity);
 		Calendar cal = Calendar.getInstance();

@@ -62,8 +62,7 @@ public class NewsAlarmActivity extends Activity {
 		     int alarmPosition = extras.getInt(AlarmManagerMgr.AlarmNumber);
 			 pubsub.onSnoozePub();
 			 
-			 if(alarmPosition != Const.SNOOZE_ALARM)
-			 pubsub.afterSnooze(alarmPosition);
+			 if(alarmPosition != Const.SNOOZE_ALARM) pubsub.afterSnooze(alarmPosition);
 		 }
 		 else if (uri != null && uri.getScheme().equals(Const.OAUTH_CALLBACK_SCHEME)) {
 				

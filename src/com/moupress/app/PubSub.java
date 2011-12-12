@@ -2,6 +2,7 @@ package com.moupress.app;
 
 
 import java.util.Calendar;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -21,6 +22,7 @@ import com.moupress.app.ui.OnListViewItemChangeListener;
 import com.moupress.app.ui.UIMgr;
 import com.moupress.app.ui.uiControlInterface.OnExitDialogListener;
 import com.moupress.app.util.DbHelper;
+import com.moupress.app.util.FlurryUtil;
 import com.moupress.app.util.facebook.FacebookUtil;
 import com.moupress.app.util.twitter.TwitterInit;
 import com.moupress.app.weather.WeatherMgr;
@@ -140,6 +142,7 @@ public class PubSub {
 		}
 	}
 	public void onSnoozePub() {
+		FlurryUtil.logEvent("Pubsub_onSnoozePub", System.currentTimeMillis() + "");
 		uiMgr.showSnoozeView();
 		registerSnoozeListener();
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
@@ -170,6 +173,7 @@ public class PubSub {
 	}
 	public void afterSnooze(int alarmPosition)
 	{
+		FlurryUtil.logEvent("Pubsub_afterSnooze", alarmPosition + "");
 	    alarmMgr.startAlarm(alarmPosition);
 	}
 	private void initUtil(Context ctx) {

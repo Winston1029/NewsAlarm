@@ -2,6 +2,8 @@ package com.moupress.app.alarm;
 
 import java.util.Calendar;
 import com.moupress.app.Const;
+import com.moupress.app.util.FlurryUtil;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -94,6 +96,7 @@ public class AlarmManagerMgr
                 return false;
             }
             
+            FlurryUtil.logEvent("AlarmManagerMgr_startAlarm", alarmTime + "");
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification
