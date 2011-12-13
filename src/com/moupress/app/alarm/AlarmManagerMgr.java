@@ -1,6 +1,8 @@
 package com.moupress.app.alarm;
 
 import java.util.Calendar;
+import java.util.Date;
+
 import com.moupress.app.Const;
 import com.moupress.app.util.FlurryUtil;
 
@@ -10,6 +12,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import java.text.DateFormat;
 
 public class AlarmManagerMgr
 {
@@ -96,7 +99,9 @@ public class AlarmManagerMgr
                 return false;
             }
             
-            FlurryUtil.logEvent("AlarmManagerMgr_startAlarm", alarmTime + "");
+            Date date = new Date(alarmTime);
+            DateFormat df = DateFormat.getDateTimeInstance();
+            FlurryUtil.logEvent("AlarmManagerMgr_startAlarm", "NextAlarm", df.format(date) + "");
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification

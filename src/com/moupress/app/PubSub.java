@@ -1,7 +1,9 @@
 package com.moupress.app;
 
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.Service;
@@ -142,7 +144,6 @@ public class PubSub {
 		}
 	}
 	public void onSnoozePub() {
-		FlurryUtil.logEvent("Pubsub_onSnoozePub", System.currentTimeMillis() + "");
 		uiMgr.showSnoozeView();
 		registerSnoozeListener();
 		AudioManager mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
@@ -173,8 +174,12 @@ public class PubSub {
 	}
 	public void afterSnooze(int alarmPosition)
 	{
-		FlurryUtil.logEvent("Pubsub_afterSnooze", alarmPosition + "");
-	    alarmMgr.startAlarm(alarmPosition);
+		boolean isAlarmSet = dbHelper.GetBool(Const.ISALARMSET + alarmPosition , false);
+		if (isAlarmSet) {
+			FlurryUtil.logEvent("Pubsub_afterSnooze", "AlarmPos", alarmPosition + "");
+		    alarmMgr.startAlarm(alarmPosition);
+		}
+		
 	}
 	private void initUtil(Context ctx) {
 		this.dbHelper = new DbHelper(ctx);

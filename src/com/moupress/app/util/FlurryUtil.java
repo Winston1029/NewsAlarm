@@ -22,9 +22,9 @@ public class FlurryUtil {
 		FlurryAgent.onEndSession(context);
 	}
 	
-	public static void logEvent(String eventKey, String param) {
+	public static void logEvent(String eventKey, String paramKey, String paramValue) {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(eventKey, param);
+		map.put(paramKey, paramValue);
 		FlurryAgent.logEvent(eventKey, map);
 	}
 }
