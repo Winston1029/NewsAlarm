@@ -251,13 +251,15 @@ public class PubSub {
 	private void initAlarmMgr(Context ctx) {
 		Calendar[] calendars = new Calendar[3];
 		boolean[][] selectedDay = new boolean[3][7];
+		boolean[] alarmSelected = new boolean[3];
 		for (int i = 0; i < calendars.length; i++)
         {
 			calendars[i] = getAlarm(i);
 			selectedDay[i] = dbHelper.getSelectedDay(i);
+			alarmSelected[i] = dbHelper.GetBool(Const.ISALARMSET + Integer.toString(i), false);
         }
 		alarmMgr = new AlarmManagerMgr(ctx, calendars, selectedDay);
-		alarmMgr.loadAlarms();
+		alarmMgr.loadAlarms(alarmSelected);
 		// alarmMgr.setAlarm(hourOfDay, minute, second, millisecond);
 	}
 	

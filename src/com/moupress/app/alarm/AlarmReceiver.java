@@ -2,7 +2,6 @@ package com.moupress.app.alarm;
 
 import com.moupress.app.NewsAlarmActivity;
 import com.moupress.app.NewsAlarmService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,7 @@ public class AlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-    	
+    	System.out.println("Alarm Receiver is triggered! "+ (intent.getAction() == null)+" "+ (intent.getExtras()==null));
         Bundle extras = intent.getExtras();
         String action = intent.getAction();
         
@@ -42,6 +41,5 @@ public class AlarmReceiver extends BroadcastReceiver
 	        	context.startService(alarmIntent);
         	}
         }
-        
     }
 }

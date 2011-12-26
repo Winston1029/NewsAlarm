@@ -141,7 +141,11 @@ public class UIMgr {
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
 	private int[] alarmDisplayIcon = { R.drawable.alarm_time, R.drawable.alarm_time,R.drawable.alarm_time };
-	private boolean[] alarmSelected = { false, false, false };
+	private boolean[] alarmSelected = { true, false, false };
+	public boolean[] getAlarmSelected() {
+		return alarmSelected;
+	}
+
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
@@ -156,6 +160,8 @@ public class UIMgr {
 	private boolean[][] daySelected = new boolean[][]{{false,true,true,true,true,true,false},
 													 {false,true,true,true,true,true,false},
 													 {true,false,false,false,false,false,true}};
+
+
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
 	private NewsAlarmDigiClock weekday;
