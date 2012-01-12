@@ -22,18 +22,20 @@ public class AlarmManagerMgr
     private AlarmManager alarmMgr = null;
     public static final String AlarmNumber = "AlarmNumber";
 
-
     public AlarmManagerMgr(Context context, Calendar[] calendar, boolean[][] selectedDay)
     {
         this.mContext = context;
         this.lstCalendars = calendar;
         this.SelectedDay = selectedDay;
+        
+        this.alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
     }
     
-    public void loadAlarms()
+    public void loadAlarms(boolean[] alarmSelected)
     {
     	for(int i=0;i<lstCalendars.length;i++)
     	{
+    		if(alarmSelected[i] == true)
     		this.startAlarm(i);
     	}
     }
@@ -67,7 +69,7 @@ public class AlarmManagerMgr
     
     public void snoozeAlarm(int snoozeDuration)
     {
-    	 alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
+    	 //alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
 
          Intent intent = new Intent(mContext, AlarmReceiver.class);
          Bundle bundle = new Bundle();
@@ -83,9 +85,10 @@ public class AlarmManagerMgr
     {
         try
         {
-            alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
+            //alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
 
             Intent intent = new Intent(mContext, AlarmReceiver.class);
+        	
             Bundle bundle = new Bundle();
             bundle.putInt(AlarmManagerMgr.AlarmNumber, alarmPosition);
             intent.putExtras(bundle);
@@ -102,6 +105,7 @@ public class AlarmManagerMgr
             Date date = new Date(alarmTime);
             DateFormat df = DateFormat.getDateTimeInstance();
             FlurryUtil.logEvent("AlarmManagerMgr_startAlarm", "NextAlarm", df.format(date) + "");
+            this.cancelAlarm(alarmPosition);
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification
@@ -183,9 +187,10 @@ public class AlarmManagerMgr
         Intent intent = new Intent(mContext, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(mContext, alarmPosition,
                 intent, 0);
+        
         try
         {
-            alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
+            //alarmMgr = (AlarmManager) mContext.getSystemService(Activity.ALARM_SERVICE);
             alarmMgr.cancel(pi);
         }
         catch (Exception e)
@@ -193,7 +198,6 @@ public class AlarmManagerMgr
             return false;
         }
         return true;
-
     }
 
 	public Calendar getCalendarByPosition(int alarmPosition) {
