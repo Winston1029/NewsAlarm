@@ -895,13 +895,7 @@ public class UIMgr {
 					// TODO Auto-generated method stub
 					System.out.println("In Animation End!!");
 					selectPageIndicator(toDisplayedChild);
-					if(toDisplayedChild==Const.SCREENS.AlarmTimeUI.ordinal())
-					{
-						Toast toast = Toast.makeText(activity, "Long Press to change Alarm Time", Toast.LENGTH_LONG);
-						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL,0, -160);
-						toast.show();
-						System.out.println("Child ID " + alarmInfoViewSlipper.getDisplayedChild());
-					}
+
 				}
 
 				@Override
