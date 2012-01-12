@@ -19,7 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:width="130dip"
+    android:width="140dip"
     android:id="@+id/alarmitemtxt">
 </TextView>
 <LinearLayout android:id="@+id/weekdaylist" 
@@ -28,16 +28,15 @@
 		android:orientation ="horizontal"
 		android:gravity="center_horizontal"
 		>
-		</LinearLayout>
+</LinearLayout>
 </LinearLayout>
 <ImageView
 	android:id="@+id/checked"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:width="30dip"
-	android:height="30dip"
 	android:layout_gravity="right"
 	android:gravity="right"
+	android:background="@drawable/imageview_bg"
 	>
 </ImageView>
 </LinearLayout>
