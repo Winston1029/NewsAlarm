@@ -141,11 +141,7 @@ public class UIMgr {
 
 	private String[] alarmDisplayTxt = { "8:00 am", "9:00 am", "10:00 am" };
 	private int[] alarmDisplayIcon = { R.drawable.alarm_time, R.drawable.alarm_time,R.drawable.alarm_time };
-	private boolean[] alarmSelected = { true, false, false };
-	public boolean[] getAlarmSelected() {
-		return alarmSelected;
-	}
-
+	private boolean[] alarmSelected = { false, false, false };
 	private static int ALARM_POSITION = 0;
 	private String[] AMPM = { "am", "pm" };
 	private boolean bSettingAlarmTimeDisableFlip;
@@ -160,8 +156,6 @@ public class UIMgr {
 	private boolean[][] daySelected = new boolean[][]{{false,true,true,true,true,true,false},
 													 {false,true,true,true,true,true,false},
 													 {true,false,false,false,false,false,true}};
-
-
 	private SlideButtonAdapter viewAdapter;
 	private SlideButton slideBtn;
 	private NewsAlarmDigiClock weekday;
@@ -174,6 +168,22 @@ public class UIMgr {
 		alarmAdapter = new AlarmListViewAdapter(alarmDisplayTxt,alarmDisplayIcon, alarmSelected,R.layout.alarm_list_item);
 		alarmListView.setAdapter(alarmAdapter);
 		alarmListView.setOnItemClickListener(optionListOnItemClickListener);
+
+		alarmListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ALARM_POSITION = position;
+				
+				//slideBtn.buildViewForMeasuring();
+				
+				if(buttonBarSlidingUpPanel.getOpen())
+					buttonBarSlidingUpPanel.toggle();
+				// timeSlidingUpPanel.toggle();
+				return true;
+			}
+		});
 
 		btnUpdateTimeOk = (Button) activity.findViewById(R.id.timeaddok);
 		btnUpdateTimeCancel = (Button) activity.findViewById(R.id.timeaddcancel);
@@ -284,7 +294,7 @@ public class UIMgr {
 	// =======================Alarm Sound UI==============================================
 	public ListView soundListView;
 	private AlarmListViewAdapter soundAdapter;
-	private String[] soundDisplayTxt = { "BBC News", "933", "Calendar" };
+	private String[] soundDisplayTxt = { "BBC News", "933", "My Calendar" };
 	private int[] soundDisplayIcon = { R.drawable.radio_bbc, R.drawable.music,R.drawable.calendar };
 	private boolean[] soundSelected = { true, false, false };
 	private static final int BBC_OR_933 = 1;
@@ -554,6 +564,7 @@ public class UIMgr {
                                 nextAlarm = hours*60+ mins; 
                             }
     	                }
+    	                
     	            }
     	        }
     	        
@@ -577,18 +588,30 @@ public class UIMgr {
 
 			switch (parent.getId()) {
 			case R.id.snoozelistview:
-				
+				toggleSelectListItem(snoozeAdapter, snoozeSelected, position);
+				// Call back function for Snooze Mode selected/unselected
+				setSnoozeMode();
+				onListViewItemChangeListener.onSnoozeModeSelected(position,
+						snoozeSelected[position]);
 				break;
 			case R.id.soundlistview:
-				
+				if (position <= BBC_OR_933 && soundSelected[position] == false && soundSelected[1 - position] == true) {
+					// make BBC and 993 broadcasting mutual exclusive
+					toggleSelectListItem(soundAdapter, soundSelected, 1 - position);
+					onListViewItemChangeListener.onAlarmSoundSelected(1-position,
+							soundSelected[1-position]);
+				}
+				toggleSelectListItem(soundAdapter, soundSelected, position);
+				// Call back function for Alarm Sound selected/unselected
+				//System.out.println("Sound Selected "+soundSelected[0]+" "+soundSelected[1]);
+				onListViewItemChangeListener.onAlarmSoundSelected(position,
+						soundSelected[position]);
 				break;
 			case R.id.alarmlistview:
-	            ALARM_POSITION = position;
-				
-				//slideBtn.buildViewForMeasuring();
-				
-				if(buttonBarSlidingUpPanel.getOpen())
-					buttonBarSlidingUpPanel.toggle();
+				toggleSelectListItem(alarmAdapter, alarmSelected, position);
+				// Call back function for alarm time selected/unselected
+				onListViewItemChangeListener.onAlarmTimeSelected(position,
+						alarmSelected[position]);
 				break;
 			case R.id.hslistview:
 				hsListViewClicked(position);
@@ -637,6 +660,7 @@ public class UIMgr {
 				break;
 			}
 		}
+
 	};
 
 	/**
@@ -664,63 +688,6 @@ public class UIMgr {
 			}
 		}
 	};
-	
-	/*
-	 * Option Selected/Unselected  
-	 */
-	
-	 class OnListItemClickListener implements OnClickListener 
-	 {
-		 private int position;
-		 private View convertView;
-		 private ViewGroup parent;
-		
-		 public OnListItemClickListener(int position,View convertView, ViewGroup parent)
-		 {
-			 this.position = position;
-			 this.convertView = convertView;
-			 this.parent = parent;
-		 }
-		 
-		@Override
-		public void onClick(View v) {
-			//System.out.println("Position "+position + " parent "+ parent.getId());
-			switch (parent.getId()) {
-			case R.id.snoozelistview:
-				toggleSelectListItem(snoozeAdapter, snoozeSelected, position);
-				// Call back function for Snooze Mode selected/unselected
-				setSnoozeMode();
-				onListViewItemChangeListener.onSnoozeModeSelected(position,
-						snoozeSelected[position]);
-				break;
-			case R.id.soundlistview:
-				if (position <= BBC_OR_933 && soundSelected[position] == false && soundSelected[1 - position] == true) {
-					// make BBC and 993 broadcasting mutual exclusive
-					toggleSelectListItem(soundAdapter, soundSelected, 1 - position);
-					onListViewItemChangeListener.onAlarmSoundSelected(1-position,
-							soundSelected[1-position]);
-				}
-				toggleSelectListItem(soundAdapter, soundSelected, position);
-				// Call back function for Alarm Sound selected/unselected
-				//System.out.println("Sound Selected "+soundSelected[0]+" "+soundSelected[1]);
-				onListViewItemChangeListener.onAlarmSoundSelected(position,
-						soundSelected[position]);
-				break;
-			case R.id.alarmlistview:
-				toggleSelectListItem(alarmAdapter, alarmSelected, position);
-				// Call back function for alarm time selected/unselected
-				onListViewItemChangeListener.onAlarmTimeSelected(position,
-						alarmSelected[position]);
-				break;
-			case R.id.hslistview:
-				System.out.println("home List View is here");
-			}
-		}
-	 }
-	 
-	 /*
-	  *  Toggle Select List Item
-	  */
 
 	private void toggleSelectListItem(AlarmListViewAdapter listAdapter,boolean[] chked, int pos) {
 		chked[pos] = !chked[pos];
@@ -829,8 +796,7 @@ public class UIMgr {
 //			if(parent.getId()==R.id.hslistview)
 //			System.out.println("It is called!");
 			ImageView chkImgView = (ImageView) convertView.findViewById(R.id.checked);
-			chkImgView.setOnClickListener(new OnListItemClickListener(position,convertView,parent));
-			
+			//chkImgView.setImageResource(R.drawable.checkbtn);
 			if (optionArrayList.get(position).isOptionSelected()) {
 				chkImgView.setImageResource(R.drawable.checkbtn);
 				//chkImgView.setVisibility(View.VISIBLE);

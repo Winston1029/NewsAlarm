@@ -8,15 +8,11 @@ public class Const {
 	public static final int ALARMSOUND_BBC = 0;
 	public static final int ALARMSOUND_MEDIACORP_933 = 1;
 	public static final int ALARMSOUND_REMINDER = 2;
-	
 	public static final String BBC_WORLD_SERVICE = "http://www.bbc.co.uk/worldservice/meta/tx/nb/live/eneuk.pls";
 	public static final String MEDIACORP_938 = "http://www.mediacorpradio.sg/radioliveplayer/asx/938live/fm938TO.asx";
 	public static final String MEDIACORP_938_MMS = "mms://a1109.l11459635108.c114596.g.lm.akamaistream.net/D/1109/114596/v0001/reflector:35108";
 	public static final String DEFAULT_RIGNTONE = "Default Ringtone";
-	
-	public static final String WSJ_WDNEWS_RSS = "http://www.marketwatch.com/feeds/podcast/podcast.asp?count=10&doctype=116&column=The+Wall+Street+Journal+This+Morning";
-	
-	
+
 	//==============Weather================================
 	public static final String HOST_WEATHER_SERVICE = "www.google.com";
 	public static final String NON_WEATHER_MSG = "No Weather Info";
@@ -91,7 +87,6 @@ public class Const {
 	public static final String REQUEST_URL = "http://api.twitter.com/oauth/request_token";
 	public static final String ACCESS_URL = "http://api.twitter.com/oauth/access_token";
 	public static final String AUTHORIZE_URL = "http://api.twitter.com/oauth/authorize";
-	
 	
 	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow-twitter";
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";

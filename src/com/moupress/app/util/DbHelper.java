@@ -29,7 +29,6 @@ public final class DbHelper
     {
        SP.edit().putInt(key, value).commit();
     }
-    
     public void Insert(String key, long value)
     {
        SP.edit().putLong(key, value).commit();
@@ -47,9 +46,6 @@ public final class DbHelper
     public int GetInt(String key,int defNum)
     {
         //return SP.getInt(key, Const.DefNum);
-    	if(!SP.contains(key))
-    		this.Insert(key, defNum);
-    	
     	return SP.getInt(key, defNum);
     }
     public long GetLong(String key)
@@ -59,9 +55,6 @@ public final class DbHelper
     public Boolean GetBool(String key, boolean defBool)
     {
     	// return SP.getBoolean(key,Const.DefBool);
-    	if(!SP.contains(key))
-    		this.Insert(key, defBool);
-    	
         return SP.getBoolean(key, defBool);
     }
     
