@@ -36,7 +36,7 @@ public class AlarmManagerMgr
     	for(int i=0;i<lstCalendars.length;i++)
     	{
     		if(alarmSelected[i] == true)
-    		this.startAlarm(i);
+    			this.startAlarm(i);
     	}
     }
 
@@ -105,7 +105,7 @@ public class AlarmManagerMgr
             Date date = new Date(alarmTime);
             DateFormat df = DateFormat.getDateTimeInstance();
             FlurryUtil.logEvent("AlarmManagerMgr_startAlarm", "NextAlarm", df.format(date) + "");
-            this.cancelAlarm(alarmPosition);
+            //this.cancelAlarm(alarmPosition);
             alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pi);
 
             //notification
